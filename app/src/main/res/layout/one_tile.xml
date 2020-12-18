@@ -5,7 +5,7 @@
         android:id="@+id/front"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/default_tile_color">
+        android:background="@color/ic_launcher_background">
 
         <TextView
             android:id="@+id/frontText"
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp"
-            android:visibility="gone" />
+            android:src="@drawable/ic_launcher_foreground"/>
 
     </FrameLayout>
 
