@@ -3,44 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.card.MaterialCardView
-        app:cardCornerRadius="14dp"
         android:id="@+id/front"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardBackgroundColor="@color/ic_launcher_background"
-        >
+        app:cardCornerRadius="14dp">
 
         <TextView
             android:id="@+id/frontText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="100sp"
-            android:visibility="gone" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:autoSizeTextType="uniform" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/frontImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp"
-            android:src="@drawable/ic_launcher_foreground"/>
+            android:src="@drawable/ic_launcher_foreground" />
 
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        app:cardCornerRadius="14dp"
         android:id="@+id/back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:cardCornerRadius="14dp">
 
         <TextView
             android:id="@+id/backText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="100sp"
-            android:visibility="gone" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:autoSizeTextType="uniform" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/backImage"
