@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
-import androidx.emoji.text.EmojiCompat
 import com.google.android.material.card.MaterialCardView
 import com.lehtimaeki.askold.ColorPalettes.getNextColorFromPalette
 import java.util.*
@@ -36,7 +34,7 @@ class GameTile @JvmOverloads constructor(
 
 
     init {
-        inflate(getContext(), R.layout.one_tile, this)
+        inflate(getContext(), R.layout.game_tile, this)
         setOnClickListener {
             flip()
         }

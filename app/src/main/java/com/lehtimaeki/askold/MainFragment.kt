@@ -1,6 +1,7 @@
 package com.lehtimaeki.askold
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +20,29 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
+        inflateColumns(binding.columnsContainer)
         return binding.root
     }
 
 
+    private fun inflateColumns(columnsContainer: ViewGroup) {
+        val numberOfColumns =
+            (requireActivity().windowManager.currentWindowMetrics.bounds.width() /
+                    resources.getDimension(R.dimen.minimal_tile_size)).toInt()
+        for (i in 0 until numberOfColumns) {
+            val column = layoutInflater.inflate(R.layout.one_column, columnsContainer, false)
+            inflateRows(column as ViewGroup)
+
+            columnsContainer.addView(column)
+        }
+    }
+
+    private fun inflateRows(column: ViewGroup) {
+        val numberOfRows =
+            (requireActivity().windowManager.currentWindowMetrics.bounds.height() /
+                    resources.getDimension(R.dimen.minimal_tile_size)).toInt()
+        for (i in 0 until numberOfRows) {
+            layoutInflater.inflate(R.layout.one_tile, column)
+        }
+    }
 }
