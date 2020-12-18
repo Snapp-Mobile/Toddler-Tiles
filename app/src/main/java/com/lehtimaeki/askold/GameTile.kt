@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -34,25 +33,46 @@ class GameTile @JvmOverloads constructor(
     private val backImage by lazy { findViewById<ImageView>(R.id.backImage) }
 
 
-    init {
-        inflate(getContext(), R.layout.game_tile, this)
-        setOnClickListener {
-            flip()
-        }
-        setOnTouchListener { v, event ->
-
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                flip()
-                true
-            } else {
-                false
-            }
-
-
-        }
+    private val x by lazy {
+        val location = IntArray(2)
+        getLocationOnScreen(location)
+        location[0]
     }
 
-    private fun flip() {
+    private val y by lazy {
+        val location = IntArray(2)
+        getLocationOnScreen(location)
+        location[1]
+    }
+
+
+    init {
+        inflate(getContext(), R.layout.game_tile, this)
+//        setOnClickListener {
+//            flip()
+//        }
+//        setOnTouchListener { v, event ->
+//
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//                flip()
+//                true
+//            } else {
+//                false
+//            }
+//
+//
+//        }
+    }
+
+
+    var bounceFlips = false
+
+    fun flip() {
+        if(bounceFlips){
+            return
+        }
+        bounceFlips = true
+
         if (isFlipped) {
             when (rnd.nextInt(3)) {
                 0 -> animateToFront1()
@@ -76,7 +96,7 @@ class GameTile @JvmOverloads constructor(
         animate().rotationY(90f).withEndAction {
             swapToFront()
             rotationY = -90f
-            animate().rotationY(0f)
+            animate().rotationY(0f).withEndAction { bounceFlips = false }
         }
     }
 
@@ -84,14 +104,14 @@ class GameTile @JvmOverloads constructor(
         animate().rotationX(90f).withEndAction {
             swapToFront()
             rotationX = -90f
-            animate().rotationX(0f)
+            animate().rotationX(0f).withEndAction { bounceFlips = false }
         }
     }
 
     private fun animateToFront3() {
         animate().scaleX(0f).scaleY(0f).withEndAction {
             swapToFront()
-            animate().scaleX(1f).scaleY(1f)
+            animate().scaleX(1f).scaleY(1f).withEndAction { bounceFlips = false }
         }
     }
 
@@ -100,7 +120,7 @@ class GameTile @JvmOverloads constructor(
         animate().rotationY(90f).withEndAction {
             swapToBack()
             rotationY = -90f
-            animate().rotationY(0f)
+            animate().rotationY(0f).withEndAction { bounceFlips = false }
         }
     }
 
@@ -108,14 +128,14 @@ class GameTile @JvmOverloads constructor(
         animate().rotationX(90f).withEndAction {
             swapToBack()
             rotationX = -90f
-            animate().rotationX(0f)
+            animate().rotationX(0f).withEndAction { bounceFlips = false }
         }
     }
 
     private fun animateToBack3() {
         animate().scaleX(0f).scaleY(0f).withEndAction {
             swapToBack()
-            animate().scaleX(1f).scaleY(1f)
+            animate().scaleX(1f).scaleY(1f).withEndAction { bounceFlips = false }
         }
     }
 
@@ -238,5 +258,9 @@ class GameTile @JvmOverloads constructor(
         val blue = Color.blue(color)
         val alpha = Color.alpha(color)
         return Color.argb(alpha, 255 - red, 255 - green, 255 - blue)
+    }
+
+    fun isThisTileInCoordinate(eventX: Float, eventY: Float): Boolean {
+        return eventX > x && eventX < x + width && eventY > y && eventY < y + height
     }
 }

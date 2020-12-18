@@ -1,10 +1,11 @@
 package com.lehtimaeki.askold
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import com.lehtimaeki.askold.databinding.FragmentMainBinding
 
@@ -14,6 +15,7 @@ import com.lehtimaeki.askold.databinding.FragmentMainBinding
 class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
+    private var allTiles: List<GameTile> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,15 +28,36 @@ class MainFragment : Fragment() {
     }
 
 
-    // TODO: see if this is needed
-    private fun setupTouchInterceptor(){
+    private fun actOnClick(x: Float, y: Float) {
+        allTiles.forEach {
+            if (it.isThisTileInCoordinate(x, y)) {
+                it.flip()
+                return@forEach
+            }
+        }
+    }
+
+
+    private fun setupTouchInterceptor() {
         binding.touchLayer.setOnTouchListener { v, event ->
-            false
+
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                true
+            }else if (event.action == MotionEvent.ACTION_MOVE) {
+                actOnClick(event.x, event.y)
+                true
+            }else{
+                false
+            }
+
         }
     }
 
 
     private fun inflateColumns(columnsContainer: ViewGroup) {
+
+        val newTiles = mutableListOf<GameTile>()
+
         val numberOfColumns =
             (requireActivity().windowManager.currentWindowMetrics.bounds.width() /
                     resources.getDimension(R.dimen.minimal_tile_size)).toInt()
@@ -42,8 +65,16 @@ class MainFragment : Fragment() {
             val column = layoutInflater.inflate(R.layout.one_column, columnsContainer, false)
             inflateRows(column as ViewGroup)
 
+            column.forEach {
+                (it as? GameTile)?.let {
+                    newTiles.add(it)
+                }
+            }
+
             columnsContainer.addView(column)
         }
+
+        allTiles = newTiles
     }
 
     private fun inflateRows(column: ViewGroup) {
