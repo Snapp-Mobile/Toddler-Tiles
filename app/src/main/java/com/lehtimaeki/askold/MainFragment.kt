@@ -21,7 +21,16 @@ class MainFragment : Fragment() {
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         inflateColumns(binding.columnsContainer)
+        setupTouchInterceptor()
         return binding.root
+    }
+
+
+    // TODO: see if this is needed
+    private fun setupTouchInterceptor(){
+        binding.touchLayer.setOnTouchListener { v, event ->
+            false
+        }
     }
 
 

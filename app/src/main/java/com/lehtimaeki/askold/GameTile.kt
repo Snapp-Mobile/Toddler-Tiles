@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -37,6 +38,17 @@ class GameTile @JvmOverloads constructor(
         inflate(getContext(), R.layout.game_tile, this)
         setOnClickListener {
             flip()
+        }
+        setOnTouchListener { v, event ->
+
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                flip()
+                true
+            } else {
+                false
+            }
+
+
         }
     }
 
@@ -132,24 +144,27 @@ class GameTile @JvmOverloads constructor(
 
 
         val random = rnd.nextInt(100)
-        if (random < SYMBOL_PROBABILITY) {
-            textView.setTextColor(getInverseColor(backgroundColor))
-            imageView.isGone = true
-            textView.isVisible = true
-            textView.text = SYMBOLS[rnd.nextInt(SYMBOLS.size)]
-        } else if (random < ICON_PROBABILITY) {
-            ImageViewCompat.setImageTintList(
-                imageView,
-                ColorStateList.valueOf(getInverseColor(backgroundColor))
-            );
-            imageView.isVisible = true
-            textView.isGone = true
-            imageView.setImageResource(ICONS[rnd.nextInt(ICONS.size)])
-        } else {
-            textView.isGone = true
-            imageView.isGone = true
+        when {
+            random < SYMBOL_PROBABILITY -> {
+                textView.setTextColor(getInverseColor(backgroundColor))
+                imageView.isGone = true
+                textView.isVisible = true
+                textView.text = SYMBOLS[rnd.nextInt(SYMBOLS.size)]
+            }
+            random < ICON_PROBABILITY -> {
+                ImageViewCompat.setImageTintList(
+                    imageView,
+                    ColorStateList.valueOf(getInverseColor(backgroundColor))
+                );
+                imageView.isVisible = true
+                textView.isGone = true
+                imageView.setImageResource(ICONS[rnd.nextInt(ICONS.size)])
+            }
+            else -> {
+                textView.isGone = true
+                imageView.isGone = true
+            }
         }
-
 
 
     }
@@ -173,7 +188,7 @@ class GameTile @JvmOverloads constructor(
                 R.drawable.ic_baseline_directions_boat_24,
                 R.drawable.ic_baseline_emoji_emotions_24,
                 R.drawable.ic_baseline_local_shipping_24,
-                )
+            )
 
         val SYMBOLS =
             arrayListOf(
