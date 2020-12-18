@@ -12,6 +12,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import androidx.emoji.text.EmojiCompat
+import com.google.android.material.card.MaterialCardView
 import com.lehtimaeki.askold.ColorPalettes.getNextColorFromPalette
 import java.util.*
 
@@ -23,8 +24,8 @@ class GameTile @JvmOverloads constructor(
     val rnd = Random()
     private var isFlipped = false
 
-    private val frontSide by lazy { findViewById<View>(R.id.front) }
-    private val backSide by lazy { findViewById<View>(R.id.back) }
+    private val frontSide by lazy { findViewById<MaterialCardView>(R.id.front) }
+    private val backSide by lazy { findViewById<MaterialCardView>(R.id.back) }
 
     private val frontText by lazy { findViewById<TextView>(R.id.frontText) }
     private val backText by lazy { findViewById<TextView>(R.id.backText) }
@@ -111,7 +112,7 @@ class GameTile @JvmOverloads constructor(
 
     private fun swapToBack() {
         val newBackground = getNextColorFromPalette()
-        backSide.setBackgroundColor(newBackground)
+        backSide.setCardBackgroundColor(newBackground)
         frontSide.isGone = true
         backSide.isVisible = true
 
@@ -121,7 +122,7 @@ class GameTile @JvmOverloads constructor(
 
     private fun swapToFront() {
         val newBackground = getNextColorFromPalette()
-        frontSide.setBackgroundColor(newBackground)
+        frontSide.setCardBackgroundColor(newBackground)
         frontSide.isVisible = true
         backSide.isGone = true
 
