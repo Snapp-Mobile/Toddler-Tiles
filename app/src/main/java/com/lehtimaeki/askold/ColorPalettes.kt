@@ -9,13 +9,11 @@ import java.util.*
 object ColorPalettes {
 
     private val ALL_PALETTES = listOf(
-        listOf("#264653", "#2a9d8f", "#e9c46a", "#f4a261", "#e76f51"),
-        listOf("#cb997e", "#eddcd2", "#fff1e6", "#f0efeb", "#ddbea9", "#a5a58d", "#b7b7a4"),
-        listOf("#00296b", "#003f88", "#00509d", "#fdc500", "#ddbea9", "#a5a58d", "#ffd500"),
-        listOf("#ffbe0b", "#fb5607", "#ff006e", "#8338ec", "#3a86ff"),
-        listOf("#f72585", "#7209b7", "#3a0ca3", "#4361ee", "#4cc9f0"),
-        listOf("#ff595e", "#ffca3a", "#8ac926", "#1982c4", "#6a4c93"),
-        listOf("#d3f8e2", "#e4c1f9", "#f694c1", "#ede7b1", "#a9def9"),
+        listOf("#f72585", "#b5179e", "#7209b7", "#560bad", "#480ca8", "#3a0ca3","#3f37c9","#4361ee","#4895ef","#4cc9f0"),
+        listOf("#9b5de5", "#f15bb5", "#fee440", "#00bbf9", "#00f5d4"),
+        listOf("#390099", "#9e0059", "#ff0054", "#ff5400", "#ffbd00"),
+        listOf("#edf67d", "#f896d8", "#ca7df9", "#724cf9", "#564592"),
+        listOf("#006ba6", "#0496ff", "#ffbc42", "#d81159", "#8f2d56"),
     )
 
 
