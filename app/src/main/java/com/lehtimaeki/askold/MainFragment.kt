@@ -1,5 +1,6 @@
 package com.lehtimaeki.askold
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -28,26 +29,29 @@ class MainFragment : Fragment() {
     }
 
 
-    private fun actOnClick(x: Float, y: Float) {
-        allTiles.forEach {
-            if (it.isThisTileInCoordinate(x, y)) {
-                it.flip()
-                return@forEach
-            }
-        }
-    }
-
-
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupTouchInterceptor() {
-        binding.touchLayer.setOnTouchListener { v, event ->
+        binding.touchLayer.setOnTouchListener { _, event ->
 
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                true
-            }else if (event.action == MotionEvent.ACTION_MOVE) {
-                actOnClick(event.x, event.y)
-                true
-            }else{
-                false
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val coords = MotionEvent.PointerCoords()
+
+                    for (i in 0 until event.pointerCount) {
+                        event.getPointerCoords(i, coords)
+
+                        allTiles.forEach {
+                            it.onTouchOnOverlay(coords.x, coords.y, i)
+                        }
+                    }
+                    true
+                }
+                else -> {
+                    false
+                }
             }
 
         }

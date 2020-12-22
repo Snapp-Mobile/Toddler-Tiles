@@ -2,7 +2,6 @@ package com.lehtimaeki.askold
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -13,14 +12,18 @@ import androidx.core.widget.ImageViewCompat
 import com.google.android.material.card.MaterialCardView
 import com.lehtimaeki.askold.ColorPalettes.getNextColorFromPalette
 import java.util.*
+import kotlin.math.absoluteValue
 
 
 class GameTile @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    val rnd = Random()
+    private val rnd = Random()
     private var isFlipped = false
+
+
+    private val minimumDragDistance by lazy { resources.getDimension(R.dimen.minimum_drag_distance) }
 
     private val frontSide by lazy { findViewById<MaterialCardView>(R.id.front) }
     private val backSide by lazy { findViewById<MaterialCardView>(R.id.back) }
@@ -48,97 +51,151 @@ class GameTile @JvmOverloads constructor(
 
     init {
         inflate(getContext(), R.layout.game_tile, this)
-//        setOnClickListener {
-//            flip()
-//        }
-//        setOnTouchListener { v, event ->
+    }
+
+
+    private var bounceFlips = false
+
 //
-//            if (event.action == MotionEvent.ACTION_DOWN) {
-//                flip()
-//                true
-//            } else {
-//                false
+//    fun flip() {
+//        if (bounceFlips) {
+//            return
+//        }
+//        bounceFlips = true
+//
+//        if (isFlipped) {
+//            when (rnd.nextInt(3)) {
+//                0 -> animateToFront1()
+//                1 -> animateToFront2()
+//                2 -> animateToFront3()
 //            }
 //
+//        } else {
+//            when (rnd.nextInt(3)) {
+//                0 -> animateToBack1()
+//                1 -> animateToBack2()
+//                2 -> animateToBack3()
+//            }
 //
 //        }
-    }
+//        isFlipped = !isFlipped
+//    }
 
 
-    var bounceFlips = false
-
-    fun flip() {
-        if(bounceFlips){
-            return
-        }
+    private fun flipHorizontal(reverse: Boolean) {
         bounceFlips = true
-
         if (isFlipped) {
-            when (rnd.nextInt(3)) {
-                0 -> animateToFront1()
-                1 -> animateToFront2()
-                2 -> animateToFront3()
-            }
-
+            animateToFront1(reverse)
         } else {
-            when (rnd.nextInt(3)) {
-                0 -> animateToBack1()
-                1 -> animateToBack2()
-                2 -> animateToBack3()
+            animateToBack1(reverse)
+        }
+    }
+
+
+    private fun flipVertical(reverse: Boolean) {
+        bounceFlips = true
+        if (isFlipped) {
+            animateToFront2(reverse)
+        } else {
+            animateToBack2(reverse)
+        }
+    }
+
+
+    private fun animateToFront1(reverse: Boolean) {
+        animate().rotationY(
+            if (reverse) {
+                -90f
+            } else {
+                90f
             }
-
-        }
-        isFlipped = !isFlipped
-    }
-
-
-    private fun animateToFront1() {
-        animate().rotationY(90f).withEndAction {
+        ).withEndAction {
             swapToFront()
-            rotationY = -90f
-            animate().rotationY(0f).withEndAction { bounceFlips = false }
+            rotationY = if (reverse) {
+                90f
+            } else {
+                -90f
+            }
+            animate().rotationY(0f).withEndAction { resetBounce() }
         }
     }
 
-    private fun animateToFront2() {
-        animate().rotationX(90f).withEndAction {
+    private fun animateToFront2(reverse: Boolean) {
+
+
+        animate().rotationX(
+            if (reverse) {
+                -90f
+            } else {
+                90f
+            }
+        ).withEndAction {
             swapToFront()
-            rotationX = -90f
-            animate().rotationX(0f).withEndAction { bounceFlips = false }
+            rotationX = if (reverse) {
+                90f
+            } else {
+                -90f
+            }
+            animate().rotationX(0f).withEndAction { resetBounce() }
         }
     }
 
     private fun animateToFront3() {
         animate().scaleX(0f).scaleY(0f).withEndAction {
             swapToFront()
-            animate().scaleX(1f).scaleY(1f).withEndAction { bounceFlips = false }
+            animate().scaleX(1f).scaleY(1f).withEndAction { resetBounce() }
         }
     }
 
 
-    private fun animateToBack1() {
-        animate().rotationY(90f).withEndAction {
+    private fun animateToBack1(reverse: Boolean) {
+        animate().rotationY(
+            if (reverse) {
+                -90f
+            } else {
+                90f
+            }
+        ).withEndAction {
             swapToBack()
-            rotationY = -90f
-            animate().rotationY(0f).withEndAction { bounceFlips = false }
+            rotationY = if (reverse) {
+                90f
+            } else {
+                -90f
+            }
+            animate().rotationY(0f).withEndAction { resetBounce() }
         }
     }
 
-    private fun animateToBack2() {
-        animate().rotationX(90f).withEndAction {
+    private fun animateToBack2(reverse: Boolean) {
+        animate().rotationX(
+            if (reverse) {
+                -90f
+            } else {
+                90f
+            }
+        ).withEndAction {
             swapToBack()
-            rotationX = -90f
-            animate().rotationX(0f).withEndAction { bounceFlips = false }
+            rotationX = if (reverse) {
+                90f
+            } else {
+                -90f
+            }
+            animate().rotationX(0f).withEndAction { resetBounce() }
         }
     }
 
     private fun animateToBack3() {
         animate().scaleX(0f).scaleY(0f).withEndAction {
             swapToBack()
-            animate().scaleX(1f).scaleY(1f).withEndAction { bounceFlips = false }
+            animate().scaleX(1f).scaleY(1f).withEndAction { resetBounce() }
         }
     }
 
+
+    private fun resetBounce() {
+        lastTrackedIndexes.clear()
+        bounceFlips = false
+    }
 
     private fun swapToBack() {
         val newBackground = getNextColorFromPalette()
@@ -166,7 +223,7 @@ class GameTile @JvmOverloads constructor(
         val random = rnd.nextInt(100)
         when {
             random < SYMBOL_PROBABILITY -> {
-                textView.setTextColor(getInverseColor(backgroundColor))
+                textView.setTextColor(ColorPalettes.getContrastColor(backgroundColor))
                 imageView.isGone = true
                 textView.isVisible = true
                 textView.text = SYMBOLS[rnd.nextInt(SYMBOLS.size)]
@@ -174,7 +231,7 @@ class GameTile @JvmOverloads constructor(
             random < ICON_PROBABILITY -> {
                 ImageViewCompat.setImageTintList(
                     imageView,
-                    ColorStateList.valueOf(getInverseColor(backgroundColor))
+                    ColorStateList.valueOf(ColorPalettes.getContrastColor(backgroundColor))
                 );
                 imageView.isVisible = true
                 textView.isGone = true
@@ -190,8 +247,50 @@ class GameTile @JvmOverloads constructor(
     }
 
 
-    companion object {
+    private val lastTrackedIndexes = mutableMapOf<Int, Pair<Float, Float>>()
 
+    /**
+     * This function will trigger
+     */
+    private fun trackTouchOnThisTile(x: Float, y: Float, pointerIndex: Int) {
+
+        val lastPoint = lastTrackedIndexes[pointerIndex]
+
+        if (lastPoint == null) {
+            lastTrackedIndexes[pointerIndex] = Pair(x, y)
+            return
+        }
+
+
+        val xAbs = (lastPoint.first - x).absoluteValue
+        val yAbs = (lastPoint.second - y).absoluteValue
+
+        if (xAbs > minimumDragDistance && xAbs > yAbs) {
+            flipHorizontal(x < lastPoint.first)
+        } else if (yAbs > minimumDragDistance) {
+            flipVertical(lastPoint.second < y)
+        }
+
+
+    }
+
+    private fun isThiTile(eventX: Float, eventY: Float): Boolean {
+        return eventX > x && eventX < x + width && eventY > y && eventY < y + height
+    }
+
+    fun onTouchOnOverlay(eventX: Float, eventY: Float, pointerIndex: Int) {
+        if (bounceFlips) {
+            return
+        }
+        if (isThiTile(eventX, eventY)) {
+            trackTouchOnThisTile(eventX, eventY, pointerIndex)
+        } else {
+            lastTrackedIndexes.remove(pointerIndex)
+        }
+    }
+
+
+    companion object {
         const val SYMBOL_PROBABILITY = 40
         const val ICON_PROBABILITY = 80
 
@@ -250,17 +349,5 @@ class GameTile @JvmOverloads constructor(
                 "10"
             )
 
-    }
-
-    private fun getInverseColor(color: Int): Int {
-        val red = Color.red(color)
-        val green = Color.green(color)
-        val blue = Color.blue(color)
-        val alpha = Color.alpha(color)
-        return Color.argb(alpha, 255 - red, 255 - green, 255 - blue)
-    }
-
-    fun isThisTileInCoordinate(eventX: Float, eventY: Float): Boolean {
-        return eventX > x && eventX < x + width && eventY > y && eventY < y + height
     }
 }
