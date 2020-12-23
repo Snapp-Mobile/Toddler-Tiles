@@ -10,15 +10,15 @@ android {
         applicationId "com.lehtimaeki.askold"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 10000
-        versionName "1.0.0"
+        versionCode 10100
+        versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

@@ -222,6 +222,12 @@ class GameTile @JvmOverloads constructor(
 
         val random = rnd.nextInt(100)
         when {
+            random < IMAGE_ICON_PROBABILITY -> {
+                imageView.isVisible = true
+                textView.isGone = true
+                imageView.setImageResource(IMAGE_ICONS[rnd.nextInt(IMAGE_ICONS.size)])
+                ImageViewCompat.setImageTintList(imageView, null)
+            }
             random < SYMBOL_PROBABILITY -> {
                 textView.setTextColor(ColorPalettes.getContrastColor(backgroundColor))
                 imageView.isGone = true
@@ -232,7 +238,7 @@ class GameTile @JvmOverloads constructor(
                 ImageViewCompat.setImageTintList(
                     imageView,
                     ColorStateList.valueOf(ColorPalettes.getContrastColor(backgroundColor))
-                );
+                )
                 imageView.isVisible = true
                 textView.isGone = true
                 imageView.setImageResource(ICONS[rnd.nextInt(ICONS.size)])
@@ -291,8 +297,9 @@ class GameTile @JvmOverloads constructor(
 
 
     companion object {
-        const val SYMBOL_PROBABILITY = 40
-        const val ICON_PROBABILITY = 80
+        const val IMAGE_ICON_PROBABILITY = 40
+        const val SYMBOL_PROBABILITY = 60
+        const val ICON_PROBABILITY = 90
 
         val ICONS =
             arrayListOf(
@@ -307,6 +314,60 @@ class GameTile @JvmOverloads constructor(
                 R.drawable.ic_baseline_directions_boat_24,
                 R.drawable.ic_baseline_emoji_emotions_24,
                 R.drawable.ic_baseline_local_shipping_24,
+            )
+
+        val IMAGE_ICONS =
+            arrayListOf(
+                R.drawable.fllaticon_01_mouse,
+                R.drawable.fllaticon_02_cow,
+                R.drawable.fllaticon_03_kangaroo,
+                R.drawable.fllaticon_04_bear,
+                R.drawable.fllaticon_05_flamingo,
+                R.drawable.fllaticon_06_fox,
+                R.drawable.fllaticon_07_bat,
+                R.drawable.fllaticon_08_crab,
+                R.drawable.fllaticon_09_lion,
+                R.drawable.fllaticon_10_frog,
+                R.drawable.fllaticon_11_bee,
+                R.drawable.fllaticon_12_koala,
+                R.drawable.fllaticon_13_tiger,
+                R.drawable.fllaticon_14_rhino,
+                R.drawable.fllaticon_15_squirrel,
+                R.drawable.fllaticon_16_whale,
+                R.drawable.fllaticon_17_duck,
+                R.drawable.fllaticon_18_camel,
+                R.drawable.fllaticon_19_shark,
+                R.drawable.fllaticon_20_bird,
+                R.drawable.fllaticon_21_rabbit,
+                R.drawable.fllaticon_22_llama,
+                R.drawable.fllaticon_23_cat,
+                R.drawable.fllaticon_24_hedgehog,
+                R.drawable.fllaticon_25_octopus,
+                R.drawable.fllaticon_26_snail,
+                R.drawable.fllaticon_27_giraffe,
+                R.drawable.fllaticon_28_manta_ray,
+                R.drawable.fllaticon_29_wolf,
+                R.drawable.fllaticon_30_penguin,
+                R.drawable.fllaticon_31_panther,
+                R.drawable.fllaticon_32_elephant,
+                R.drawable.fllaticon_33_reindeer,
+                R.drawable.fllaticon_34_chameleon,
+                R.drawable.fllaticon_35_crocodile,
+                R.drawable.fllaticon_36_butterfly,
+                R.drawable.fllaticon_37_owl,
+                R.drawable.fllaticon_38_turtle,
+                R.drawable.fllaticon_39_snake,
+                R.drawable.fllaticon_40_polar_bear,
+                R.drawable.fllaticon_41_monkey,
+                R.drawable.fllaticon_42_chicken,
+                R.drawable.fllaticon_43_sloth,
+                R.drawable.fllaticon_44_dog,
+                R.drawable.fllaticon_45_dolphin,
+                R.drawable.fllaticon_46_pig,
+                R.drawable.fllaticon_47_hippopotamus,
+                R.drawable.fllaticon_48_parrot,
+                R.drawable.fllaticon_49_clownfish,
+                R.drawable.fllaticon_50_horse,
             )
 
         val SYMBOLS =
