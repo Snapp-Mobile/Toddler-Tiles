@@ -49,7 +49,18 @@ class MainFragment : Fragment() {
                     }
                     true
                 }
-                else -> {
+                MotionEvent.ACTION_UP-> {
+                    val coords = MotionEvent.PointerCoords()
+
+                    for (i in 0 until event.pointerCount) {
+                        event.getPointerCoords(i, coords)
+
+                        allTiles.forEach {
+                            it.onTouchUpOnOverlay(coords.x, coords.y, i)
+                        }
+                    }
+                    true
+                } else -> {
                     false
                 }
             }

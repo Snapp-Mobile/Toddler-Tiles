@@ -56,30 +56,15 @@ class GameTile @JvmOverloads constructor(
 
     private var bounceFlips = false
 
-//
-//    fun flip() {
-//        if (bounceFlips) {
-//            return
-//        }
-//        bounceFlips = true
-//
-//        if (isFlipped) {
-//            when (rnd.nextInt(3)) {
-//                0 -> animateToFront1()
-//                1 -> animateToFront2()
-//                2 -> animateToFront3()
-//            }
-//
-//        } else {
-//            when (rnd.nextInt(3)) {
-//                0 -> animateToBack1()
-//                1 -> animateToBack2()
-//                2 -> animateToBack3()
-//            }
-//
-//        }
-//        isFlipped = !isFlipped
-//    }
+
+    private fun flipZoom() {
+        bounceFlips = true
+        if (isFlipped) {
+            animateToFront3()
+        } else {
+            animateToBack3()
+        }
+    }
 
 
     private fun flipHorizontal(reverse: Boolean) {
@@ -296,9 +281,22 @@ class GameTile @JvmOverloads constructor(
     }
 
 
+    fun onTouchUpOnOverlay(eventX: Float, eventY: Float, pointerIndex: Int) {
+        if (bounceFlips) {
+            return
+        }
+        if (isThiTile(eventX, eventY)) {
+            flipZoom()
+        } else {
+            lastTrackedIndexes.remove(pointerIndex)
+        }
+    }
+
+
+
     companion object {
-        const val IMAGE_ICON_PROBABILITY = 40
-        const val SYMBOL_PROBABILITY = 60
+        const val IMAGE_ICON_PROBABILITY = 70
+        const val SYMBOL_PROBABILITY = 80
         const val ICON_PROBABILITY = 90
 
         val ICONS =
@@ -368,6 +366,59 @@ class GameTile @JvmOverloads constructor(
                 R.drawable.fllaticon_48_parrot,
                 R.drawable.fllaticon_49_clownfish,
                 R.drawable.fllaticon_50_horse,
+
+                R.drawable.seelife_01_sea_anemone,
+                R.drawable.seelife_02_seaweed,
+                R.drawable.seelife_03_puffer_fish,
+                R.drawable.seelife_04_sardine,
+                R.drawable.seelife_05_sea_urchin,
+                R.drawable.seelife_06_codfish,
+                R.drawable.seelife_07_surgeon_fish,
+                R.drawable.seelife_08_eel,
+                R.drawable.seelife_09_moorish_idol,
+                R.drawable.seelife_10_bubbles,
+                R.drawable.seelife_11_seaweed,
+                R.drawable.seelife_12_sunset,
+                R.drawable.seelife_13_tuna,
+                R.drawable.seelife_14_jellyfish,
+                R.drawable.seelife_15_hammerhead_fish,
+                R.drawable.seelife_16_seagull,
+                R.drawable.seelife_17_sea_snake,
+                R.drawable.seelife_18_penguin,
+                R.drawable.seelife_19_orca,
+                R.drawable.seelife_20_shrimp,
+                R.drawable.seelife_21_swordfish,
+                R.drawable.seelife_22_ray,
+                R.drawable.seelife_23_fish,
+                R.drawable.seelife_24_crab,
+                R.drawable.seelife_25_octopus,
+                R.drawable.seelife_26_hermit_crab,
+                R.drawable.seelife_27_shoal,
+                R.drawable.seelife_28_seahorse,
+                R.drawable.seelife_29_clown_fish,
+                R.drawable.seelife_30_seashell,
+                R.drawable.seelife_31_shark,
+                R.drawable.seelife_32_seashell,
+                R.drawable.seelife_33_whale,
+                R.drawable.seelife_34_jellyfish,
+                R.drawable.seelife_35_flying_fish,
+                R.drawable.seelife_36_anglerfish,
+                R.drawable.seelife_37_starfish,
+                R.drawable.seelife_38_dolphin,
+                R.drawable.seelife_39_angelfish,
+                R.drawable.seelife_40_lobster,
+                R.drawable.seelife_41_squid,
+                R.drawable.seelife_42_sunfish,
+                R.drawable.seelife_43_lifesaver,
+                R.drawable.seelife_44_coral,
+                R.drawable.seelife_45_shell,
+                R.drawable.seelife_46_seal,
+                R.drawable.seelife_47_ship,
+                R.drawable.seelife_48_fishbone,
+                R.drawable.seelife_49_mussel,
+                R.drawable.seelife_50_turtle,
+
+
             )
 
         val SYMBOLS =
