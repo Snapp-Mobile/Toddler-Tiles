@@ -2,6 +2,7 @@ package com.lehtimaeki.askold
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -49,7 +50,7 @@ class MainFragment : Fragment() {
                     }
                     true
                 }
-                MotionEvent.ACTION_UP-> {
+                MotionEvent.ACTION_UP -> {
                     val coords = MotionEvent.PointerCoords()
 
                     for (i in 0 until event.pointerCount) {
@@ -73,12 +74,18 @@ class MainFragment : Fragment() {
 
         val newTiles = mutableListOf<GameTile>()
 
+
+        val displayMetrics = DisplayMetrics()
+        requireContext().display?.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+
         val numberOfColumns =
-            (requireActivity().windowManager.currentWindowMetrics.bounds.width() /
+            (width /
                     resources.getDimension(R.dimen.minimal_tile_size)).toInt()
         for (i in 0 until numberOfColumns) {
             val column = layoutInflater.inflate(R.layout.one_column, columnsContainer, false)
-            inflateRows(column as ViewGroup)
+            inflateRows(column as ViewGroup, height)
 
             column.forEach {
                 (it as? GameTile)?.let {
@@ -92,9 +99,9 @@ class MainFragment : Fragment() {
         allTiles = newTiles
     }
 
-    private fun inflateRows(column: ViewGroup) {
+    private fun inflateRows(column: ViewGroup, height: Int) {
         val numberOfRows =
-            (requireActivity().windowManager.currentWindowMetrics.bounds.height() /
+            (height/
                     resources.getDimension(R.dimen.minimal_tile_size)).toInt()
         for (i in 0 until numberOfRows) {
             layoutInflater.inflate(R.layout.one_tile, column)
