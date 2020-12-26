@@ -265,7 +265,7 @@ class GameTile @JvmOverloads constructor(
 
     }
 
-    private fun isThiTile(eventX: Float, eventY: Float): Boolean {
+    private fun isThisTile(eventX: Float, eventY: Float): Boolean {
         return eventX > x && eventX < x + width && eventY > y && eventY < y + height
     }
 
@@ -273,7 +273,7 @@ class GameTile @JvmOverloads constructor(
         if (bounceFlips) {
             return
         }
-        if (isThiTile(eventX, eventY)) {
+        if (isThisTile(eventX, eventY)) {
             trackTouchOnThisTile(eventX, eventY, pointerIndex)
         } else {
             lastTrackedIndexes.remove(pointerIndex)
@@ -285,7 +285,7 @@ class GameTile @JvmOverloads constructor(
         if (bounceFlips) {
             return
         }
-        if (isThiTile(eventX, eventY)) {
+        if (isThisTile(eventX, eventY)) {
             flipZoom()
         } else {
             lastTrackedIndexes.remove(pointerIndex)

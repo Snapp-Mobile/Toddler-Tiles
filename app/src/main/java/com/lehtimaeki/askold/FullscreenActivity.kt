@@ -31,7 +31,7 @@ class FullscreenActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        // not allowed
+        // back prevented so the kid doesn't hit it by accident
     }
 
     private fun hideChrome() {
