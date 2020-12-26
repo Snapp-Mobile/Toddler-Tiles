@@ -3,38 +3,28 @@ package com.lehtimaeki.askold
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
-import com.google.android.material.card.MaterialCardView
 import com.lehtimaeki.askold.ColorPalettes.getNextColorFromPalette
+import com.lehtimaeki.askold.databinding.GameTileBinding
 import java.util.*
 import kotlin.math.absoluteValue
-
 
 class GameTile @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
+    private val binding = GameTileBinding.inflate(LayoutInflater.from(context), this)
 
-    private val rnd = Random()
     private var isFlipped = false
+    private var bounceFlips = false
 
-
+    private val rnd by lazy { Random() }
     private val minimumDragDistance by lazy { resources.getDimension(R.dimen.minimum_drag_distance) }
-
-    private val frontSide by lazy { findViewById<MaterialCardView>(R.id.front) }
-    private val backSide by lazy { findViewById<MaterialCardView>(R.id.back) }
-
-    private val frontText by lazy { findViewById<TextView>(R.id.frontText) }
-    private val backText by lazy { findViewById<TextView>(R.id.backText) }
-
-
-    private val frontImage by lazy { findViewById<ImageView>(R.id.frontImage) }
-    private val backImage by lazy { findViewById<ImageView>(R.id.backImage) }
-
 
     private val x by lazy {
         val location = IntArray(2)
@@ -48,15 +38,6 @@ class GameTile @JvmOverloads constructor(
         location[1]
     }
 
-
-    init {
-        inflate(getContext(), R.layout.game_tile, this)
-    }
-
-
-    private var bounceFlips = false
-
-
     private fun flipZoom() {
         bounceFlips = true
         if (isFlipped) {
@@ -65,7 +46,6 @@ class GameTile @JvmOverloads constructor(
             animateToBack3()
         }
     }
-
 
     private fun flipHorizontal(reverse: Boolean) {
         bounceFlips = true
@@ -76,7 +56,6 @@ class GameTile @JvmOverloads constructor(
         }
     }
 
-
     private fun flipVertical(reverse: Boolean) {
         bounceFlips = true
         if (isFlipped) {
@@ -85,7 +64,6 @@ class GameTile @JvmOverloads constructor(
             animateToBack2(reverse)
         }
     }
-
 
     private fun animateToFront1(reverse: Boolean) {
         animate().rotationY(
@@ -106,8 +84,6 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun animateToFront2(reverse: Boolean) {
-
-
         animate().rotationX(
             if (reverse) {
                 -90f
@@ -131,7 +107,6 @@ class GameTile @JvmOverloads constructor(
             animate().scaleX(1f).scaleY(1f).withEndAction { resetBounce() }
         }
     }
-
 
     private fun animateToBack1(reverse: Boolean) {
         animate().rotationY(
@@ -176,7 +151,6 @@ class GameTile @JvmOverloads constructor(
         }
     }
 
-
     private fun resetBounce() {
         lastTrackedIndexes.clear()
         bounceFlips = false
@@ -184,27 +158,23 @@ class GameTile @JvmOverloads constructor(
 
     private fun swapToBack() {
         val newBackground = getNextColorFromPalette()
-        backSide.setCardBackgroundColor(newBackground)
-        frontSide.isGone = true
-        backSide.isVisible = true
+        binding.back.setCardBackgroundColor(newBackground)
+        binding.front.isGone = true
+        binding.back.isVisible = true
 
-        handleContent(newBackground, backText, backImage)
+        handleContent(newBackground, binding.backText, binding.backImage)
     }
-
 
     private fun swapToFront() {
         val newBackground = getNextColorFromPalette()
-        frontSide.setCardBackgroundColor(newBackground)
-        frontSide.isVisible = true
-        backSide.isGone = true
+        binding.front.setCardBackgroundColor(newBackground)
+        binding.front.isVisible = true
+        binding.back.isGone = true
 
-        handleContent(newBackground, frontText, frontImage)
+        handleContent(newBackground, binding.frontText, binding.frontImage)
     }
 
-
     private fun handleContent(backgroundColor: Int, textView: TextView, imageView: ImageView) {
-
-
         val random = rnd.nextInt(100)
         when {
             random < IMAGE_ICON_PROBABILITY -> {
@@ -233,10 +203,7 @@ class GameTile @JvmOverloads constructor(
                 imageView.isGone = true
             }
         }
-
-
     }
-
 
     private val lastTrackedIndexes = mutableMapOf<Int, Pair<Float, Float>>()
 
@@ -244,14 +211,12 @@ class GameTile @JvmOverloads constructor(
      * This function will trigger
      */
     private fun trackTouchOnThisTile(x: Float, y: Float, pointerIndex: Int) {
-
         val lastPoint = lastTrackedIndexes[pointerIndex]
 
         if (lastPoint == null) {
             lastTrackedIndexes[pointerIndex] = Pair(x, y)
             return
         }
-
 
         val xAbs = (lastPoint.first - x).absoluteValue
         val yAbs = (lastPoint.second - y).absoluteValue
@@ -261,8 +226,6 @@ class GameTile @JvmOverloads constructor(
         } else if (yAbs > minimumDragDistance) {
             flipVertical(lastPoint.second < y)
         }
-
-
     }
 
     private fun isThisTile(eventX: Float, eventY: Float): Boolean {
@@ -273,6 +236,7 @@ class GameTile @JvmOverloads constructor(
         if (bounceFlips) {
             return
         }
+
         if (isThisTile(eventX, eventY)) {
             trackTouchOnThisTile(eventX, eventY, pointerIndex)
         } else {
@@ -285,13 +249,13 @@ class GameTile @JvmOverloads constructor(
         if (bounceFlips) {
             return
         }
+
         if (isThisTile(eventX, eventY)) {
             flipZoom()
         } else {
             lastTrackedIndexes.remove(pointerIndex)
         }
     }
-
 
 
     companion object {
@@ -316,109 +280,106 @@ class GameTile @JvmOverloads constructor(
 
         val IMAGE_ICONS =
             arrayListOf(
-                R.drawable.flaticon_01_mouse,
-                R.drawable.flaticon_02_cow,
-                R.drawable.flaticon_03_kangaroo,
-                R.drawable.flaticon_04_bear,
-                R.drawable.flaticon_05_flamingo,
-                R.drawable.flaticon_06_fox,
-                R.drawable.flaticon_07_bat,
-                R.drawable.flaticon_08_crab,
-                R.drawable.flaticon_09_lion,
-                R.drawable.flaticon_10_frog,
-                R.drawable.flaticon_11_bee,
-                R.drawable.flaticon_12_koala,
-                R.drawable.flaticon_13_tiger,
-                R.drawable.flaticon_14_rhino,
-                R.drawable.flaticon_15_squirrel,
-                R.drawable.flaticon_16_whale,
-                R.drawable.flaticon_17_duck,
-                R.drawable.flaticon_18_camel,
-                R.drawable.flaticon_19_shark,
-                R.drawable.flaticon_20_bird,
-                R.drawable.flaticon_21_rabbit,
-                R.drawable.flaticon_22_llama,
-                R.drawable.flaticon_23_cat,
-                R.drawable.flaticon_24_hedgehog,
-                R.drawable.flaticon_25_octopus,
-                R.drawable.flaticon_26_snail,
-                R.drawable.flaticon_27_giraffe,
-                R.drawable.flaticon_28_manta_ray,
-                R.drawable.flaticon_29_wolf,
-                R.drawable.flaticon_30_penguin,
-                R.drawable.flaticon_31_panther,
-                R.drawable.flaticon_32_elephant,
-                R.drawable.flaticon_33_reindeer,
-                R.drawable.flaticon_34_chameleon,
-                R.drawable.flaticon_35_crocodile,
-                R.drawable.flaticon_36_butterfly,
-                R.drawable.flaticon_37_owl,
-                R.drawable.flaticon_38_turtle,
-                R.drawable.flaticon_39_snake,
-                R.drawable.flaticon_40_polar_bear,
-                R.drawable.flaticon_41_monkey,
-                R.drawable.flaticon_42_chicken,
-                R.drawable.flaticon_43_sloth,
-                R.drawable.flaticon_44_dog,
-                R.drawable.flaticon_45_dolphin,
-                R.drawable.flaticon_46_pig,
-                R.drawable.flaticon_47_hippopotamus,
-                R.drawable.flaticon_48_parrot,
-                R.drawable.flaticon_49_clownfish,
-                R.drawable.flaticon_50_horse,
-
-                R.drawable.flaticon_seelife_01_sea_anemone,
-                R.drawable.flaticon_seelife_02_seaweed,
-                R.drawable.flaticon_seelife_03_puffer_fish,
-                R.drawable.flaticon_seelife_04_sardine,
-                R.drawable.flaticon_seelife_05_sea_urchin,
-                R.drawable.flaticon_seelife_06_codfish,
-                R.drawable.flaticon_seelife_07_surgeon_fish,
-                R.drawable.flaticon_seelife_08_eel,
-                R.drawable.flaticon_seelife_09_moorish_idol,
-                R.drawable.flaticon_seelife_10_bubbles,
-                R.drawable.flaticon_seelife_11_seaweed,
-                R.drawable.flaticon_seelife_12_sunset,
-                R.drawable.flaticon_seelife_13_tuna,
-                R.drawable.flaticon_seelife_14_jellyfish,
-                R.drawable.flaticon_seelife_15_hammerhead_fish,
-                R.drawable.flaticon_seelife_16_seagull,
-                R.drawable.flaticon_seelife_17_sea_snake,
-                R.drawable.flaticon_seelife_18_penguin,
-                R.drawable.flaticon_seelife_19_orca,
-                R.drawable.flaticon_seelife_20_shrimp,
-                R.drawable.flaticon_seelife_21_swordfish,
-                R.drawable.flaticon_seelife_22_ray,
-                R.drawable.flaticon_seelife_23_fish,
-                R.drawable.flaticon_seelife_24_crab,
-                R.drawable.flaticon_seelife_25_octopus,
-                R.drawable.flaticon_seelife_26_hermit_crab,
-                R.drawable.flaticon_seelife_27_shoal,
-                R.drawable.flaticon_seelife_28_seahorse,
-                R.drawable.flaticon_seelife_29_clown_fish,
-                R.drawable.flaticon_seelife_30_seashell,
-                R.drawable.flaticon_seelife_31_shark,
-                R.drawable.flaticon_seelife_32_seashell,
-                R.drawable.flaticon_seelife_33_whale,
-                R.drawable.flaticon_seelife_34_jellyfish,
-                R.drawable.flaticon_seelife_35_flying_fish,
-                R.drawable.flaticon_seelife_36_anglerfish,
-                R.drawable.flaticon_seelife_37_starfish,
-                R.drawable.flaticon_seelife_38_dolphin,
-                R.drawable.flaticon_seelife_39_angelfish,
-                R.drawable.flaticon_seelife_40_lobster,
-                R.drawable.flaticon_seelife_41_squid,
-                R.drawable.flaticon_seelife_42_sunfish,
-                R.drawable.flaticon_seelife_43_lifesaver,
-                R.drawable.flaticon_seelife_44_coral,
-                R.drawable.flaticon_seelife_45_shell,
-                R.drawable.flaticon_seelife_46_seal,
-                R.drawable.flaticon_seelife_47_ship,
-                R.drawable.flaticon_seelife_48_fishbone,
-                R.drawable.flaticon_seelife_49_mussel,
-                R.drawable.flaticon_seelife_50_turtle,
-
-
+                R.drawable.fllaticon_01_mouse,
+                R.drawable.fllaticon_02_cow,
+                R.drawable.fllaticon_03_kangaroo,
+                R.drawable.fllaticon_04_bear,
+                R.drawable.fllaticon_05_flamingo,
+                R.drawable.fllaticon_06_fox,
+                R.drawable.fllaticon_07_bat,
+                R.drawable.fllaticon_08_crab,
+                R.drawable.fllaticon_09_lion,
+                R.drawable.fllaticon_10_frog,
+                R.drawable.fllaticon_11_bee,
+                R.drawable.fllaticon_12_koala,
+                R.drawable.fllaticon_13_tiger,
+                R.drawable.fllaticon_14_rhino,
+                R.drawable.fllaticon_15_squirrel,
+                R.drawable.fllaticon_16_whale,
+                R.drawable.fllaticon_17_duck,
+                R.drawable.fllaticon_18_camel,
+                R.drawable.fllaticon_19_shark,
+                R.drawable.fllaticon_20_bird,
+                R.drawable.fllaticon_21_rabbit,
+                R.drawable.fllaticon_22_llama,
+                R.drawable.fllaticon_23_cat,
+                R.drawable.fllaticon_24_hedgehog,
+                R.drawable.fllaticon_25_octopus,
+                R.drawable.fllaticon_26_snail,
+                R.drawable.fllaticon_27_giraffe,
+                R.drawable.fllaticon_28_manta_ray,
+                R.drawable.fllaticon_29_wolf,
+                R.drawable.fllaticon_30_penguin,
+                R.drawable.fllaticon_31_panther,
+                R.drawable.fllaticon_32_elephant,
+                R.drawable.fllaticon_33_reindeer,
+                R.drawable.fllaticon_34_chameleon,
+                R.drawable.fllaticon_35_crocodile,
+                R.drawable.fllaticon_36_butterfly,
+                R.drawable.fllaticon_37_owl,
+                R.drawable.fllaticon_38_turtle,
+                R.drawable.fllaticon_39_snake,
+                R.drawable.fllaticon_40_polar_bear,
+                R.drawable.fllaticon_41_monkey,
+                R.drawable.fllaticon_42_chicken,
+                R.drawable.fllaticon_43_sloth,
+                R.drawable.fllaticon_44_dog,
+                R.drawable.fllaticon_45_dolphin,
+                R.drawable.fllaticon_46_pig,
+                R.drawable.fllaticon_47_hippopotamus,
+                R.drawable.fllaticon_48_parrot,
+                R.drawable.fllaticon_49_clownfish,
+                R.drawable.fllaticon_50_horse,
+                R.drawable.seelife_01_sea_anemone,
+                R.drawable.seelife_02_seaweed,
+                R.drawable.seelife_03_puffer_fish,
+                R.drawable.seelife_04_sardine,
+                R.drawable.seelife_05_sea_urchin,
+                R.drawable.seelife_06_codfish,
+                R.drawable.seelife_07_surgeon_fish,
+                R.drawable.seelife_08_eel,
+                R.drawable.seelife_09_moorish_idol,
+                R.drawable.seelife_10_bubbles,
+                R.drawable.seelife_11_seaweed,
+                R.drawable.seelife_12_sunset,
+                R.drawable.seelife_13_tuna,
+                R.drawable.seelife_14_jellyfish,
+                R.drawable.seelife_15_hammerhead_fish,
+                R.drawable.seelife_16_seagull,
+                R.drawable.seelife_17_sea_snake,
+                R.drawable.seelife_18_penguin,
+                R.drawable.seelife_19_orca,
+                R.drawable.seelife_20_shrimp,
+                R.drawable.seelife_21_swordfish,
+                R.drawable.seelife_22_ray,
+                R.drawable.seelife_23_fish,
+                R.drawable.seelife_24_crab,
+                R.drawable.seelife_25_octopus,
+                R.drawable.seelife_26_hermit_crab,
+                R.drawable.seelife_27_shoal,
+                R.drawable.seelife_28_seahorse,
+                R.drawable.seelife_29_clown_fish,
+                R.drawable.seelife_30_seashell,
+                R.drawable.seelife_31_shark,
+                R.drawable.seelife_32_seashell,
+                R.drawable.seelife_33_whale,
+                R.drawable.seelife_34_jellyfish,
+                R.drawable.seelife_35_flying_fish,
+                R.drawable.seelife_36_anglerfish,
+                R.drawable.seelife_37_starfish,
+                R.drawable.seelife_38_dolphin,
+                R.drawable.seelife_39_angelfish,
+                R.drawable.seelife_40_lobster,
+                R.drawable.seelife_41_squid,
+                R.drawable.seelife_42_sunfish,
+                R.drawable.seelife_43_lifesaver,
+                R.drawable.seelife_44_coral,
+                R.drawable.seelife_45_shell,
+                R.drawable.seelife_46_seal,
+                R.drawable.seelife_47_ship,
+                R.drawable.seelife_48_fishbone,
+                R.drawable.seelife_49_mussel,
+                R.drawable.seelife_50_turtle,
             )
 
         val SYMBOLS =
@@ -460,6 +421,5 @@ class GameTile @JvmOverloads constructor(
                 "9",
                 "10"
             )
-
     }
 }

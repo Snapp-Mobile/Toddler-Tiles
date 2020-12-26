@@ -24,7 +24,6 @@
             android:layout_height="match_parent"
             android:padding="8dp"
             android:src="@drawable/ic_launcher_foreground" />
-
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -50,6 +49,4 @@
             android:padding="8dp"
             android:visibility="gone" />
     </com.google.android.material.card.MaterialCardView>
-
-
 </merge>

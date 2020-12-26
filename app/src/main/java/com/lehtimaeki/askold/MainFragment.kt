@@ -2,107 +2,84 @@ package com.lehtimaeki.askold
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import com.lehtimaeki.askold.databinding.FragmentMainBinding
+import com.lehtimaeki.askold.delegates.viewBinding
 
+class MainFragment : Fragment(R.layout.fragment_main) {
+    private val binding by viewBinding(FragmentMainBinding::bind)
+    private val allTiles = mutableListOf<GameTile>()
 
-/**
- */
-class MainFragment : Fragment() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    private lateinit var binding: FragmentMainBinding
-    private var allTiles: List<GameTile> = listOf()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
         inflateColumns(binding.columnsContainer)
         setupTouchInterceptor()
-        return binding.root
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupTouchInterceptor() {
         binding.touchLayer.setOnTouchListener { _, event ->
+            val coordinates = MotionEvent.PointerCoords()
 
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    val coords = MotionEvent.PointerCoords()
-
+            return@setOnTouchListener when (event.action) {
+                MotionEvent.ACTION_DOWN -> true
+                MotionEvent.ACTION_MOVE, MotionEvent.ACTION_UP -> {
                     for (i in 0 until event.pointerCount) {
-                        event.getPointerCoords(i, coords)
+                        event.getPointerCoords(i, coordinates)
 
-                        allTiles.forEach {
-                            it.onTouchOnOverlay(coords.x, coords.y, i)
+                        allTiles.forEach { gameTile ->
+                            when (event.action) {
+                                MotionEvent.ACTION_MOVE ->
+                                    gameTile.onTouchOnOverlay(coordinates.x, coordinates.y, i)
+                                MotionEvent.ACTION_UP ->
+                                    gameTile.onTouchUpOnOverlay(coordinates.x, coordinates.y, i)
+                            }
                         }
                     }
+
                     true
                 }
-                MotionEvent.ACTION_UP -> {
-                    val coords = MotionEvent.PointerCoords()
 
-                    for (i in 0 until event.pointerCount) {
-                        event.getPointerCoords(i, coords)
-
-                        allTiles.forEach {
-                            it.onTouchUpOnOverlay(coords.x, coords.y, i)
-                        }
-                    }
-                    true
-                } else -> {
-                    false
-                }
+                else -> false
             }
-
         }
     }
 
-
     private fun inflateColumns(columnsContainer: ViewGroup) {
-
         val newTiles = mutableListOf<GameTile>()
 
+        val metrics = resources.displayMetrics
+        val height = metrics.heightPixels
+        val width = metrics.widthPixels
 
-        val displayMetrics = DisplayMetrics()
-        requireContext().display?.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
+        val numberOfColumns = (width / resources.getDimension(R.dimen.minimal_tile_size)).toInt()
 
-        val numberOfColumns =
-            (width /
-                    resources.getDimension(R.dimen.minimal_tile_size)).toInt()
         for (i in 0 until numberOfColumns) {
             val column = layoutInflater.inflate(R.layout.one_column, columnsContainer, false)
             inflateRows(column as ViewGroup, height)
 
-            column.forEach {
-                (it as? GameTile)?.let {
-                    newTiles.add(it)
+            column.forEach { gameTileView ->
+                if (gameTileView is GameTile) {
+                    newTiles.add(gameTileView)
                 }
             }
 
             columnsContainer.addView(column)
         }
 
-        allTiles = newTiles
+        with(allTiles) {
+            clear()
+            addAll(newTiles)
+        }
     }
 
     private fun inflateRows(column: ViewGroup, height: Int) {
-        val numberOfRows =
-            (height/
-                    resources.getDimension(R.dimen.minimal_tile_size)).toInt()
+        val numberOfRows = (height / resources.getDimension(R.dimen.minimal_tile_size)).toInt()
         for (i in 0 until numberOfRows) {
             layoutInflater.inflate(R.layout.one_tile, column)
         }
