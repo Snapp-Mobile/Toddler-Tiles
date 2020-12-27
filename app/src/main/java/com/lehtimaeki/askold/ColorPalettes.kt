@@ -7,15 +7,24 @@ import java.util.*
 
 
 object ColorPalettes {
-
     private val ALL_PALETTES = listOf(
-        listOf("#f72585", "#b5179e", "#7209b7", "#560bad", "#480ca8", "#3a0ca3","#3f37c9","#4361ee","#4895ef","#4cc9f0"),
+        listOf(
+            "#f72585",
+            "#b5179e",
+            "#7209b7",
+            "#560bad",
+            "#480ca8",
+            "#3a0ca3",
+            "#3f37c9",
+            "#4361ee",
+            "#4895ef",
+            "#4cc9f0"
+        ),
         listOf("#9b5de5", "#f15bb5", "#fee440", "#00bbf9", "#00f5d4"),
         listOf("#390099", "#9e0059", "#ff0054", "#ff5400", "#ffbd00"),
         listOf("#edf67d", "#f896d8", "#ca7df9", "#724cf9", "#564592"),
         listOf("#006ba6", "#0496ff", "#ffbc42", "#d81159", "#8f2d56"),
     )
-
 
     var currentPaletteIndex = 0
     var currentColorIndexInPalette = 0

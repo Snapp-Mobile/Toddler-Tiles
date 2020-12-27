@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.lehtimaeki.askold"
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 10203
         versionName "1.2.3"
@@ -25,27 +25,33 @@ android {
             applicationIdSuffix ".debug"
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
     buildFeatures {
         viewBinding true
     }
 }
 
 dependencies {
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation "androidx.fragment:fragment-ktx:1.2.5"
+
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0'
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
+
     implementation 'androidx.core:core-ktx:1.5.0-alpha05'
     implementation 'androidx.emoji:emoji-bundled:1.2.0-alpha01'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
