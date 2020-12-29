@@ -15,7 +15,12 @@ class FullscreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        // Calling this function in onCreate causes the system bars to re-appear when the app
+        // comes back to foreground after going to background.
         hideSystemBars()
     }
 
