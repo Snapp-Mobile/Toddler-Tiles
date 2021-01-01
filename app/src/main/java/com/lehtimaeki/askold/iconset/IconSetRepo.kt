@@ -36,6 +36,21 @@ object IconSetRepo {
             GameTileResources.FLATICON_IMAGE_ICONS,
             tintForContrast = false
         ))
+        allIconSets.add(IconSet(
+            id = 1,
+            name = "Numbers",
+            isUnlocked = true,
+            GameTileResources.NUMBERS,
+            tintForContrast = true
+        ))
+        allIconSets.add(IconSet(
+            id = 1,
+            name = "Letters",
+            isUnlocked = true,
+            GameTileResources.LETTERS,
+            tintForContrast = true
+        ))
+
     }
 
 
