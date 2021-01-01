@@ -6,14 +6,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
 import com.lehtimaeki.askold.ColorPalettes.getNextColorFromPalette
 import com.lehtimaeki.askold.databinding.GameTileBinding
-import com.lehtimaeki.askold.utils.GameTileResources
-import java.util.*
+import com.lehtimaeki.askold.iconset.IconSetRepo
 import kotlin.math.absoluteValue
 
 class GameTile @JvmOverloads constructor(
@@ -24,7 +22,6 @@ class GameTile @JvmOverloads constructor(
     private var isFlipped = false
     private var bounceFlips = false
 
-    private val rnd by lazy { Random() }
     private val minimumDragDistance by lazy { resources.getDimension(R.dimen.minimum_drag_distance) }
 
     private val x by lazy {
@@ -42,31 +39,31 @@ class GameTile @JvmOverloads constructor(
     private fun flipZoom() {
         bounceFlips = true
         if (isFlipped) {
-            animateToFront3()
+            animateToFrontZoom()
         } else {
-            animateToBack3()
+            animateToBackZoom()
         }
     }
 
     private fun flipHorizontal(reverse: Boolean) {
         bounceFlips = true
         if (isFlipped) {
-            animateToFront1(reverse)
+            animateToFrontHorizontal(reverse)
         } else {
-            animateToBack1(reverse)
+            animateToBackHorizontal(reverse)
         }
     }
 
     private fun flipVertical(reverse: Boolean) {
         bounceFlips = true
         if (isFlipped) {
-            animateToFront2(reverse)
+            animateToFrontVertical(reverse)
         } else {
-            animateToBack2(reverse)
+            animateToBackVertical(reverse)
         }
     }
 
-    private fun animateToFront1(reverse: Boolean) {
+    private fun animateToFrontHorizontal(reverse: Boolean) {
         animate().rotationY(
             if (reverse) {
                 -90f
@@ -84,7 +81,7 @@ class GameTile @JvmOverloads constructor(
         }
     }
 
-    private fun animateToFront2(reverse: Boolean) {
+    private fun animateToFrontVertical(reverse: Boolean) {
         animate().rotationX(
             if (reverse) {
                 -90f
@@ -102,14 +99,14 @@ class GameTile @JvmOverloads constructor(
         }
     }
 
-    private fun animateToFront3() {
+    private fun animateToFrontZoom() {
         animate().scaleX(0f).scaleY(0f).withEndAction {
             swapToFront()
             animate().scaleX(1f).scaleY(1f).withEndAction { resetBounce() }
         }
     }
 
-    private fun animateToBack1(reverse: Boolean) {
+    private fun animateToBackHorizontal(reverse: Boolean) {
         animate().rotationY(
             if (reverse) {
                 -90f
@@ -127,7 +124,7 @@ class GameTile @JvmOverloads constructor(
         }
     }
 
-    private fun animateToBack2(reverse: Boolean) {
+    private fun animateToBackVertical(reverse: Boolean) {
         animate().rotationX(
             if (reverse) {
                 -90f
@@ -145,7 +142,7 @@ class GameTile @JvmOverloads constructor(
         }
     }
 
-    private fun animateToBack3() {
+    private fun animateToBackZoom() {
         animate().scaleX(0f).scaleY(0f).withEndAction {
             swapToBack()
             animate().scaleX(1f).scaleY(1f).withEndAction { resetBounce() }
@@ -163,7 +160,7 @@ class GameTile @JvmOverloads constructor(
         binding.front.isGone = true
         binding.back.isVisible = true
 
-        handleContent(newBackground, binding.backText, binding.backImage)
+        handleContent(newBackground,binding.backImage)
     }
 
     private fun swapToFront() {
@@ -172,43 +169,21 @@ class GameTile @JvmOverloads constructor(
         binding.front.isVisible = true
         binding.back.isGone = true
 
-        handleContent(newBackground, binding.frontText, binding.frontImage)
+        handleContent(newBackground, binding.frontImage)
     }
 
-    private fun handleContent(backgroundColor: Int, textView: TextView, imageView: ImageView) {
-        val random = rnd.nextInt(100)
-        when {
-            random < GameTileResources.IMAGE_ICON_PROBABILITY -> {
-                imageView.isVisible = true
-                textView.isGone = true
-                imageView.setImageResource(
-                    GameTileResources.IMAGE_ICONS[rnd.nextInt(
-                        GameTileResources.IMAGE_ICONS.size
-                    )]
-                )
-                ImageViewCompat.setImageTintList(imageView, null)
-            }
-            random < GameTileResources.SYMBOL_PROBABILITY -> {
-                textView.setTextColor(ColorPalettes.getContrastColor(backgroundColor))
-                imageView.isGone = true
-                textView.isVisible = true
-                textView.text =
-                    GameTileResources.SYMBOLS[rnd.nextInt(GameTileResources.SYMBOLS.size)]
-            }
-            random < GameTileResources.ICON_PROBABILITY -> {
-                ImageViewCompat.setImageTintList(
-                    imageView,
-                    ColorStateList.valueOf(ColorPalettes.getContrastColor(backgroundColor))
-                )
-                imageView.isVisible = true
-                textView.isGone = true
-                imageView.setImageResource(GameTileResources.ICONS[rnd.nextInt(GameTileResources.ICONS.size)])
-            }
-            else -> {
-                textView.isGone = true
-                imageView.isGone = true
-            }
+    private fun handleContent(backgroundColor: Int, imageView: ImageView) {
+        val (icon, tintForContrast) = IconSetRepo.getRandomIcon()
+        imageView.setImageResource(icon)
+        if(tintForContrast){
+            ImageViewCompat.setImageTintList(
+                imageView,
+                ColorStateList.valueOf(ColorPalettes.getContrastColor(backgroundColor))
+            )
+        }else{
+            ImageViewCompat.setImageTintList(imageView, null)
         }
+
     }
 
     private val lastTrackedIndexes = mutableMapOf<Int, Pair<Float, Float>>()
