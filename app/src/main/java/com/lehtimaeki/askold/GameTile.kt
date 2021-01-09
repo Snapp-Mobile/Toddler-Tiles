@@ -64,7 +64,7 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun animateToFrontHorizontal(reverse: Boolean) {
-        animate().rotationY(
+        animate().rotationX(0f).rotationY(
             if (reverse) {
                 -90f
             } else {
@@ -82,7 +82,7 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun animateToFrontVertical(reverse: Boolean) {
-        animate().rotationX(
+        animate().rotationY(0f).rotationX(
             if (reverse) {
                 -90f
             } else {
@@ -100,14 +100,14 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun animateToFrontZoom() {
-        animate().scaleX(0f).scaleY(0f).withEndAction {
+        animate().rotationY(0f).rotationX(0f).scaleX(0f).scaleY(0f).withEndAction {
             swapToFront()
             animate().scaleX(1f).scaleY(1f).withEndAction { resetBounce() }
         }
     }
 
     private fun animateToBackHorizontal(reverse: Boolean) {
-        animate().rotationY(
+        animate().rotationX(0f).rotationY(
             if (reverse) {
                 -90f
             } else {
@@ -125,7 +125,7 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun animateToBackVertical(reverse: Boolean) {
-        animate().rotationX(
+        animate().rotationY(0f).rotationX(
             if (reverse) {
                 -90f
             } else {
@@ -143,7 +143,7 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun animateToBackZoom() {
-        animate().scaleX(0f).scaleY(0f).withEndAction {
+        animate().rotationY(0f).rotationX(0f).scaleX(0f).scaleY(0f).withEndAction {
             swapToBack()
             animate().scaleX(1f).scaleY(1f).withEndAction { resetBounce() }
         }
@@ -160,7 +160,7 @@ class GameTile @JvmOverloads constructor(
         binding.front.isGone = true
         binding.back.isVisible = true
 
-        handleContent(newBackground,binding.backImage)
+        handleContent(newBackground, binding.backImage)
     }
 
     private fun swapToFront() {
@@ -175,12 +175,12 @@ class GameTile @JvmOverloads constructor(
     private fun handleContent(backgroundColor: Int, imageView: ImageView) {
         val (icon, tintForContrast) = IconSetRepo.getRandomIcon()
         imageView.setImageResource(icon)
-        if(tintForContrast){
+        if (tintForContrast) {
             ImageViewCompat.setImageTintList(
                 imageView,
                 ColorStateList.valueOf(ColorPalettes.getContrastColor(backgroundColor))
             )
-        }else{
+        } else {
             ImageViewCompat.setImageTintList(imageView, null)
         }
 
@@ -206,6 +206,9 @@ class GameTile @JvmOverloads constructor(
             flipHorizontal(x < lastPoint.first)
         } else if (yAbs > minimumDragDistance) {
             flipVertical(lastPoint.second < y)
+        } else {
+            rotationY = -((lastPoint.first - x) / minimumDragDistance) * ROTATION_BEFORE_FLIP
+            rotationX = ((lastPoint.second - y) / minimumDragDistance) * ROTATION_BEFORE_FLIP
         }
     }
 
@@ -222,6 +225,7 @@ class GameTile @JvmOverloads constructor(
             trackTouchOnThisTile(eventX, eventY, pointerIndex)
         } else {
             lastTrackedIndexes.remove(pointerIndex)
+            animate().rotationY(0f).rotationX(0f)
         }
     }
 
@@ -234,7 +238,13 @@ class GameTile @JvmOverloads constructor(
         if (isThisTile(eventX, eventY)) {
             flipZoom()
         } else {
+            animate().rotationY(0f).rotationX(0f)
             lastTrackedIndexes.remove(pointerIndex)
         }
     }
+
+    companion object {
+        const val ROTATION_BEFORE_FLIP = 10f
+    }
+
 }

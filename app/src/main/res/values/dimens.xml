@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="minimal_tile_size">180dp</dimen>
-    <dimen name="minimum_drag_distance">20dp</dimen>
+    <dimen name="minimum_drag_distance">40dp</dimen>
 </resources>

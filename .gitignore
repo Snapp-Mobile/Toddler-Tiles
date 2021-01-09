@@ -85,6 +85,6 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 
-app/src/main/res/drawable/flaticon_*.xml
+app/src/main/res/drawable/animals_*.xml
 app/src/main/res/drawable/number_*.xml
 app/src/main/res/drawable/letter_*.xml

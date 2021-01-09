@@ -22,20 +22,7 @@ object IconSetRepo {
 
 
     init {
-        allIconSets.add(IconSet(
-            id = 1,
-            name = "Material Icons",
-            isUnlocked = true,
-            GameTileResources.MATERIAL_ICONS,
-            tintForContrast = true
-        ))
-        allIconSets.add(IconSet(
-            id = 1,
-            name = "Flat Icons",
-            isUnlocked = true,
-            GameTileResources.FLATICON_IMAGE_ICONS,
-            tintForContrast = false
-        ))
+
         allIconSets.add(IconSet(
             id = 1,
             name = "Numbers",
@@ -49,6 +36,13 @@ object IconSetRepo {
             isUnlocked = true,
             GameTileResources.LETTERS,
             tintForContrast = true
+        ))
+        allIconSets.add(IconSet(
+            id = 1,
+            name = "Animals",
+            isUnlocked = true,
+            GameTileResources.ANIMAL_IMAGE_ICONS,
+            tintForContrast = false
         ))
 
     }
