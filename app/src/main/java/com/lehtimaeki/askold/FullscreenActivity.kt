@@ -10,32 +10,35 @@ import com.lehtimaeki.askold.databinding.ActivityFullscreenBinding
 import com.lehtimaeki.askold.delegates.viewBinding
 
 class FullscreenActivity : AppCompatActivity() {
+
+    companion object {
+        const val ICON_SET_EXTRA_ID = "iconset"
+    }
+
     private val binding by viewBinding(ActivityFullscreenBinding::inflate)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        supportFragmentManager.beginTransaction().replace(
+            R.id.fragmentContainer,
+            MainFragment.newInstance(intent.extras?.getInt(ICON_SET_EXTRA_ID) ?: 0)
+        ).commit()
     }
 
     override fun onResume() {
         super.onResume()
-        // Calling this function in onCreate causes the system bars to re-appear when the app
-        // comes back to foreground after going to background.
         hideSystemBars()
     }
 
-    override fun onBackPressed() {
-        // back prevented so the kid doesn't hit it by accident
-    }
+//    override fun onBackPressed() {
+//        // back prevented so the kid doesn't hit it by accident
+//    }
 
     private fun hideSystemBars() {
-        /*val insetsControllerCompat = WindowInsetsControllerCompat(window, window.decorView)
-        insetsControllerCompat.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        insetsControllerCompat.hide(systemBars())*/
 
         /**
-         * Nothing wrong with the code above but it doesn't work on devices other than Pixels.
          * IssueTracker link: https://issuetracker.google.com/issues/173203649
          * Fix inspiration: https://stackoverflow.com/a/64828067
          */

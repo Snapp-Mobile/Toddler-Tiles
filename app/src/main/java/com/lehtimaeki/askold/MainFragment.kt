@@ -14,8 +14,25 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val binding by viewBinding(FragmentMainBinding::bind)
     private val allTiles = mutableListOf<GameTile>()
 
+
+    companion object {
+        fun newInstance(iconSet: Int): MainFragment {
+            val ret = MainFragment()
+
+            ret.arguments = Bundle().apply {
+                putInt(FullscreenActivity.ICON_SET_EXTRA_ID, iconSet)
+            }
+
+            return ret
+        }
+    }
+
+    private var currentIconSetId: Int? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        currentIconSetId = arguments?.getInt(FullscreenActivity.ICON_SET_EXTRA_ID)
 
         inflateColumns(binding.columnsContainer)
         setupTouchInterceptor()
@@ -82,6 +99,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val numberOfRows = (height / resources.getDimension(R.dimen.minimal_tile_size)).toInt()
         for (i in 0 until numberOfRows) {
             layoutInflater.inflate(R.layout.one_tile, column)
+        }
+        column.forEach {
+            (it as? GameTile)?.iconSetId = currentIconSetId
         }
     }
 }

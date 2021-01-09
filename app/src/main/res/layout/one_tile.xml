@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.lehtimaeki.askold.GameTile
-        android:id="@+id/tile_6"
+        android:id="@+id/tile"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"

@@ -1,12 +1,14 @@
 package com.lehtimaeki.askold.iconset
 
 import com.lehtimaeki.askold.utils.GameTileResources
+import java.lang.NullPointerException
 import kotlin.random.Random
 
 
 object IconSetRepo {
 
     val allIconSets = mutableListOf<IconSet>()
+    private val allIconSetsMap = mutableMapOf<Int, IconSet>()
     private val random = Random.Default
 
     // Pairs of icon drawable and if it should be tinted
@@ -31,20 +33,23 @@ object IconSetRepo {
             tintForContrast = true
         ))
         allIconSets.add(IconSet(
-            id = 1,
+            id = 2,
             name = "Letters",
             isUnlocked = true,
             GameTileResources.LETTERS,
             tintForContrast = true
         ))
         allIconSets.add(IconSet(
-            id = 1,
+            id = 3,
             name = "Animals",
             isUnlocked = true,
             GameTileResources.ANIMAL_IMAGE_ICONS,
             tintForContrast = false
         ))
 
+        allIconSets.forEach {
+            allIconSetsMap[it.id] = it
+        }
     }
 
 
@@ -56,6 +61,12 @@ object IconSetRepo {
         return allUnlockedIcons[random.nextInt(allUnlockedIcons.size)]
     }
 
+    fun getRandomIcon(iconSetId: Int): Pair<Int, Boolean>{
+        val iconSet = allIconSetsMap[iconSetId]
+            ?: throw NullPointerException("Did not find an incon set for id $iconSetId")
+
+        return Pair(iconSet.icons.get(random.nextInt(iconSet.icons.size)), iconSet.tintForContrast )
+    }
 
 
 }
