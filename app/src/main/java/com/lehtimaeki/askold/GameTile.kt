@@ -12,7 +12,6 @@ import androidx.core.widget.ImageViewCompat
 import com.lehtimaeki.askold.ColorPalettes.getNextColorFromPalette
 import com.lehtimaeki.askold.databinding.GameTileBinding
 import com.lehtimaeki.askold.iconset.IconSetRepo
-import java.lang.RuntimeException
 import kotlin.math.absoluteValue
 
 class GameTile @JvmOverloads constructor(
@@ -26,6 +25,12 @@ class GameTile @JvmOverloads constructor(
     var iconSetId: Int? = null
 
     private val minimumDragDistance by lazy { resources.getDimension(R.dimen.minimum_drag_distance) }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        swapToFront()
+    }
+
 
     private val x by lazy {
         val location = IntArray(2)
@@ -176,7 +181,11 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun handleContent(backgroundColor: Int, imageView: ImageView) {
-        val (icon, tintForContrast) = IconSetRepo.getRandomIcon(iconSetId?:throw RuntimeException("Trying add tile icon but icon set is not set"))
+        val (icon, tintForContrast) = IconSetRepo.getRandomIcon(
+            iconSetId ?: throw RuntimeException(
+                "Trying add tile icon but icon set is not set"
+            )
+        )
         imageView.setImageResource(icon)
         if (tintForContrast) {
             ImageViewCompat.setImageTintList(

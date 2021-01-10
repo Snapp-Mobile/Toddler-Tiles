@@ -6,14 +6,13 @@
         android:id="@+id/front"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardBackgroundColor="@color/default_tile_color"
         app:cardCornerRadius="14dp">
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/frontImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
-            android:src="@drawable/ic_launcher_foreground" />
+            android:padding="8dp" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -22,6 +21,7 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         app:cardCornerRadius="14dp">
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/backImage"
             android:layout_width="match_parent"
