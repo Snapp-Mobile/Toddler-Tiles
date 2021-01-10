@@ -6,10 +6,4 @@ data class IconSet(
     var isUnlocked: Boolean,
     val icons: List<Int>,
     val tintForContrast: Boolean = false
-) {
-
-    val iconCount
-        get() = icons.size
-
-
-}
+)

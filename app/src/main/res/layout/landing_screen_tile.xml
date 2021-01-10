@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="@dimen/minimal_tile_size"
     android:layout_margin="8dp"
     app:cardBackgroundColor="@color/default_tile_color">
 
@@ -10,6 +10,7 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
         android:duplicateParentState="true"
         android:foreground="?selectableItemBackground"
         app:cardBackgroundColor="@color/default_tile_color"
@@ -29,7 +30,8 @@
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="17dp"
+        android:layout_margin="16dp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

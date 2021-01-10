@@ -34,7 +34,7 @@ object IconSetRepo {
         ))
         allIconSets.add(IconSet(
             id = 2,
-            name = "Letters",
+            name = "Alphabet",
             isUnlocked = true,
             GameTileResources.LETTERS,
             tintForContrast = true
