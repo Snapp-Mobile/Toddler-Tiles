@@ -1,16 +1,20 @@
 package com.lehtimaeki.askold.landingscreen
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
 import com.lehtimaeki.askold.R
@@ -96,6 +100,7 @@ class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
         inner class IconSetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val textView: TextView = view.findViewById(R.id.label)
             val iconView: ImageView = view.findViewById(R.id.image)
+            val cardView: CardView = view.findViewById(R.id.card)
         }
 
         inner class TitleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -131,6 +136,17 @@ class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
 
         private fun onBindViewHolder(viewHolder: IconSetViewHolder, position: Int) {
             viewHolder.textView.text = dataSet[position].iconSet?.name
+            val color = ColorPalettes.getNextColorFromPalette()
+
+            viewHolder.cardView.setCardBackgroundColor(color)
+
+            if(dataSet[position].iconSet?.tintForContrast == true){
+                ImageViewCompat.setImageTintList(
+                    viewHolder.iconView,
+                    ColorStateList.valueOf(ColorPalettes.getContrastColor(color))
+                )
+            }
+
             viewHolder.iconView.setImageResource(
                 dataSet[position].iconSet?.icons?.first()
                     ?: throw RuntimeException("ended up in wrong viewholder bind")
