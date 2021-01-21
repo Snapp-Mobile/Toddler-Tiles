@@ -30,7 +30,7 @@ object IconSetRepo {
             name = "Numbers",
             isUnlocked = true,
             GameTileResources.NUMBERS,
-            tintForContrast = true
+            tintForContrast = false
         ))
         allIconSets.add(IconSet(
             id = 2,

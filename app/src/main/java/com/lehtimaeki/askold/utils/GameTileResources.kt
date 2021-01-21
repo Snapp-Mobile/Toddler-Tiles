@@ -8,7 +8,6 @@ object GameTileResources {
         R.drawable.number_0,
         R.drawable.number_1,
         R.drawable.number_2,
-        R.drawable.number_02,
         R.drawable.number_3,
         R.drawable.number_4,
         R.drawable.number_6,
@@ -16,16 +15,18 @@ object GameTileResources {
         R.drawable.number_7,
         R.drawable.number_8,
         R.drawable.number_9,
+        R.drawable.number_10,
+        R.drawable.number_11,
         R.drawable.number_12,
-        R.drawable.number_22,
-        R.drawable.number_32,
-        R.drawable.number_42,
-        R.drawable.number_52,
-        R.drawable.number_72,
-        R.drawable.number_82,
-        R.drawable.number_83,
-        R.drawable.number_12
-    )
+        R.drawable.number_13,
+        R.drawable.number_14,
+        R.drawable.number_15,
+        R.drawable.number_16,
+        R.drawable.number_17,
+        R.drawable.number_18,
+        R.drawable.number_19,
+        R.drawable.number_20,
+        )
 
 
     val LETTERS = listOf(
@@ -77,7 +78,6 @@ object GameTileResources {
     )
 
 
-
     val ANIMAL_IMAGE_ICONS = listOf(
         R.drawable.animals_beaver,
         R.drawable.animals_bunny,
@@ -117,5 +117,5 @@ object GameTileResources {
         R.drawable.animals_tree,
 
 
-    )
+        )
 }
