@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
+import com.google.android.material.card.MaterialCardView
 import com.lehtimaeki.askold.ColorPalettes.getNextColorFromPalette
 import com.lehtimaeki.askold.databinding.GameTileBinding
 import com.lehtimaeki.askold.iconset.IconSetRepo
@@ -163,29 +164,28 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun swapToBack() {
-        val newBackground = getNextColorFromPalette()
-        binding.back.setCardBackgroundColor(newBackground)
         binding.front.isGone = true
         binding.back.isVisible = true
 
-        handleContent(newBackground, binding.backImage)
+        handleContent(binding.backImage, binding.back)
     }
 
     private fun swapToFront() {
-        val newBackground = getNextColorFromPalette()
-        binding.front.setCardBackgroundColor(newBackground)
         binding.front.isVisible = true
         binding.back.isGone = true
 
-        handleContent(newBackground, binding.frontImage)
+        handleContent(binding.frontImage, binding.front)
     }
 
-    private fun handleContent(backgroundColor: Int, imageView: ImageView) {
-        val (icon, tintForContrast) = IconSetRepo.getRandomIcon(
+    private fun handleContent(imageView: ImageView, cardView: MaterialCardView) {
+        val (icon, tintForContrast, useLightPalette) = IconSetRepo.getRandomIcon(
             iconSetId ?: throw RuntimeException(
                 "Trying add tile icon but icon set is not set"
             )
         )
+        val backgroundColor: Int = getNextColorFromPalette(useLightPalette)
+        cardView.setCardBackgroundColor(backgroundColor)
+
         imageView.setImageResource(icon)
         if (tintForContrast) {
             ImageViewCompat.setImageTintList(

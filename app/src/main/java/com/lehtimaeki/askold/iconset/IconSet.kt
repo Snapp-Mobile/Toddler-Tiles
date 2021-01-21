@@ -5,5 +5,6 @@ data class IconSet(
     val name: String,
     var isUnlocked: Boolean,
     val icons: List<Int>,
-    val tintForContrast: Boolean = false
+    val tintForContrast: Boolean = false,
+    val useLightPalette: Boolean = false
 )

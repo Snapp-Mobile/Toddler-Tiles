@@ -7,57 +7,46 @@ import java.util.*
 
 
 object ColorPalettes {
-    private val ALL_PALETTES = listOf(
-        listOf(
-            "#5DDAD0",
-            "#FFB37B",
-            "#FF9DAF",
-            "#FFD467",
-            "#D5A0FE",
-            "#9CF8B5",
-            "#FF8888",
-            "#FFCA7A",
-            "#C0FFFB",
-            "#88E2FF",
-            "#FF88D7",
-            "#88A9FF",
-            "#85F29D",
-            "#FFF388",
-            "#AA9CFD"
-        ),
-//        listOf(
-//            "#f72585",
-//            "#b5179e",
-//            "#7209b7",
-//            "#560bad",
-//            "#480ca8",
-//            "#3a0ca3",
-//            "#3f37c9",
-//            "#4361ee",
-//            "#4895ef",
-//            "#4cc9f0"
-//        ),
-//        listOf("#9b5de5", "#f15bb5", "#fee440", "#00bbf9", "#00f5d4"),
-//        listOf("#390099", "#9e0059", "#ff0054", "#ff5400", "#ffbd00"),
-//        listOf("#edf67d", "#f896d8", "#ca7df9", "#724cf9", "#564592"),
-//        listOf("#006ba6", "#0496ff", "#ffbc42", "#d81159", "#8f2d56"),
+    private val PRIMARY_PALETTE = listOf(
+        "#5DDAD0",
+        "#FFB37B",
+        "#FF9DAF",
+        "#FFD467",
+        "#D5A0FE",
+        "#9CF8B5",
+        "#FF8888",
+        "#FFCA7A",
+        "#C0FFFB",
+        "#88E2FF",
+        "#FF88D7",
+        "#88A9FF",
+        "#85F29D",
+        "#FFF388",
+        "#AA9CFD"
     )
 
-    var currentPaletteIndex = 0
+
+    private val LIGHT_PALETTE = listOf(
+        "#ffffff",
+    )
+
     var currentColorIndexInPalette = 0
 
     private val rnd = Random()
 
     @ColorInt
-    fun getNextColorFromPalette(): Int {
+    fun getNextColorFromPalette(useLightPalette: Boolean): Int {
+        val palette = if (useLightPalette) {
+            LIGHT_PALETTE
+        } else {
+            PRIMARY_PALETTE
+        }
 
         synchronized(this) {
-            if (currentColorIndexInPalette >= ALL_PALETTES[currentPaletteIndex].size) {
-                // randomise next palette
-                currentPaletteIndex = rnd.nextInt(ALL_PALETTES.size)
+            if (currentColorIndexInPalette >= palette.size) {
                 currentColorIndexInPalette = 0
             }
-            return Color.parseColor(ALL_PALETTES[currentPaletteIndex][currentColorIndexInPalette++])
+            return Color.parseColor(palette[currentColorIndexInPalette++])
         }
     }
 

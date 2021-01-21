@@ -30,7 +30,8 @@ object IconSetRepo {
             name = "Numbers",
             isUnlocked = true,
             GameTileResources.NUMBERS,
-            tintForContrast = false
+            tintForContrast = false,
+            useLightPalette = true
         ))
         allIconSets.add(IconSet(
             id = 2,
@@ -61,11 +62,11 @@ object IconSetRepo {
         return allUnlockedIcons[random.nextInt(allUnlockedIcons.size)]
     }
 
-    fun getRandomIcon(iconSetId: Int): Pair<Int, Boolean>{
+    fun getRandomIcon(iconSetId: Int): Triple<Int, Boolean, Boolean>{
         val iconSet = allIconSetsMap[iconSetId]
             ?: throw NullPointerException("Did not find an incon set for id $iconSetId")
 
-        return Pair(iconSet.icons.get(random.nextInt(iconSet.icons.size)), iconSet.tintForContrast )
+        return Triple(iconSet.icons.get(random.nextInt(iconSet.icons.size)), iconSet.tintForContrast, iconSet.useLightPalette )
     }
 
 

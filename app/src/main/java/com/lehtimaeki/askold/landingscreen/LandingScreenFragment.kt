@@ -136,7 +136,7 @@ class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
 
         private fun onBindViewHolder(viewHolder: IconSetViewHolder, position: Int) {
             viewHolder.textView.text = dataSet[position].iconSet?.name
-            val color = ColorPalettes.getNextColorFromPalette()
+            val color = ColorPalettes.getNextColorFromPalette(dataSet[position].iconSet?.useLightPalette == true)
 
             viewHolder.cardView.setCardBackgroundColor(color)
 
