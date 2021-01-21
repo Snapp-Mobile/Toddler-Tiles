@@ -27,7 +27,21 @@ object ColorPalettes {
 
 
     private val LIGHT_PALETTE = listOf(
-        "#ffffff",
+        "#DFF5F5",
+        "#FDEAE3",
+        "#FFE7EC",
+        "#FFF8E4",
+        "#F5E8FE",
+        "#E7FDED",
+        "#FFE7EB",
+        "#FFF3DF",
+        "#ECFFFE",
+        "#E3F8FF",
+        "#FFE3F5",
+        "#E5EAFF",
+        "#EAFDEE",
+        "#FFFDE9",
+        "#ECE7FE",
     )
 
     var currentColorIndexInPalette = 0
