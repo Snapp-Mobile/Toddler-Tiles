@@ -116,7 +116,7 @@ class GameTile @JvmOverloads constructor(
     }
 
     private fun animateToBackHorizontal(reverse: Boolean) {
-        animate().rotationX(0f).rotationY(
+        animate().rotationX(0f).scaleY(0.4f).scaleX(0.4f).rotationY(
             if (reverse) {
                 -90f
             } else {
@@ -129,12 +129,12 @@ class GameTile @JvmOverloads constructor(
             } else {
                 -90f
             }
-            animate().rotationY(0f).withEndAction { resetBounce() }
+            animate().rotationY(0f).scaleY(1f).scaleX(1f).withEndAction { resetBounce() }
         }
     }
 
     private fun animateToBackVertical(reverse: Boolean) {
-        animate().rotationY(0f).rotationX(
+        animate().rotationY(0f).scaleY(0.4f).scaleX(0.4f).rotationX(
             if (reverse) {
                 -90f
             } else {
@@ -147,7 +147,7 @@ class GameTile @JvmOverloads constructor(
             } else {
                 -90f
             }
-            animate().rotationX(0f).withEndAction { resetBounce() }
+            animate().rotationX(0f).scaleY(1f).scaleX(1f).withEndAction { resetBounce() }
         }
     }
 

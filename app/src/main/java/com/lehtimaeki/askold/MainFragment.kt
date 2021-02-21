@@ -16,11 +16,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
 
     companion object {
-        fun newInstance(iconSet: Int): MainFragment {
+        fun newInstance(iconSet: Int, isLargeCardMode: Boolean): MainFragment {
             val ret = MainFragment()
 
             ret.arguments = Bundle().apply {
                 putInt(FullscreenActivity.ICON_SET_EXTRA_ID, iconSet)
+                putBoolean(FullscreenActivity.IS_LARGE_CARD_MODE_ID, isLargeCardMode)
             }
 
             return ret
@@ -28,11 +29,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private var currentIconSetId: Int? = null
+    private var isLargeCardMode: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         currentIconSetId = arguments?.getInt(FullscreenActivity.ICON_SET_EXTRA_ID)
+        isLargeCardMode = arguments?.getBoolean(FullscreenActivity.IS_LARGE_CARD_MODE_ID) == true
 
         inflateColumns(binding.columnsContainer)
         setupTouchInterceptor()
@@ -74,7 +77,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val height = metrics.heightPixels
         val width = metrics.widthPixels
 
-        val numberOfColumns = (width / resources.getDimension(R.dimen.minimal_tile_size)).toInt()
+        val numberOfColumns =
+            if (isLargeCardMode) {
+                1
+            } else {
+                (width / resources.getDimension(R.dimen.minimal_tile_size)).toInt()
+            }
+
+
 
         for (i in 0 until numberOfColumns) {
             val column = layoutInflater.inflate(R.layout.one_column, columnsContainer, false)
@@ -96,7 +106,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun inflateRows(column: ViewGroup, height: Int) {
-        val numberOfRows = (height / resources.getDimension(R.dimen.minimal_tile_size)).toInt()
+        val numberOfRows = if (isLargeCardMode) {
+            2
+        } else {
+            (height / resources.getDimension(R.dimen.minimal_tile_size)).toInt()
+        }
+
+
         for (i in 0 until numberOfRows) {
             layoutInflater.inflate(R.layout.one_tile, column)
         }

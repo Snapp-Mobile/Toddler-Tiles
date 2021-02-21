@@ -13,6 +13,7 @@ class FullscreenActivity : AppCompatActivity() {
 
     companion object {
         const val ICON_SET_EXTRA_ID = "iconset"
+        const val IS_LARGE_CARD_MODE_ID = "isLargeCardMode"
     }
 
     private val binding by viewBinding(ActivityFullscreenBinding::inflate)
@@ -23,7 +24,10 @@ class FullscreenActivity : AppCompatActivity() {
 
         supportFragmentManager.beginTransaction().replace(
             R.id.fragmentContainer,
-            MainFragment.newInstance(intent.extras?.getInt(ICON_SET_EXTRA_ID) ?: 0)
+            MainFragment.newInstance(
+                intent.extras?.getInt(ICON_SET_EXTRA_ID) ?: 0,
+                intent.extras?.getBoolean(IS_LARGE_CARD_MODE_ID) ?: false
+            )
         ).commit()
     }
 

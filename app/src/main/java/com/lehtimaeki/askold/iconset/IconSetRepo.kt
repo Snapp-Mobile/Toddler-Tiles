@@ -64,7 +64,7 @@ object IconSetRepo {
 
     fun getRandomIcon(iconSetId: Int): Triple<Int, Boolean, Boolean>{
         val iconSet = allIconSetsMap[iconSetId]
-            ?: throw NullPointerException("Did not find an incon set for id $iconSetId")
+            ?: throw NullPointerException("Did not find an icon set for id $iconSetId")
 
         return Triple(iconSet.icons.get(random.nextInt(iconSet.icons.size)), iconSet.tintForContrast, iconSet.useLightPalette )
     }

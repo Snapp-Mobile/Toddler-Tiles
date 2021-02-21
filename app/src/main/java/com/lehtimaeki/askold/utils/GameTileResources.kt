@@ -115,7 +115,25 @@ object GameTileResources {
         R.drawable.animals_squirrel,
         R.drawable.animals_tortoise,
         R.drawable.animals_tree,
-
-
+        R.drawable.animals_anteater,
+        R.drawable.animals_baboon,
+        R.drawable.animals_badger,
+        R.drawable.animals_buffalo,
+        R.drawable.animals_bug,
+        R.drawable.animals_chameleon,
+        R.drawable.animals_cheetah,
+        R.drawable.animals_chipmunk,
+        R.drawable.animals_crocodile,
+        R.drawable.animals_dung_beetle,
+        R.drawable.animals_elephant,
+        R.drawable.animals_fox,
+        R.drawable.animals_hyena,
+        R.drawable.animals_jackal,
+        R.drawable.animals_leopard,
+        R.drawable.animals_mole,
+        R.drawable.animals_moose,
+        R.drawable.animals_raccoon,
+        R.drawable.animals_skunk,
+        R.drawable.animals_woodpecker
         )
 }

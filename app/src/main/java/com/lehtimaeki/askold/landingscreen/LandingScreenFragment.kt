@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
+import com.lehtimaeki.askold.FullscreenActivity.Companion.IS_LARGE_CARD_MODE_ID
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.databinding.LandingScreenFragmentBinding
 import com.lehtimaeki.askold.delegates.viewBinding
@@ -78,8 +79,8 @@ class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
-        val VIEW_TYPE_ICON_SET = 0
-        val VIEW_TYPE_LABEL = 1
+        private val VIEW_TYPE_ICON_SET = 0
+        private val VIEW_TYPE_LABEL = 1
 
 
         var dataSet: List<IconSetWrapper> = listOf()
@@ -156,6 +157,7 @@ class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
                 activity?.startActivity(Intent(context, FullscreenActivity::class.java).apply {
                     putExtras(Bundle().apply {
                         putInt(ICON_SET_EXTRA_ID, dataSet[position].id)
+                        putBoolean(IS_LARGE_CARD_MODE_ID, binding.bigTileSwitch.isChecked)
                     })
                 })
             }
