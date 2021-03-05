@@ -134,6 +134,22 @@ object GameTileResources {
         R.drawable.animals_moose,
         R.drawable.animals_raccoon,
         R.drawable.animals_skunk,
-        R.drawable.animals_woodpecker
+        R.drawable.animals_woodpecker,
+        R.drawable.animals_lizard,
+        R.drawable.animals_meerkat,
+        R.drawable.animals_monkey,
+        R.drawable.animals_ostrich,
+        R.drawable.animals_pangolin,
+        R.drawable.animals_porcupine,
+        R.drawable.animals_rhinoceros,
+        R.drawable.animals_snake,
+        R.drawable.animals_springbuck,
+        R.drawable.animals_vulture,
+        R.drawable.animals_warthog,
+        R.drawable.animals_zebra
+
+
+
+
         )
 }
