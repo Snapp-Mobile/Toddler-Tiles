@@ -26,13 +26,18 @@
             android:src="@mipmap/ic_launcher" />
     </com.google.android.material.card.MaterialCardView>
 
-    <TextView
+    <com.lehtimaeki.askold.landingscreen.LandingCompose
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent" />
+    <!--    <TextView-->
+    <!--        android:id="@+id/label"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_margin="16dp"-->
+    <!--        android:textSize="18sp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
