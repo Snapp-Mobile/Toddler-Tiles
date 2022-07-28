@@ -65,7 +65,7 @@ class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
             }
 
             if (it.second.isNotEmpty()) {
-                data.add(IconSetWrapper(Int.MAX_VALUE, null, "More fun sets"))
+                data.add(IconSetWrapper(Int.MAX_VALUE, null, "Buy more fun sets"))
                 it.second.forEach { iconSet ->
                     data.add(IconSetWrapper(iconSet.id, iconSet, null))
                 }

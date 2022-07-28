@@ -43,7 +43,7 @@ object IconSetRepo {
         allIconSets.add(IconSet(
             id = 3,
             name = "Animals",
-            isUnlocked = true,
+            isUnlocked = false,
             GameTileResources.ANIMAL_IMAGE_ICONS,
             tintForContrast = false
         ))
