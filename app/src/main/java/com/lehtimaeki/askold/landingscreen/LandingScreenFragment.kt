@@ -99,7 +99,7 @@ class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
 
 
         inner class IconSetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val textView: TextView = view.findViewById(R.id.label)
+            val textView: LandingCompose = view.findViewById(R.id.label)
             val iconView: ImageView = view.findViewById(R.id.image)
             val cardView: CardView = view.findViewById(R.id.card)
         }
@@ -136,7 +136,7 @@ class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
 
 
         private fun onBindViewHolder(viewHolder: IconSetViewHolder, position: Int) {
-            viewHolder.textView.text = dataSet[position].iconSet?.name
+            viewHolder.textView.text = dataSet[position].iconSet?.name.toString()
             val color = ColorPalettes.getNextColorFromPalette(dataSet[position].iconSet?.useLightPalette == true)
 
             viewHolder.cardView.setCardBackgroundColor(color)
