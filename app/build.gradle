@@ -76,4 +76,8 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling:1.2.0'
 
     implementation 'com.google.android.material:compose-theme-adapter:1.1.14'
-}
+
+    // IAP
+    def billing_version = "5.0.0"
+
+    implementation "com.android.billingclient:billing-ktx:$billing_version"}

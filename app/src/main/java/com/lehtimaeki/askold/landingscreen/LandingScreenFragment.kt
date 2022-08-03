@@ -2,19 +2,14 @@ package com.lehtimaeki.askold.landingscreen
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.android.billingclient.api.*
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
@@ -72,7 +68,7 @@ class LandingScreenFragment : Fragment() {
             color = Color.Gray,
             fontSize = 22.sp,
             modifier = Modifier
-                .padding(start = 16.dp, top = 20.dp, bottom = 16.dp),
+                .padding(start = 20.dp, top = 20.dp, bottom = 16.dp),
             fontWeight = FontWeight.Bold
         )
     }
@@ -85,7 +81,7 @@ class LandingScreenFragment : Fragment() {
             text,
             color = Color.Gray,
             fontSize = 20.sp,
-            modifier = Modifier.padding(start = 16.dp),
+            modifier = Modifier.padding(start = 24.dp),
             fontWeight = FontWeight.SemiBold
         )
     }
@@ -102,7 +98,7 @@ class LandingScreenFragment : Fragment() {
     }
 
     @Composable
-    fun ItemTypeText(text: String, modifier: Modifier) {
+    fun ItemTypeText(text: String, modifier: Modifier = Modifier) {
         Text(
             text,
             color = Color.White,
@@ -124,7 +120,7 @@ class LandingScreenFragment : Fragment() {
         Surface(color = Color.White) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                Modifier.padding(start = 20.dp, end = 20.dp)
+                Modifier.padding(start = 26.dp, end = 20.dp)
             ) {
                 items(iconSetsWrapper, span = { item ->
                     val metrics = resources.displayMetrics
@@ -176,16 +172,107 @@ class LandingScreenFragment : Fragment() {
     }
 
     private fun navigateToFullScreenActivity(iconSetWrapper: IconSetWrapper) {
-        activity?.startActivity(
-            Intent(
-                context,
-                FullscreenActivity::class.java
-            ).apply {
-                putExtras(Bundle().apply {
-                    putInt(ICON_SET_EXTRA_ID, iconSetWrapper.iconSet!!.id)
+        if (iconSetWrapper.iconSet!!.isUnlocked) {
+            activity?.startActivity(
+                Intent(
+                    context,
+                    FullscreenActivity::class.java
+                ).apply {
+                    putExtras(Bundle().apply {
+                        putInt(ICON_SET_EXTRA_ID, iconSetWrapper.iconSet.id)
+                    })
                 })
-            })
+        } else {
+        }
     }
+
+    private val purchaseUpdateListener =
+        PurchasesUpdatedListener { billingResult, purchases ->
+            Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
+
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                for (purchase in purchases) {
+                    handleNonConsumablePurchase(purchase)
+                }
+            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+                // Handle an error caused by a user cancelling the purchase flow.
+            } else {
+                // Handle any other error codes.
+            }
+        }
+
+    private var billingClient = BillingClient.newBuilder(context!!)
+        .setListener(purchaseUpdateListener)
+        .enablePendingPurchases()
+        .build()
+
+    private fun startConnection() {
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    queryAvailableProducts()
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        })
+    }
+
+    private fun handleNonConsumablePurchase(purchase: Purchase) {
+        //TODO
+        //unlocked
+        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged) {
+                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(purchase.purchaseToken).build()
+                billingClient?.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
+                    val billingResponseCode = billingResult.responseCode
+                    val billingDebugMessage = billingResult.debugMessage
+
+                    Log.v("TAG_INAPP", "response code: $billingResponseCode")
+                    Log.v("TAG_INAPP", "debugMessage : $billingDebugMessage")
+
+                }
+            }
+        }
+    }
+
+    private fun queryAvailableProducts() {
+        val queryProductDetailsParams =
+            QueryProductDetailsParams.newBuilder()
+                .setProductList(
+                    listOf(
+                        QueryProductDetailsParams.Product.newBuilder()
+                            .setProductId("paid_animals")
+                            .setProductType(BillingClient.ProductType.INAPP)
+                            .build()
+                    )
+                )
+                .build()
+
+        billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult,
+                                                                            productDetailsList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
+                && productDetailsList.isNotEmpty()
+            ) {
+                for (product : ProductDetails in productDetailsList) {
+                    Log.v("TAG_INAPP", "product : ${product}")
+                    //This list should contain the products added above
+                    // TODO updateUI(product)
+                }
+            }
+            // check billingResult
+            // process returned productDetailsList
+            //TODO
+            //map productDetail, add productDetails in wrapper
+        }
+    }
+
+
 }
 
 data class IconSetWrapper(val id: Int, val iconSet: IconSet?, val label: String?)
