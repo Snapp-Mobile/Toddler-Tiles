@@ -23,9 +23,9 @@ class LandingScreenViewModel : ViewModel() {
         iconSets.value = paidIconSets
     }
 
-    fun unlockedPaidIconSet(paidIconSetId: Int) {
+    fun unlockPaidIconSet(paidIconSetId: Int) {
         val iconList = iconSets.value
-        iconList[paidIconSetId].iconSet?.isUnlocked
+        iconList[paidIconSetId].iconSet?.isUnlocked = true
         iconSets.value = iconList
     }
 }

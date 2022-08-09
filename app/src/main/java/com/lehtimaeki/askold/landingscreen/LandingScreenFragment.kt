@@ -245,7 +245,7 @@ class LandingScreenFragment : Fragment() {
     }
 
     private fun handleNonConsumablePurchase(purchase: Purchase, iconSetId: Int) {
-        viewModel.unlockedPaidIconSet(iconSetId)
+        viewModel.unlockPaidIconSet(iconSetId)
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
