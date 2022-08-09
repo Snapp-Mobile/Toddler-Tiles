@@ -1,176 +1,198 @@
 package com.lehtimaeki.askold.landingscreen
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.widget.ImageViewCompat
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
-import com.lehtimaeki.askold.FullscreenActivity.Companion.IS_LARGE_CARD_MODE_ID
 import com.lehtimaeki.askold.R
-import com.lehtimaeki.askold.databinding.LandingScreenFragmentBinding
-import com.lehtimaeki.askold.delegates.viewBinding
 import com.lehtimaeki.askold.iconset.IconSet
 
-class LandingScreenFragment : Fragment(R.layout.landing_screen_fragment) {
-
-    private val binding by viewBinding(LandingScreenFragmentBinding::bind)
+class LandingScreenFragment : Fragment() {
 
     companion object {
         fun newInstance() = LandingScreenFragment()
     }
 
     private val viewModel: LandingScreenViewModel by viewModels()
-    private val adapter = IconSetAdapter()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-        val metrics = resources.displayMetrics
-        val width = metrics.widthPixels
-
-        val numberOfColumns = (width / resources.getDimension(R.dimen.minimal_tile_size)).toInt()
-
-        val layoutManager = GridLayoutManager(context, numberOfColumns)
-        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return if (adapter.dataSet.get(position).iconSet != null) {
-                    1
-                } else {
-                    numberOfColumns
-                }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                val iconSets = viewModel.iconSets.observeAsState().value
+                ItemsList(iconSets!!)
             }
         }
-
-        binding.recyclerview.layoutManager = layoutManager
-        binding.recyclerview.adapter = adapter
-
-        viewModel.iconSetsLiveData.observe(viewLifecycleOwner, {
-            val data = mutableListOf<IconSetWrapper>()
-            data.add(IconSetWrapper(0, null, "Begin Learning"))
-            it.first.forEach { iconSet ->
-                data.add(IconSetWrapper(iconSet.id, iconSet, null))
-            }
-
-            if (it.second.isNotEmpty()) {
-                data.add(IconSetWrapper(Int.MAX_VALUE, null, "More fun sets"))
-                it.second.forEach { iconSet ->
-                    data.add(IconSetWrapper(iconSet.id, iconSet, null))
-                }
-            }
-            adapter.dataSet = data
-        })
     }
 
+    @Composable
+    fun TitleText(
+        text: String
+    ) {
+        Text(
+            text,
+            color = Color.Gray,
+            fontSize = 22.sp,
+            modifier = Modifier
+                .padding(start = 16.dp, top = 20.dp, bottom = 16.dp),
+            fontWeight = FontWeight.Bold
+        )
+    }
 
-    inner class IconSetAdapter :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    @Composable
+    fun ItemNameText(
+        text: String
+    ) {
+        Text(
+            text,
+            color = Color.Gray,
+            fontSize = 20.sp,
+            modifier = Modifier.padding(start = 16.dp),
+            fontWeight = FontWeight.SemiBold
+        )
+    }
 
-
-        private val VIEW_TYPE_ICON_SET = 0
-        private val VIEW_TYPE_LABEL = 1
-
-
-        var dataSet: List<IconSetWrapper> = listOf()
-            set(value) {
-                field = value
-                notifyDataSetChanged()
-            }
-
-
-        override fun getItemViewType(position: Int): Int {
-            return when {
-                dataSet[position].iconSet != null -> VIEW_TYPE_ICON_SET
-                else -> VIEW_TYPE_LABEL
-            }
-        }
-
-
-        inner class IconSetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val textView: TextView = view.findViewById(R.id.label)
-            val iconView: ImageView = view.findViewById(R.id.image)
-            val cardView: CardView = view.findViewById(R.id.card)
-        }
-
-        inner class TitleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val textView: TextView = view.findViewById(R.id.label)
-        }
-
-        override fun onCreateViewHolder(
-            viewGroup: ViewGroup,
-            viewType: Int
-        ): RecyclerView.ViewHolder {
-
-
-            return when (viewType) {
-                VIEW_TYPE_ICON_SET -> IconSetViewHolder(
-                    LayoutInflater.from(viewGroup.context)
-                        .inflate(R.layout.landing_screen_tile, viewGroup, false)
-                )
-                else -> TitleViewHolder(
-                    LayoutInflater.from(viewGroup.context)
-                        .inflate(R.layout.landing_screen_group_title, viewGroup, false)
-                )
-            }
-        }
-
-
-        override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-            when (viewHolder) {
-                is IconSetViewHolder -> onBindViewHolder(viewHolder, position)
-                is TitleViewHolder -> onBindViewHolder(viewHolder, position)
-            }
-        }
-
-
-        private fun onBindViewHolder(viewHolder: IconSetViewHolder, position: Int) {
-            viewHolder.textView.text = dataSet[position].iconSet?.name
-            val color = ColorPalettes.getNextColorFromPalette(dataSet[position].iconSet?.useLightPalette == true)
-
-            viewHolder.cardView.setCardBackgroundColor(color)
-
-            if(dataSet[position].iconSet?.tintForContrast == true){
-                ImageViewCompat.setImageTintList(
-                    viewHolder.iconView,
-                    ColorStateList.valueOf(ColorPalettes.getContrastColor(color))
-                )
-            }
-
-            viewHolder.iconView.setImageResource(
-                dataSet[position].iconSet?.icons?.first()
-                    ?: throw RuntimeException("ended up in wrong viewholder bind")
+    @Composable
+    fun ItemImage(
+        imageId: Int?, modifier: Modifier
+    ) {
+        imageId?.let {
+            Image(
+                painterResource(it), contentDescription = "", modifier = modifier
             )
+        }
+    }
 
-            viewHolder.itemView.setOnClickListener {
-                activity?.startActivity(Intent(context, FullscreenActivity::class.java).apply {
-                    putExtras(Bundle().apply {
-                        putInt(ICON_SET_EXTRA_ID, dataSet[position].id)
-                        putBoolean(IS_LARGE_CARD_MODE_ID, binding.bigTileSwitch.isChecked)
-                    })
-                })
+    @Composable
+    fun ItemTypeText(text: String, modifier: Modifier) {
+        Text(
+            text,
+            color = Color.White,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = modifier
+                .wrapContentSize()
+                .padding(top = 12.dp)
+                .clip(RoundedCornerShape(topStart = 6.dp, bottomStart = 6.dp))
+                .background(Color(0xFFa799f8))
+                .padding(start = 12.dp, end = 4.dp)
+        )
+    }
+
+    @Composable
+    fun ItemsList(
+        iconSetsWrapper: List<IconSetWrapper>
+    ) {
+        Surface(color = Color.White) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                Modifier.padding(start = 20.dp, end = 20.dp)
+            ) {
+                items(iconSetsWrapper, span = { item ->
+                    val metrics = resources.displayMetrics
+                    val width = metrics.widthPixels
+                    val numberOfColumns =
+                        width / resources.getDimension(R.dimen.minimal_tile_size)
+                            .toInt()
+                    val spanCount = if (item.iconSet == null) numberOfColumns else 1
+                    GridItemSpan(spanCount)
+                }) { iconSetWrapper -> Item(iconSetWrapper) }
             }
         }
+    }
 
-
-        private fun onBindViewHolder(viewHolder: TitleViewHolder, position: Int) {
-            viewHolder.textView.text = dataSet[position].label
+    @Composable
+    fun Item(iconSetWrapper: IconSetWrapper) {
+        if (iconSetWrapper.iconSet == null) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                iconSetWrapper.label?.let { TitleText(it) }
+            }
+        } else {
+            val color =
+                ColorPalettes.getNextColorFromPalette(iconSetWrapper.iconSet.useLightPalette)
+            Column {
+                Card(
+                    modifier = Modifier
+                        .padding(top = 8.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .size(140.dp)
+                        .clickable(onClick = { navigateToFullScreenActivity(iconSetWrapper) }),
+                    elevation = 8.dp,
+                    backgroundColor = Color(color)
+                ) {
+                    val text = if (iconSetWrapper.iconSet.isUnlocked) "FREE" else "PAID"
+                    Box {
+                        ItemImage(
+                            iconSetWrapper.iconSet.icons.firstOrNull(),
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                        ItemTypeText(text = text, modifier = Modifier.align(Alignment.TopEnd))
+                    }
+                }
+                ItemNameText(iconSetWrapper.iconSet.name)
+            }
         }
+    }
 
-        override fun getItemCount() = dataSet.size
+    private fun navigateToFullScreenActivity(iconSetWrapper: IconSetWrapper) {
+        activity?.startActivity(
+            Intent(
+                context,
+                FullscreenActivity::class.java
+            ).apply {
+                putExtras(Bundle().apply {
+                    putInt(ICON_SET_EXTRA_ID, iconSetWrapper.iconSet!!.id)
+                })
+            })
     }
 }
 
-
 data class IconSetWrapper(val id: Int, val iconSet: IconSet?, val label: String?)
+
+// TODO
+//            if(dataSet[position].iconSet?.tintForContrast == true){
+//                ImageViewCompat.setImageTintList(
+//                    viewHolder.iconView,
+//                    ColorStateList.valueOf(ColorPalettes.getContrastColor(color))
+//                )
