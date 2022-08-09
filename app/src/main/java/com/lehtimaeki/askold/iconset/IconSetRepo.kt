@@ -8,6 +8,7 @@ import kotlin.random.Random
 object IconSetRepo {
 
     val allIconSets = mutableListOf<IconSet>()
+    val paidIconSets = mutableListOf<IconSet>()
     private val allIconSetsMap = mutableMapOf<Int, IconSet>()
     private val random = Random.Default
 
@@ -40,7 +41,7 @@ object IconSetRepo {
             GameTileResources.LETTERS,
             tintForContrast = true
         ))
-        allIconSets.add(IconSet(
+        paidIconSets.add(IconSet(
             id = 3,
             name = "Animals",
             isUnlocked = false,

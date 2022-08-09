@@ -19,7 +19,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +38,7 @@ import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.iconset.IconSet
+import com.lehtimaeki.askold.iconset.IconSetRepo
 
 class LandingScreenFragment : Fragment() {
 
@@ -51,10 +53,11 @@ class LandingScreenFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        startConnection()
         return ComposeView(requireContext()).apply {
             setContent {
-                val iconSets = viewModel.iconSets.observeAsState().value
-                ItemsList(iconSets!!)
+                val iconSets by viewModel.iconSets.collectAsState()
+                ItemsList(iconSets)
             }
         }
     }
@@ -172,7 +175,7 @@ class LandingScreenFragment : Fragment() {
     }
 
     private fun navigateToFullScreenActivity(iconSetWrapper: IconSetWrapper) {
-        if (iconSetWrapper.iconSet!!.isUnlocked) {
+        if (iconSetWrapper.iconSet?.isUnlocked == true) {
             activity?.startActivity(
                 Intent(
                     context,
@@ -183,6 +186,19 @@ class LandingScreenFragment : Fragment() {
                     })
                 })
         } else {
+            val product = iconSetWrapper.paidProductDetails
+            product?.let {
+                val activity = requireActivity()
+                val productDetailsParamsList = listOf(
+                    BillingFlowParams.ProductDetailsParams.newBuilder()
+                        .setProductDetails(product)
+                        .build()
+                )
+                val billingFlowParams = BillingFlowParams.newBuilder()
+                    .setProductDetailsParamsList(productDetailsParamsList)
+                    .build()
+                billingClient?.launchBillingFlow(activity, billingFlowParams)?.responseCode
+            }
         }
     }
 
@@ -192,7 +208,11 @@ class LandingScreenFragment : Fragment() {
 
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
                 for (purchase in purchases) {
-                    handleNonConsumablePurchase(purchase)
+                    for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
+                        if (purchase.products[0] == paidIconSet.id.toString()) {
+                            handleNonConsumablePurchase(purchase, paidIconSet.id)
+                        }
+                    }
                 }
             } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
                 // Handle an error caused by a user cancelling the purchase flow.
@@ -201,13 +221,15 @@ class LandingScreenFragment : Fragment() {
             }
         }
 
-    private var billingClient = BillingClient.newBuilder(context!!)
-        .setListener(purchaseUpdateListener)
-        .enablePendingPurchases()
-        .build()
+    private var billingClient = context?.let {
+        BillingClient.newBuilder(it)
+            .setListener(purchaseUpdateListener)
+            .enablePendingPurchases()
+            .build()
+    }
 
     private fun startConnection() {
-        billingClient.startConnection(object : BillingClientStateListener {
+        billingClient?.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
@@ -222,9 +244,8 @@ class LandingScreenFragment : Fragment() {
         })
     }
 
-    private fun handleNonConsumablePurchase(purchase: Purchase) {
-        //TODO
-        //unlocked
+    private fun handleNonConsumablePurchase(purchase: Purchase, iconSetId: Int) {
+        viewModel.unlockedPaidIconSet(iconSetId)
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
                 val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
@@ -235,7 +256,6 @@ class LandingScreenFragment : Fragment() {
 
                     Log.v("TAG_INAPP", "response code: $billingResponseCode")
                     Log.v("TAG_INAPP", "debugMessage : $billingDebugMessage")
-
                 }
             }
         }
@@ -254,28 +274,42 @@ class LandingScreenFragment : Fragment() {
                 )
                 .build()
 
-        billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult,
-                                                                            productDetailsList ->
+        billingClient?.queryProductDetailsAsync(queryProductDetailsParams) { billingResult,
+                                                                             productDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
                 && productDetailsList.isNotEmpty()
             ) {
-                for (product : ProductDetails in productDetailsList) {
-                    Log.v("TAG_INAPP", "product : ${product}")
-                    //This list should contain the products added above
-                    // TODO updateUI(product)
+                val paidIconSetsList = ArrayList<IconSetWrapper>()
+
+                for (product: ProductDetails in productDetailsList) {
+                    Log.v("TAG_INAPP", "product : $product")
+
+                    paidIconSetsList.add(IconSetWrapper(Int.MAX_VALUE, null, "Buy more fun sets"))
+                    for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
+                        if (paidIconSet.id.toString() == product.productId) {
+                            paidIconSetsList.add(
+                                IconSetWrapper(
+                                    product.productId.toInt(),
+                                    paidIconSet,
+                                    null,
+                                    product
+                                )
+                            )
+                        }
+                    }
+                    viewModel.addPaidIconSets(paidIconSetsList)
                 }
             }
-            // check billingResult
-            // process returned productDetailsList
-            //TODO
-            //map productDetail, add productDetails in wrapper
         }
     }
-
-
 }
 
-data class IconSetWrapper(val id: Int, val iconSet: IconSet?, val label: String?)
+data class IconSetWrapper(
+    val id: Int,
+    val iconSet: IconSet?,
+    val label: String?,
+    val paidProductDetails: ProductDetails? = null
+)
 
 // TODO
 //            if(dataSet[position].iconSet?.tintForContrast == true){
