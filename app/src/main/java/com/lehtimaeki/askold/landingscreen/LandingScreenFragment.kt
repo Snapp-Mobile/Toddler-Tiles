@@ -39,6 +39,7 @@ import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.iconset.IconSet
 import com.lehtimaeki.askold.iconset.IconSetRepo
+import com.lehtimaeki.askold.previewscreen.PreviewScreenFragment
 
 class LandingScreenFragment : Fragment() {
 
@@ -111,7 +112,7 @@ class LandingScreenFragment : Fragment() {
                 .wrapContentSize()
                 .padding(top = 12.dp)
                 .clip(RoundedCornerShape(topStart = 6.dp, bottomStart = 6.dp))
-                .background(Color(0xFFa799f8))
+                .background(Color(0xFF8674F5))
                 .padding(start = 12.dp, end = 4.dp)
         )
     }
@@ -186,19 +187,23 @@ class LandingScreenFragment : Fragment() {
                     })
                 })
         } else {
-            val product = iconSetWrapper.paidProductDetails
-            product?.let {
-                val activity = requireActivity()
-                val productDetailsParamsList = listOf(
-                    BillingFlowParams.ProductDetailsParams.newBuilder()
-                        .setProductDetails(product)
-                        .build()
-                )
-                val billingFlowParams = BillingFlowParams.newBuilder()
-                    .setProductDetailsParamsList(productDetailsParamsList)
-                    .build()
-                billingClient?.launchBillingFlow(activity, billingFlowParams)?.responseCode
-            }
+            activity?.supportFragmentManager?.beginTransaction()
+                ?.add(R.id.container, PreviewScreenFragment.newInstance(iconSetWrapper.iconSet?.id, iconSetWrapper.iconSet?.useLightPalette))
+                ?.addToBackStack(null)
+                ?.commit()
+//            val product = iconSetWrapper.paidProductDetails
+//            product?.let {
+//                val activity = requireActivity()
+//                val productDetailsParamsList = listOf(
+//                    BillingFlowParams.ProductDetailsParams.newBuilder()
+//                        .setProductDetails(product)
+//                        .build()
+//                )
+//                val billingFlowParams = BillingFlowParams.newBuilder()
+//                    .setProductDetailsParamsList(productDetailsParamsList)
+//                    .build()
+//                billingClient?.launchBillingFlow(activity, billingFlowParams)?.responseCode
+//            }
         }
     }
 

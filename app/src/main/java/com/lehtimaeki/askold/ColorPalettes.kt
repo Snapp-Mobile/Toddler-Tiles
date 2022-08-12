@@ -49,8 +49,8 @@ object ColorPalettes {
     private val rnd = Random()
 
     @ColorInt
-    fun getNextColorFromPalette(useLightPalette: Boolean): Int {
-        val palette = if (useLightPalette) {
+    fun getNextColorFromPalette(useLightPalette: Boolean?): Int {
+        val palette = if (useLightPalette == true) {
             LIGHT_PALETTE
         } else {
             PRIMARY_PALETTE

@@ -15,6 +15,11 @@ class LandingScreenViewModel : ViewModel() {
             iconSetsList.add(IconSetWrapper(iconSet.id, iconSet, null))
         }
 
+        iconSetsList.add(IconSetWrapper(Int.MAX_VALUE, null, "Buy more fun sets"))
+        IconSetRepo.paidIconSets.filter { !it.isUnlocked }.forEach { iconSet ->
+            iconSetsList.add(IconSetWrapper(iconSet.id, iconSet, null))
+        }
+
         iconSets.value = iconSetsList
     }
 
