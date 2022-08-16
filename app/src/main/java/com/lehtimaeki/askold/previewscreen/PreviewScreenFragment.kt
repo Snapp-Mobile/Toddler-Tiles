@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.lehtimaeki.askold.ColorPalettes
 
 class PreviewScreenFragment : Fragment() {
 
@@ -48,7 +47,6 @@ class PreviewScreenFragment : Fragment() {
     }
 
     private val viewModel: PreviewScreenViewModel by viewModels()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,7 +75,7 @@ class PreviewScreenFragment : Fragment() {
 
     @Composable
     fun IconsList(
-        icons: List<Int>
+        icons: List<IconWrapper>
     ) {
         Box(
             modifier = Modifier.background(Color.White),
@@ -99,37 +97,36 @@ class PreviewScreenFragment : Fragment() {
     }
 
     @Composable
-    fun Item(icons: Int) {
-        val color =
-            ColorPalettes.getNextColorFromPalette(arguments?.getBoolean(ICON_SET_LIGHT_PALLETE))
+    fun Item(icons: IconWrapper) {
 
         Column {
-            Card(
-                modifier = Modifier
-                    .padding(top = 8.dp, bottom = 4.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .fillMaxWidth(),
-//                        .clickable(onClick = { })
-                elevation = 8.dp,
-                backgroundColor = Color(color)
-            ) {
-                Box {
-                    ItemImage(icons, modifier = Modifier.align(Alignment.Center))
-                    Text(
-                        "PREVIEW",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .padding(top = 12.dp)
-                            .clip(RoundedCornerShape(topStart = 6.dp, bottomStart = 6.dp))
-                            .background(Color(0xFF5DDAD0))
-                            .padding(start = 12.dp, end = 4.dp)
-                            .align(Alignment.TopEnd)
-                    )
+
+                Card(
+                    modifier = Modifier
+                        .padding(top = 8.dp, bottom = 4.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .fillMaxWidth(),
+                //                        .clickable(onClick = { })
+                    elevation = 8.dp,
+                    backgroundColor = Color(icons.colorId)
+                ) {
+                    Box {
+                        ItemImage(icons.iconId, modifier = Modifier.align(Alignment.Center))
+                        Text(
+                            "PREVIEW",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(top = 12.dp)
+                                .clip(RoundedCornerShape(topStart = 6.dp, bottomStart = 6.dp))
+                                .background(Color(0xFF5DDAD0))
+                                .padding(start = 12.dp, end = 4.dp)
+                                .align(Alignment.TopEnd)
+                        )
+                    }
                 }
-            }
         }
     }
 }
