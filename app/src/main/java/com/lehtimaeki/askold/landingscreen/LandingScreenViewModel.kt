@@ -22,15 +22,4 @@ class LandingScreenViewModel : ViewModel() {
 
         iconSets.value = iconSetsList
     }
-
-    fun addPaidIconSets(paidIconSets: ArrayList<IconSetWrapper>) {
-        paidIconSets.addAll(iconSets.value)
-        iconSets.value = paidIconSets
-    }
-
-    fun unlockPaidIconSet(paidIconSetId: Int) {
-        val iconList = iconSets.value
-        iconList[paidIconSetId].iconSet?.isUnlocked = true
-        iconSets.value = iconList
-    }
 }

@@ -2,7 +2,6 @@ package com.lehtimaeki.askold.landingscreen
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,10 +35,11 @@ import com.android.billingclient.api.*
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
+import com.lehtimaeki.askold.IapRepo.IapRepo
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.iconset.IconSet
-import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.previewscreen.PreviewScreenFragment
+import java.io.Serializable
 
 class LandingScreenFragment : Fragment() {
 
@@ -54,7 +54,7 @@ class LandingScreenFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        startConnection()
+        IapRepo.startConnection()
         return ComposeView(requireContext()).apply {
             setContent {
                 val iconSets by viewModel.iconSets.collectAsState()
@@ -188,7 +188,7 @@ class LandingScreenFragment : Fragment() {
                 })
         } else {
             activity?.supportFragmentManager?.beginTransaction()
-                ?.add(R.id.container, PreviewScreenFragment.newInstance(iconSetWrapper.iconSet?.id, iconSetWrapper.iconSet?.useLightPalette))
+                ?.add(R.id.container, PreviewScreenFragment.newInstance(iconSetWrapper))
                 ?.addToBackStack(null)
                 ?.commit()
 //            val product = iconSetWrapper.paidProductDetails
@@ -207,106 +207,106 @@ class LandingScreenFragment : Fragment() {
         }
     }
 
-    private val purchaseUpdateListener =
-        PurchasesUpdatedListener { billingResult, purchases ->
-            Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
-
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                for (purchase in purchases) {
-                    for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
-                        if (purchase.products[0] == paidIconSet.id.toString()) {
-                            handleNonConsumablePurchase(purchase, paidIconSet.id)
-                        }
-                    }
-                }
-            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-                // Handle an error caused by a user cancelling the purchase flow.
-            } else {
-                // Handle any other error codes.
-            }
-        }
-
-    private var billingClient = context?.let {
-        BillingClient.newBuilder(it)
-            .setListener(purchaseUpdateListener)
-            .enablePendingPurchases()
-            .build()
-    }
-
-    private fun startConnection() {
-        billingClient?.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // The BillingClient is ready. You can query purchases here.
-                    queryAvailableProducts()
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                // Try to restart the connection on the next request to
-                // Google Play by calling the startConnection() method.
-            }
-        })
-    }
-
-    private fun handleNonConsumablePurchase(purchase: Purchase, iconSetId: Int) {
-        viewModel.unlockPaidIconSet(iconSetId)
-        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
-            if (!purchase.isAcknowledged) {
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                    .setPurchaseToken(purchase.purchaseToken).build()
-                billingClient?.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
-                    val billingResponseCode = billingResult.responseCode
-                    val billingDebugMessage = billingResult.debugMessage
-
-                    Log.v("TAG_INAPP", "response code: $billingResponseCode")
-                    Log.v("TAG_INAPP", "debugMessage : $billingDebugMessage")
-                }
-            }
-        }
-    }
-
-    private fun queryAvailableProducts() {
-        val queryProductDetailsParams =
-            QueryProductDetailsParams.newBuilder()
-                .setProductList(
-                    listOf(
-                        QueryProductDetailsParams.Product.newBuilder()
-                            .setProductId("paid_animals")
-                            .setProductType(BillingClient.ProductType.INAPP)
-                            .build()
-                    )
-                )
-                .build()
-
-        billingClient?.queryProductDetailsAsync(queryProductDetailsParams) { billingResult,
-                                                                             productDetailsList ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
-                && productDetailsList.isNotEmpty()
-            ) {
-                val paidIconSetsList = ArrayList<IconSetWrapper>()
-
-                for (product: ProductDetails in productDetailsList) {
-                    Log.v("TAG_INAPP", "product : $product")
-
-                    paidIconSetsList.add(IconSetWrapper(Int.MAX_VALUE, null, "Buy more fun sets"))
-                    for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
-                        if (paidIconSet.id.toString() == product.productId) {
-                            paidIconSetsList.add(
-                                IconSetWrapper(
-                                    product.productId.toInt(),
-                                    paidIconSet,
-                                    null,
-                                    product
-                                )
-                            )
-                        }
-                    }
-                    viewModel.addPaidIconSets(paidIconSetsList)
-                }
-            }
-        }
-    }
+//    private val purchaseUpdateListener =
+//        PurchasesUpdatedListener { billingResult, purchases ->
+//            Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
+//
+//            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+//                for (purchase in purchases) {
+//                    for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
+//                        if (purchase.products[0] == paidIconSet.id.toString()) {
+//                            handleNonConsumablePurchase(purchase, paidIconSet.id)
+//                        }
+//                    }
+//                }
+//            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+//                // Handle an error caused by a user cancelling the purchase flow.
+//            } else {
+//                // Handle any other error codes.
+//            }
+//        }
+//
+//    private var billingClient = context?.let {
+//        BillingClient.newBuilder(it)
+//            .setListener(purchaseUpdateListener)
+//            .enablePendingPurchases()
+//            .build()
+//    }
+//
+//    private fun startConnection() {
+//        billingClient?.startConnection(object : BillingClientStateListener {
+//            override fun onBillingSetupFinished(billingResult: BillingResult) {
+//                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+//                    // The BillingClient is ready. You can query purchases here.
+//                    queryAvailableProducts()
+//                }
+//            }
+//
+//            override fun onBillingServiceDisconnected() {
+//                // Try to restart the connection on the next request to
+//                // Google Play by calling the startConnection() method.
+//            }
+//        })
+//    }
+//
+//    private fun handleNonConsumablePurchase(purchase: Purchase, iconSetId: Int) {
+//        viewModel.unlockPaidIconSet(iconSetId)
+//        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+//            if (!purchase.isAcknowledged) {
+//                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+//                    .setPurchaseToken(purchase.purchaseToken).build()
+//                billingClient?.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
+//                    val billingResponseCode = billingResult.responseCode
+//                    val billingDebugMessage = billingResult.debugMessage
+//
+//                    Log.v("TAG_INAPP", "response code: $billingResponseCode")
+//                    Log.v("TAG_INAPP", "debugMessage : $billingDebugMessage")
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun queryAvailableProducts() {
+//        val queryProductDetailsParams =
+//            QueryProductDetailsParams.newBuilder()
+//                .setProductList(
+//                    listOf(
+//                        QueryProductDetailsParams.Product.newBuilder()
+//                            .setProductId("paid_animals")
+//                            .setProductType(BillingClient.ProductType.INAPP)
+//                            .build()
+//                    )
+//                )
+//                .build()
+//
+//        billingClient?.queryProductDetailsAsync(queryProductDetailsParams) { billingResult,
+//                                                                             productDetailsList ->
+//            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
+//                && productDetailsList.isNotEmpty()
+//            ) {
+//                val paidIconSetsList = ArrayList<IconSetWrapper>()
+//
+//                for (product: ProductDetails in productDetailsList) {
+//                    Log.v("TAG_INAPP", "product : $product")
+//
+//                    paidIconSetsList.add(IconSetWrapper(Int.MAX_VALUE, null, "Buy more fun sets"))
+//                    for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
+//                        if (paidIconSet.id.toString() == product.productId) {
+//                            paidIconSetsList.add(
+//                                IconSetWrapper(
+//                                    product.productId.toInt(),
+//                                    paidIconSet,
+//                                    null,
+//                                    product
+//                                )
+//                            )
+//                        }
+//                    }
+//                    viewModel.addPaidIconSets(paidIconSetsList)
+//                }
+//            }
+//        }
+//    }
 }
 
 data class IconSetWrapper(
@@ -314,7 +314,7 @@ data class IconSetWrapper(
     val iconSet: IconSet?,
     val label: String?,
     val paidProductDetails: ProductDetails? = null
-)
+) : Serializable
 
 // TODO
 //            if(dataSet[position].iconSet?.tintForContrast == true){
