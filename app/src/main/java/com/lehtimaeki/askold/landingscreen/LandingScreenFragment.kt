@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -72,7 +71,7 @@ class LandingScreenFragment : Fragment() {
             color = Color.Gray,
             fontSize = 22.sp,
             modifier = Modifier
-                .padding(start = 20.dp, top = 20.dp, bottom = 16.dp),
+                .padding(top = 20.dp, bottom = 16.dp),
             fontWeight = FontWeight.Bold
         )
     }
@@ -121,18 +120,18 @@ class LandingScreenFragment : Fragment() {
     fun ItemsList(
         iconSetsWrapper: List<IconSetWrapper>
     ) {
-        Surface(color = Color.White) {
+        Box(modifier = Modifier.background( Color.White)) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                Modifier.padding(start = 26.dp, end = 20.dp)
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .background(Color.White),
+                columns = GridCells.Adaptive(140.dp),
+                verticalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.spacedBy(32.dp),
+                contentPadding = PaddingValues(start = 32.dp, end = 32.dp)
             ) {
                 items(iconSetsWrapper, span = { item ->
-                    val metrics = resources.displayMetrics
-                    val width = metrics.widthPixels
-                    val numberOfColumns =
-                        width / resources.getDimension(R.dimen.minimal_tile_size)
-                            .toInt()
-                    val spanCount = if (item.iconSet == null) numberOfColumns else 1
+                    val spanCount = if (item.iconSet == null) 2 else 1
                     GridItemSpan(spanCount)
                 }) { iconSetWrapper -> Item(iconSetWrapper) }
             }
@@ -154,9 +153,9 @@ class LandingScreenFragment : Fragment() {
             Column {
                 Card(
                     modifier = Modifier
-                        .padding(top = 8.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
+                        .padding(top = 8.dp, bottom = 4.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .size(140.dp)
+                        .size(160.dp)
                         .clickable(onClick = { navigateToFullScreenActivity(iconSetWrapper) }),
                     elevation = 8.dp,
                     backgroundColor = Color(color)
