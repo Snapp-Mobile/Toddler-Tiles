@@ -6,13 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,7 +42,7 @@ class PreviewScreenFragment : Fragment() {
             val ret = PreviewScreenFragment()
 
             ret.arguments = Bundle().apply {
-                iconSetWrapper.let { putSerializable(ICON_SET_WRAPPER, it) }
+                putSerializable(ICON_SET_WRAPPER, iconSetWrapper)
             }
 
             return ret
@@ -76,9 +77,56 @@ class PreviewScreenFragment : Fragment() {
     }
 
     @Composable
+    fun ItemNameText(
+        iconSetWrapper: IconSetWrapper?
+    ) {
+        Text(
+            text = iconSetWrapper?.iconSet?.name.toString(),
+            color = Color.Gray,
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp
+        )
+    }
+
+    @Composable
     fun IconsList(
         icons: List<IconWrapper>
     ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { ItemNameText(arguments?.getSerializable(ICON_SET_WRAPPER) as IconSetWrapper?) },
+                    navigationIcon = {
+                        IconButton(onClick = { activity?.supportFragmentManager?.popBackStack() }) {
+                            Icon(Icons.Filled.KeyboardArrowLeft, "backIcon")
+                        }
+                    },
+                    backgroundColor = Color.White,
+                    actions = {
+                        FloatingActionButton(
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier
+                                .height(38.dp)
+                                .width(126.dp)
+                                .padding(end = 17.dp),
+                            backgroundColor = (Color(0xFF8674F5)),
+                            onClick = {
+                                navigateToPayment(
+                                    activity,
+                                    arguments?.getSerializable(
+                                        ICON_SET_WRAPPER
+                                    ) as IconSetWrapper?
+                                )
+                            }) {
+                            Text(
+                                text = "BUY NOW",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        }
+                    })
+            }) {
             Box(
                 modifier = Modifier.background(Color.White),
                 contentAlignment = Alignment.Center
@@ -96,6 +144,7 @@ class PreviewScreenFragment : Fragment() {
                     items(icons) { icons -> Item(icons) }
                 }
             }
+        }
     }
 
     @Composable
@@ -106,15 +155,7 @@ class PreviewScreenFragment : Fragment() {
                 modifier = Modifier
                     .padding(top = 8.dp, bottom = 4.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .fillMaxWidth()
-                    .clickable(onClick = {
-                        navigateToPayment(
-                            activity,
-                            arguments?.getSerializable(
-                                ICON_SET_WRAPPER
-                            ) as IconSetWrapper?
-                        )
-                    }),
+                    .fillMaxWidth(),
                 elevation = 8.dp,
                 backgroundColor = Color(icons.colorId)
             ) {
