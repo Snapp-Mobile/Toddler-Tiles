@@ -27,16 +27,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.android.billingclient.api.*
-import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.lehtimaeki.askold.theme.MyApplicationTheme
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
@@ -63,7 +60,7 @@ class LandingScreenFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val iconSets by viewModel.iconSets.collectAsState()
-                MyApplicationTheme{
+                MyApplicationTheme {
                     ItemsList(iconSets)
                 }
             }
@@ -72,9 +69,9 @@ class LandingScreenFragment : Fragment() {
 
     @Composable
     fun TitleText(
-        text: String,iconSetWrapper: IconSetWrapper
+        text: String, iconSetWrapper: IconSetWrapper
     ) {
-        if(iconSetWrapper.customText){
+        if (iconSetWrapper.customText) {
             Text(
                 text,
                 color = Color(0xFF8674F5),
@@ -198,7 +195,7 @@ class LandingScreenFragment : Fragment() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                iconSetWrapper.label?.let { TitleText(it,iconSetWrapper) }
+                iconSetWrapper.label?.let { TitleText(it, iconSetWrapper) }
             }
         } else {
             val color =
