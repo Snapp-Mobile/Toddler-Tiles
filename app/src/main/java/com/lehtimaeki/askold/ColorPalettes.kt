@@ -27,11 +27,12 @@ object ColorPalettes {
 
 
     private val LIGHT_PALETTE = listOf(
+        "#F5E8FE",
         "#DFF5F5",
         "#FDEAE3",
         "#FFE7EC",
         "#FFF8E4",
-        "#F5E8FE",
+        "#DFF5F5",
         "#E7FDED",
         "#FFE7EB",
         "#FFF3DF",

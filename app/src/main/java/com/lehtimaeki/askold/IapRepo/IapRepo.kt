@@ -94,7 +94,7 @@ object IapRepo {
                 for (product: ProductDetails in productDetailsList) {
                     Log.v("TAG_INAPP", "product : $product")
 
-                    paidIconSetsList.add(IconSetWrapper(Int.MAX_VALUE, null, "Buy more fun sets"))
+                    paidIconSetsList.add(IconSetWrapper(Int.MAX_VALUE, null, "Buy more fun sets", false))
                     for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
                         if (paidIconSet.id.toString() == product.productId) {
                             paidIconSetsList.add(
@@ -102,6 +102,7 @@ object IapRepo {
                                     product.productId.toInt(),
                                     paidIconSet,
                                     null,
+                                    false,
                                     product
                                 )
                             )

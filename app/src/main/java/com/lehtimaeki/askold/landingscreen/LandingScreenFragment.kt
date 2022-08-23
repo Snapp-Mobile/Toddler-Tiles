@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,14 +24,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.android.billingclient.api.*
+import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
@@ -57,23 +63,44 @@ class LandingScreenFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val iconSets by viewModel.iconSets.collectAsState()
-                ItemsList(iconSets)
+                MyApplicationTheme{
+                    ItemsList(iconSets)
+                }
             }
         }
     }
 
     @Composable
     fun TitleText(
-        text: String
+        text: String,iconSetWrapper: IconSetWrapper
     ) {
-        Text(
-            text,
-            color = Color.Gray,
-            fontSize = 22.sp,
-            modifier = Modifier
-                .padding(top = 20.dp, bottom = 16.dp),
-            fontWeight = FontWeight.Bold
-        )
+        if(iconSetWrapper.customText){
+            Text(
+                text,
+                color = Color(0xFF8674F5),
+                style = MaterialTheme.typography.h1,
+                modifier = Modifier
+                    .padding(bottom = 16.dp),
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                " Luke",
+                color = Color.Gray,
+                fontSize = 22.sp,
+                modifier = Modifier
+                    .padding(bottom = 16.dp),
+                fontWeight = FontWeight.Bold
+            )
+        } else {
+            Text(
+                text,
+                color = Color.Gray,
+                fontSize = 22.sp,
+                modifier = Modifier
+                    .padding(bottom = 16.dp),
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 
     @Composable
@@ -84,7 +111,7 @@ class LandingScreenFragment : Fragment() {
             text,
             color = Color.Gray,
             fontSize = 20.sp,
-            modifier = Modifier.padding(start = 24.dp),
+            modifier = Modifier.padding(start = 24.dp, bottom = 20.dp),
             fontWeight = FontWeight.SemiBold
         )
     }
@@ -120,20 +147,46 @@ class LandingScreenFragment : Fragment() {
     fun ItemsList(
         iconSetsWrapper: List<IconSetWrapper>
     ) {
-        Box(modifier = Modifier.background( Color.White)) {
-            LazyVerticalGrid(
+        Box(modifier = Modifier.background(Color.White)) {
+            Image(
                 modifier = Modifier
-                    .wrapContentWidth()
-                    .background(Color.White),
-                columns = GridCells.Adaptive(140.dp),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalArrangement = Arrangement.spacedBy(32.dp),
-                contentPadding = PaddingValues(start = 32.dp, end = 32.dp)
-            ) {
-                items(iconSetsWrapper, span = { item ->
-                    val spanCount = if (item.iconSet == null) 2 else 1
-                    GridItemSpan(spanCount)
-                }) { iconSetWrapper -> Item(iconSetWrapper) }
+                    .padding(bottom = 143.dp)
+                    .fillMaxWidth(),
+                painter = painterResource(R.drawable.bg),
+                contentDescription = "background_image",
+            )
+            Image(
+                modifier = Modifier
+                    .size(150.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = 34.dp),
+                painter = painterResource(R.drawable.baby),
+                contentDescription = "baby_image",
+                colorFilter = ColorFilter.tint(color = Color.White)
+            )
+            Column {
+                Image(
+                    modifier = Modifier
+                        .size(70.dp)
+                        .padding(start = 32.dp)
+                        .fillMaxWidth(),
+                    painter = painterResource(R.drawable.baby),
+                    contentDescription = "baby_image",
+                )
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .background(Color.Transparent),
+                    columns = GridCells.Adaptive(140.dp),
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalArrangement = Arrangement.spacedBy(32.dp),
+                    contentPadding = PaddingValues(start = 32.dp, end = 32.dp)
+                ) {
+                    items(iconSetsWrapper, span = { item ->
+                        val spanCount = if (item.iconSet == null) 2 else 1
+                        GridItemSpan(spanCount)
+                    }) { iconSetWrapper -> Item(iconSetWrapper) }
+                }
             }
         }
     }
@@ -145,7 +198,7 @@ class LandingScreenFragment : Fragment() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                iconSetWrapper.label?.let { TitleText(it) }
+                iconSetWrapper.label?.let { TitleText(it,iconSetWrapper) }
             }
         } else {
             val color =
@@ -198,6 +251,7 @@ data class IconSetWrapper(
     val id: Int,
     val iconSet: IconSet?,
     val label: String?,
+    val customText: Boolean,
     val paidProductDetails: ProductDetails? = null
 ) : Serializable
 
