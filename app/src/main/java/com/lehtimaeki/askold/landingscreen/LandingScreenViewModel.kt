@@ -10,7 +10,7 @@ class LandingScreenViewModel : ViewModel() {
 
     init {
 
-        iconSetsList.add(IconSetWrapper(0, null, "Hello,",true))
+        iconSetsList.add(IconSetWrapper(0, null, "Hello, ",true))
         IconSetRepo.allIconSets.filter { it.isUnlocked }.forEach { iconSet ->
             iconSetsList.add(IconSetWrapper(iconSet.id, iconSet, null,true))
         }

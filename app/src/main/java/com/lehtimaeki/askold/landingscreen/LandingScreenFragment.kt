@@ -46,7 +46,17 @@ import java.io.Serializable
 class LandingScreenFragment : Fragment() {
 
     companion object {
-        fun newInstance() = LandingScreenFragment()
+        private const val BABY_NAME = "babyname"
+
+        fun newInstance(name: String): LandingScreenFragment {
+            val ret = LandingScreenFragment()
+
+            ret.arguments = Bundle().apply {
+                putString(BABY_NAME, name)
+            }
+
+            return ret
+        }
     }
 
     private val viewModel: LandingScreenViewModel by viewModels()
@@ -79,13 +89,7 @@ class LandingScreenFragment : Fragment() {
                 modifier = Modifier
                     .padding(bottom = 16.dp),
             )
-            Text(
-                " Luke",
-                color = Color.Gray,
-                fontSize = 35.sp,
-                modifier = Modifier
-                    .padding(bottom = 16.dp),
-            )
+            BabyNameText(arguments?.getString(BABY_NAME).toString())
         } else {
             Text(
                 text,
@@ -96,6 +100,17 @@ class LandingScreenFragment : Fragment() {
                 fontWeight = FontWeight.Bold
             )
         }
+    }
+
+    @Composable
+    fun BabyNameText(name: String) {
+        Text(
+            name,
+            color = Color.Gray,
+            fontSize = 35.sp,
+            modifier = Modifier
+                .padding(bottom = 16.dp),
+        )
     }
 
     @Composable
