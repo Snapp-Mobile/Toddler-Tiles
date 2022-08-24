@@ -10,21 +10,16 @@ import com.lehtimaeki.askold.R
 
 // Set of Material typography styles to start with
 
-val Cookie = FontFamily(Font(R.font.cookie_regular))
-val Roboto = FontFamily(Font(R.font.roboto_regular))
+val Cookie = FontFamily(Font(R.font.cookies))
+val Roboto = FontFamily(Font(R.font.roboto_medium))
 val Typography = Typography(
     h1 = TextStyle(
         fontFamily = Cookie,
         fontWeight = FontWeight.Bold,
         fontSize = 40.sp
     ),
-    h2 = TextStyle(
-        fontFamily = Roboto,
-        fontWeight = FontWeight.Bold,
-        fontSize = 35.sp
-    ),
     body1 = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = Roboto,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     )

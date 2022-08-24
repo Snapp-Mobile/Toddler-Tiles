@@ -78,21 +78,19 @@ class LandingScreenFragment : Fragment() {
                 style = MaterialTheme.typography.h1,
                 modifier = Modifier
                     .padding(bottom = 16.dp),
-                fontWeight = FontWeight.Bold
             )
             Text(
                 " Luke",
                 color = Color.Gray,
-                fontSize = 22.sp,
+                fontSize = 35.sp,
                 modifier = Modifier
                     .padding(bottom = 16.dp),
-                fontWeight = FontWeight.Bold
             )
         } else {
             Text(
                 text,
                 color = Color.Gray,
-                fontSize = 22.sp,
+                fontSize = 24.sp,
                 modifier = Modifier
                     .padding(bottom = 16.dp),
                 fontWeight = FontWeight.Bold
@@ -107,7 +105,7 @@ class LandingScreenFragment : Fragment() {
         Text(
             text,
             color = Color.Gray,
-            fontSize = 20.sp,
+            fontSize = 24.sp,
             modifier = Modifier.padding(start = 24.dp, bottom = 20.dp),
             fontWeight = FontWeight.SemiBold
         )
