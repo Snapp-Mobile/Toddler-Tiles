@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +24,7 @@ import androidx.fragment.app.viewModels
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.landingscreen.LandingScreenFragment
 import com.lehtimaeki.askold.theme.MyApplicationTheme
+
 
 class ProfileScreenFragment : Fragment() {
 
@@ -83,7 +85,7 @@ class ProfileScreenFragment : Fragment() {
                     fontSize = 27.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                BabyNameText()
+                BabyNameText(name = name, onNameChange = { viewModel.setName(it)})
             }
             StartButton(
                 name, modifier = Modifier
@@ -94,13 +96,11 @@ class ProfileScreenFragment : Fragment() {
     }
 
     @Composable
-    fun BabyNameText() {
-        var text by remember { mutableStateOf("") }
+    fun BabyNameText(name: String, onNameChange: (String) -> Unit) {
         OutlinedTextField(
-            value = text,
-            onValueChange = {
-                text = it
-            },
+            value = name,
+            onValueChange = onNameChange,
+            textStyle = TextStyle.Default.copy(fontSize = 24.sp),
             placeholder = {
                 Text(
                     text = "Enter your name",
@@ -117,7 +117,6 @@ class ProfileScreenFragment : Fragment() {
             modifier = Modifier.size(width = 336.dp, height = 64.dp),
             shape = RoundedCornerShape(20.dp),
         )
-        viewModel.setName(text)
     }
 
     @Composable
@@ -129,6 +128,7 @@ class ProfileScreenFragment : Fragment() {
                 .width(336.dp),
             backgroundColor = (Color(0xFF8674F5)),
             onClick = {
+                viewModel.saveData()
                 navigateToLandingScreenActivity(name)
             }) {
             Text(
