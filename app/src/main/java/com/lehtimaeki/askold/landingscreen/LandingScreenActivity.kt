@@ -3,11 +3,9 @@ package com.lehtimaeki.askold.landingscreen
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.Fragment
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.profilescreen.ProfileScreenFragment
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
 class LandingScreenActivity : AppCompatActivity() {
 
@@ -17,18 +15,21 @@ class LandingScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.landing_screen_activity)
         if (savedInstanceState == null) {
-            viewModel.getData()
-            viewModel.name.onEach {
-                if (it == "") {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, ProfileScreenFragment.newInstance())
-                        .commitNow()
-                } else {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, LandingScreenFragment.newInstance(it))
-                        .commitNow()
-                }
-            }.launchIn(lifecycleScope)
+            when (val destination = viewModel.getDestination()) {
+                is Destination.LandingScreen -> navigateTo(
+                    LandingScreenFragment.newInstance(
+                        destination.name
+                    )
+                )
+
+                is Destination.ProfileScreen -> navigateTo(ProfileScreenFragment.newInstance())
+            }
         }
+    }
+
+    private fun navigateTo(destination: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, destination)
+            .commitNow()
     }
 }
