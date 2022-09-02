@@ -69,7 +69,12 @@ class LandingScreenFragment : Fragment() {
         IapRepo.startConnection()
         return ComposeView(requireContext()).apply {
             setContent {
-                val iconSets by viewModel.iconSets.collectAsState()
+                val freeIconSets by viewModel.iconSets.collectAsState()
+                val paidIconSets by IapRepo.paidIconSetsFlow.collectAsState()
+                val iconSets = arrayListOf<IconSetWrapper>()
+                iconSets.addAll(freeIconSets)
+                iconSets.addAll(paidIconSets)
+
                 MyApplicationTheme {
                     ItemsList(iconSets)
                 }
