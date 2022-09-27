@@ -20,19 +20,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.landingscreen.LandingScreenFragment
 import com.lehtimaeki.askold.theme.MyApplicationTheme
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ProfileScreenFragment : Fragment() {
 
     companion object {
         fun newInstance() = ProfileScreenFragment()
     }
-
-    private val viewModel: ProfileScreenViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,16 +40,17 @@ class ProfileScreenFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
+                val viewModel: ProfileScreenViewModel = hiltViewModel()
                 MyApplicationTheme {
                     val name by viewModel.name.collectAsState()
-                    ProfileScreen(name)
+                    ProfileScreen(name, onNameChange = {viewModel.setName(it)}, saveData = {viewModel.saveData()})
                 }
             }
         }
     }
 
     @Composable
-    fun ProfileScreen(name: String) {
+    fun ProfileScreen(name: String, onNameChange: (String) -> Unit, saveData: () -> Unit) {
         Box(modifier = Modifier.background(Color.White)) {
             Image(
                 modifier = Modifier
@@ -85,12 +85,12 @@ class ProfileScreenFragment : Fragment() {
                     fontSize = 27.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                BabyNameText(name = name, onNameChange = { viewModel.setName(it)})
+                BabyNameText(name = name, onNameChange = onNameChange)
             }
             StartButton(
                 name, modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 32.dp)
+                    .padding(bottom = 32.dp), saveData = saveData
             )
         }
     }
@@ -120,7 +120,7 @@ class ProfileScreenFragment : Fragment() {
     }
 
     @Composable
-    fun StartButton(name: String, modifier: Modifier = Modifier) {
+    fun StartButton(name: String, modifier: Modifier = Modifier, saveData: () -> Unit) {
         FloatingActionButton(
             shape = RoundedCornerShape(20.dp),
             modifier = modifier
@@ -128,7 +128,7 @@ class ProfileScreenFragment : Fragment() {
                 .width(336.dp),
             backgroundColor = (Color(0xFF8674F5)),
             onClick = {
-                viewModel.saveData()
+                saveData()
                 navigateToLandingScreenActivity(name)
             }) {
             Text(

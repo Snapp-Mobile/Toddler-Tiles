@@ -5,9 +5,12 @@ import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.iconset.IconSet
 import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.landingscreen.IconSetWrapper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
 
-class PreviewScreenViewModel : ViewModel() {
+@HiltViewModel
+class PreviewScreenViewModel @Inject constructor() : ViewModel() {
 
     var icons = MutableStateFlow<List<IconWrapper>>(emptyList())
     private val iconSetsList = ArrayList<IconWrapper>()

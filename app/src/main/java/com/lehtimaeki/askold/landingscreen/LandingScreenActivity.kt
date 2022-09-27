@@ -6,7 +6,9 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.profilescreen.ProfileScreenFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LandingScreenActivity : AppCompatActivity() {
 
     private val viewModel: LandingScreenActivityViewModel by viewModels()

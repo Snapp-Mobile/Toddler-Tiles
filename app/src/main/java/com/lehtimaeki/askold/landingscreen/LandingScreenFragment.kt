@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.android.billingclient.api.*
 import com.lehtimaeki.askold.theme.MyApplicationTheme
 import com.lehtimaeki.askold.ColorPalettes
@@ -41,8 +41,10 @@ import com.lehtimaeki.askold.IapRepo.IapRepo
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.iconset.IconSet
 import com.lehtimaeki.askold.previewscreen.PreviewScreenFragment
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.Serializable
 
+@AndroidEntryPoint
 class LandingScreenFragment : Fragment() {
 
     companion object {
@@ -59,8 +61,6 @@ class LandingScreenFragment : Fragment() {
         }
     }
 
-    private val viewModel: LandingScreenViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -69,6 +69,7 @@ class LandingScreenFragment : Fragment() {
         IapRepo.startConnection()
         return ComposeView(requireContext()).apply {
             setContent {
+                val viewModel: LandingScreenViewModel = hiltViewModel()
                 val iconSets by viewModel.iconSets.collectAsState()
 
                 MyApplicationTheme {

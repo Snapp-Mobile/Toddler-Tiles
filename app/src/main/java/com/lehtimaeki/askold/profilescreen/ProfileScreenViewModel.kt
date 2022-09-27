@@ -3,9 +3,12 @@ package com.lehtimaeki.askold.profilescreen
 import android.content.Context.MODE_PRIVATE
 import androidx.lifecycle.ViewModel
 import com.lehtimaeki.askold.MyApplication
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
 
-class ProfileScreenViewModel : ViewModel() {
+@HiltViewModel
+class ProfileScreenViewModel @Inject constructor() : ViewModel() {
     var name = MutableStateFlow("")
     private var _name = String()
 

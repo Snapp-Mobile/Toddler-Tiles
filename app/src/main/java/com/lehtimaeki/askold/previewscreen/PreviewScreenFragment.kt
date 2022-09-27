@@ -15,6 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,10 +28,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lehtimaeki.askold.IapRepo.IapRepo.navigateToPayment
 import com.lehtimaeki.askold.landingscreen.IconSetWrapper
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PreviewScreenFragment : Fragment() {
 
     companion object {
@@ -49,16 +52,17 @@ class PreviewScreenFragment : Fragment() {
         }
     }
 
-    private val viewModel: PreviewScreenViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel.loadIconSet(arguments?.getSerializable(ICON_SET_WRAPPER) as IconSetWrapper?)
         return ComposeView(requireContext()).apply {
             setContent {
+                val viewModel: PreviewScreenViewModel = hiltViewModel()
+                LaunchedEffect(null) {
+                    viewModel.loadIconSet(arguments?.getSerializable(ICON_SET_WRAPPER) as IconSetWrapper?)
+                }
                 val icons by viewModel.icons.collectAsState()
                 IconsList(icons)
             }

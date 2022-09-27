@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lehtimaeki.askold.IapRepo.IapRepo
 import com.lehtimaeki.askold.iconset.IconSetRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import javax.inject.Inject
 
-class LandingScreenViewModel : ViewModel() {
+@HiltViewModel
+class LandingScreenViewModel @Inject constructor() : ViewModel() {
 
     val iconSets: StateFlow<List<IconSetWrapper>>
 
