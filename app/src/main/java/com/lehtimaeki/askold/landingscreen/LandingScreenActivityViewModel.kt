@@ -1,30 +1,31 @@
 package com.lehtimaeki.askold.landingscreen
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.lehtimaeki.askold.MyApplication
+import com.lehtimaeki.askold.data.UserPreferences
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class LandingScreenActivityViewModel : ViewModel() {
+@HiltViewModel
+class LandingScreenActivityViewModel @Inject constructor(private val sharedPref: UserPreferences) :
+    ViewModel() {
 
-    private fun getName(): String? {
-        val sharedPref =
-            MyApplication.getAppContext()?.getSharedPreferences("name", Context.MODE_PRIVATE)
-        return sharedPref?.getString("name", null)
+    private fun getUserName(): String? {
+        return sharedPref.getUserName()
     }
 
     fun getDestination(): Destination {
-        val name = getName()
-        return if (name == null) {
+        val userName = getUserName()
+        return if (userName == null) {
             Destination.ProfileScreen
         } else {
-            Destination.LandingScreen(name)
+            Destination.LandingScreen(userName)
         }
     }
 }
 
 sealed class Destination {
     object ProfileScreen : Destination()
-    class LandingScreen(val name: String) : Destination()
+    class LandingScreen(val userName: String) : Destination()
 }
 
 

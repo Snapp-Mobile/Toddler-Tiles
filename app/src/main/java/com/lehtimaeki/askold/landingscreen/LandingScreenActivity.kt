@@ -20,10 +20,9 @@ class LandingScreenActivity : AppCompatActivity() {
             when (val destination = viewModel.getDestination()) {
                 is Destination.LandingScreen -> navigateTo(
                     LandingScreenFragment.newInstance(
-                        destination.name
+                        destination.userName
                     )
                 )
-
                 is Destination.ProfileScreen -> navigateTo(ProfileScreenFragment.newInstance())
             }
         }

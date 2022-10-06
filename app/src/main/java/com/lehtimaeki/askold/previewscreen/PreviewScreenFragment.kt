@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lehtimaeki.askold.IapRepo.IapRepo.navigateToPayment
-import com.lehtimaeki.askold.landingscreen.IconSetWrapper
+import com.lehtimaeki.askold.iapRepo.IapRepo.navigateToPayment
+import com.lehtimaeki.askold.iconset.IconSetWrapper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

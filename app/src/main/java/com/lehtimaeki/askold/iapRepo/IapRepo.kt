@@ -1,4 +1,4 @@
-package com.lehtimaeki.askold.IapRepo
+package com.lehtimaeki.askold.iapRepo
 
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
@@ -6,7 +6,7 @@ import com.android.billingclient.api.*
 import com.lehtimaeki.askold.MyApplication
 import com.lehtimaeki.askold.iconset.IconSet
 import com.lehtimaeki.askold.iconset.IconSetRepo
-import com.lehtimaeki.askold.landingscreen.IconSetWrapper
+import com.lehtimaeki.askold.iconset.IconSetWrapper
 import kotlinx.coroutines.flow.MutableStateFlow
 
 object IapRepo {
@@ -16,18 +16,22 @@ object IapRepo {
         PurchasesUpdatedListener { billingResult, purchases ->
             Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
 
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-                for (purchase in purchases) {
-                    for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
-                        if (purchase.products[0] == paidIconSet.id.toString()) {
-                            handleNonConsumablePurchase(purchase, paidIconSet.id)
+            when {
+                billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null -> {
+                    for (purchase in purchases) {
+                        for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
+                            if (purchase.products[0] == paidIconSet.id.toString()) {
+                                handleNonConsumablePurchase(purchase, paidIconSet.id)
+                            }
                         }
                     }
                 }
-            } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-                // Handle an error caused by a user cancelling the purchase flow.
-            } else {
-                // Handle any other error codes.
+                billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED -> {
+                    // Handle an error caused by a user cancelling the purchase flow.
+                }
+                else -> {
+                    // Handle any other error codes.
+                }
             }
         }
 
@@ -77,7 +81,7 @@ object IapRepo {
                 .setProductList(
                     listOf(
                         QueryProductDetailsParams.Product.newBuilder()
-                            .setProductId("paid_animals")
+                            .setProductId(ID_PAID_ANIMAL)
                             .setProductType(BillingClient.ProductType.INAPP)
                             .build()
                     )
@@ -94,7 +98,14 @@ object IapRepo {
                 for (product: ProductDetails in productDetailsList) {
                     Log.v("TAG_INAPP", "product : $product")
 
-                    paidIconSetsList.add(IconSetWrapper(Int.MAX_VALUE, null, "Buy more fun sets", false))
+                    paidIconSetsList.add(
+                        IconSetWrapper(
+                            Int.MAX_VALUE,
+                            null,
+                            "Buy more fun sets",
+                            false
+                        )
+                    )
                     for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
                         if (paidIconSet.id.toString() == product.productId) {
                             paidIconSetsList.add(
@@ -140,4 +151,6 @@ object IapRepo {
         iconList[paidIconSetId].iconSet?.isUnlocked = true
         paidIconSetsFlow.value = iconList
     }
+
+    private const val ID_PAID_ANIMAL = "paid_animals"
 }

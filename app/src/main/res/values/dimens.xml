@@ -2,4 +2,7 @@
 <resources>
     <dimen name="minimal_tile_size">180dp</dimen>
     <dimen name="minimum_drag_distance">40dp</dimen>
+    <dimen name="spacing_small">6dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_large">32dp</dimen>
 </resources>

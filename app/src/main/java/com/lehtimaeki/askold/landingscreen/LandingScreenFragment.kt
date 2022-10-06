@@ -26,40 +26,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.android.billingclient.api.*
-import com.lehtimaeki.askold.theme.MyApplicationTheme
+import com.lehtimaeki.askold.theme.AskoldTheme
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
-import com.lehtimaeki.askold.IapRepo.IapRepo
+import com.lehtimaeki.askold.iapRepo.IapRepo
 import com.lehtimaeki.askold.R
-import com.lehtimaeki.askold.iconset.IconSet
+import com.lehtimaeki.askold.R.*
+import com.lehtimaeki.askold.iconset.IconSetWrapper
 import com.lehtimaeki.askold.previewscreen.PreviewScreenFragment
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.Serializable
 
 @AndroidEntryPoint
 class LandingScreenFragment : Fragment() {
-
-    companion object {
-        private const val BABY_NAME = "babyname"
-
-        fun newInstance(name: String): LandingScreenFragment {
-            val ret = LandingScreenFragment()
-
-            ret.arguments = Bundle().apply {
-                putString(BABY_NAME, name)
-            }
-
-            return ret
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,52 +58,51 @@ class LandingScreenFragment : Fragment() {
             setContent {
                 val viewModel: LandingScreenViewModel = hiltViewModel()
                 val iconSets by viewModel.iconSets.collectAsState()
-
-                MyApplicationTheme {
-                    ItemsList(iconSets)
+                AskoldTheme {
+                    IconsCategoriesList(iconSets)
                 }
             }
         }
     }
 
     @Composable
-    fun TitleText(
+    fun HelloUserTitleText(
         text: String, iconSetWrapper: IconSetWrapper
     ) {
         if (iconSetWrapper.customText) {
             Text(
-                text,
-                color = Color(0xFF8674F5),
+                text = text,
+                color = colorResource(id = color.purple_color),
                 style = MaterialTheme.typography.h1,
                 modifier = Modifier
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = dimensionResource(dimen.spacing_normal)),
             )
-            BabyNameText(arguments?.getString(BABY_NAME).toString())
+            UserNameText(arguments?.getString(BABY_NAME).toString())
         } else {
             Text(
-                text,
+                text = text,
                 color = Color.Gray,
                 fontSize = 24.sp,
                 modifier = Modifier
-                    .padding(bottom = 16.dp),
+                    .padding(bottom = dimensionResource(dimen.spacing_normal)),
                 fontWeight = FontWeight.Bold
             )
         }
     }
 
     @Composable
-    fun BabyNameText(name: String) {
+    fun UserNameText(name: String) {
         Text(
             name,
             color = Color.Gray,
             fontSize = 35.sp,
             modifier = Modifier
-                .padding(bottom = 16.dp),
+                .padding(bottom = dimensionResource(dimen.spacing_normal)),
         )
     }
 
     @Composable
-    fun ItemNameText(
+    fun ItemCategoryText(
         text: String
     ) {
         Text(
@@ -134,7 +120,9 @@ class LandingScreenFragment : Fragment() {
     ) {
         imageId?.let {
             Image(
-                painterResource(it), contentDescription = "", modifier = modifier
+                painter = painterResource(it),
+                contentDescription = "",
+                modifier = modifier
             )
         }
     }
@@ -149,14 +137,19 @@ class LandingScreenFragment : Fragment() {
             modifier = modifier
                 .wrapContentSize()
                 .padding(top = 12.dp)
-                .clip(RoundedCornerShape(topStart = 6.dp, bottomStart = 6.dp))
-                .background(Color(0xFF8674F5))
+                .clip(
+                    RoundedCornerShape(
+                        topStart = dimensionResource(dimen.spacing_small),
+                        bottomStart = dimensionResource(dimen.spacing_small)
+                    )
+                )
+                .background(colorResource(id = color.purple_color))
                 .padding(start = 12.dp, end = 4.dp)
         )
     }
 
     @Composable
-    fun ItemsList(
+    fun IconsCategoriesList(
         iconSetsWrapper: List<IconSetWrapper>
     ) {
         Box(modifier = Modifier.background(Color.White)) {
@@ -164,53 +157,61 @@ class LandingScreenFragment : Fragment() {
                 modifier = Modifier
                     .padding(bottom = 143.dp)
                     .fillMaxWidth(),
-                painter = painterResource(R.drawable.bg),
-                contentDescription = "background_image",
+                painter = painterResource(drawable.bg),
+                contentDescription = "background image of an icon set",
             )
             Image(
                 modifier = Modifier
                     .size(150.dp)
                     .align(Alignment.TopEnd)
                     .offset(x = 34.dp),
-                painter = painterResource(R.drawable.baby),
-                contentDescription = "baby_image",
+                painter = painterResource(drawable.baby),
+                contentDescription = "baby image",
                 colorFilter = ColorFilter.tint(color = Color.White)
             )
-            Column {
-                Image(
-                    modifier = Modifier
-                        .size(70.dp)
-                        .padding(start = 32.dp)
-                        .fillMaxWidth(),
-                    painter = painterResource(R.drawable.baby),
-                    contentDescription = "baby_image",
+            ColumnIconsCategories(iconSetsWrapper)
+        }
+    }
+
+    @Composable
+    fun ColumnIconsCategories( iconSetsWrapper: List<IconSetWrapper>){
+        Column {
+            Image(
+                modifier = Modifier
+                    .size(70.dp)
+                    .padding(start = dimensionResource(dimen.spacing_large))
+                    .fillMaxWidth(),
+                painter = painterResource(drawable.baby),
+                contentDescription = "baby image",
+            )
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .background(Color.Transparent),
+                columns = GridCells.Adaptive(140.dp),
+                verticalArrangement = Arrangement.SpaceAround,
+                horizontalArrangement = Arrangement.spacedBy(32.dp),
+                contentPadding = PaddingValues(
+                    start = dimensionResource(dimen.spacing_large),
+                    end = dimensionResource(dimen.spacing_large)
                 )
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .background(Color.Transparent),
-                    columns = GridCells.Adaptive(140.dp),
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalArrangement = Arrangement.spacedBy(32.dp),
-                    contentPadding = PaddingValues(start = 32.dp, end = 32.dp)
-                ) {
-                    items(iconSetsWrapper, span = { item ->
-                        val spanCount = if (item.iconSet == null) 2 else 1
-                        GridItemSpan(spanCount)
-                    }) { iconSetWrapper -> Item(iconSetWrapper) }
-                }
+            ) {
+                items(iconSetsWrapper, span = { item ->
+                    val spanCount = if (item.iconSet == null) 2 else 1
+                    GridItemSpan(spanCount)
+                }) { iconSetWrapper -> IconCategory(iconSetWrapper) }
             }
         }
     }
 
     @Composable
-    fun Item(iconSetWrapper: IconSetWrapper) {
+    fun IconCategory(iconSetWrapper: IconSetWrapper) {
         if (iconSetWrapper.iconSet == null) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                iconSetWrapper.label?.let { TitleText(it, iconSetWrapper) }
+                iconSetWrapper.label?.let { HelloUserTitleText(it, iconSetWrapper) }
             }
         } else {
             val color =
@@ -234,7 +235,7 @@ class LandingScreenFragment : Fragment() {
                         ItemTypeText(text = text, modifier = Modifier.align(Alignment.TopEnd))
                     }
                 }
-                ItemNameText(iconSetWrapper.iconSet.name)
+                ItemCategoryText(iconSetWrapper.iconSet.name)
             }
         }
     }
@@ -257,19 +258,16 @@ class LandingScreenFragment : Fragment() {
                 ?.commit()
         }
     }
+
+    companion object {
+        private const val BABY_NAME = "babyname"
+
+        fun newInstance(name: String): LandingScreenFragment {
+            val fragment = LandingScreenFragment()
+            fragment.arguments = Bundle().apply {
+                putString(BABY_NAME, name)
+            }
+            return fragment
+        }
+    }
 }
-
-data class IconSetWrapper(
-    val id: Int,
-    val iconSet: IconSet?,
-    val label: String?,
-    val customText: Boolean,
-    val paidProductDetails: ProductDetails? = null
-) : Serializable
-
-// TODO
-//            if(dataSet[position].iconSet?.tintForContrast == true){
-//                ImageViewCompat.setImageTintList(
-//                    viewHolder.iconView,
-//                    ColorStateList.valueOf(ColorPalettes.getContrastColor(color))
-//                )

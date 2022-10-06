@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.landingscreen.LandingScreenFragment
-import com.lehtimaeki.askold.theme.MyApplicationTheme
+import com.lehtimaeki.askold.theme.AskoldTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,9 +41,12 @@ class ProfileScreenFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val viewModel: ProfileScreenViewModel = hiltViewModel()
-                MyApplicationTheme {
+                AskoldTheme {
                     val name by viewModel.name.collectAsState()
-                    ProfileScreen(name, onNameChange = {viewModel.setName(it)}, saveData = {viewModel.saveData()})
+                    ProfileScreen(
+                        name,
+                        onNameChange = { viewModel.setName(it) },
+                        saveData = { viewModel.getData() })
                 }
             }
         }
@@ -57,34 +60,14 @@ class ProfileScreenFragment : Fragment() {
                     .padding(bottom = 143.dp)
                     .fillMaxWidth(),
                 painter = painterResource(R.drawable.bg),
-                contentDescription = "background_image",
+                contentDescription = "background image",
             )
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(top = 30.dp)
-                        .fillMaxWidth(),
-                    painter = painterResource(R.drawable.baby),
-                    contentDescription = "baby_image"
-                )
-                Text(
-                    "Toddler\n  Tiles",
-                    color = Color(0xFF5DDAD0),
-                    style = MaterialTheme.typography.h1,
-                    modifier = Modifier
-                        .padding(top = 16.dp, bottom = 30.dp),
-                )
-                Text(
-                    "What should we call you?",
-                    color = Color(0xFF666666),
-                    fontSize = 27.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                ProfileScreenComponents()
                 BabyNameText(name = name, onNameChange = onNameChange)
             }
             StartButton(
@@ -93,6 +76,31 @@ class ProfileScreenFragment : Fragment() {
                     .padding(bottom = 32.dp), saveData = saveData
             )
         }
+    }
+
+    @Composable
+    fun ProfileScreenComponents() {
+        Image(
+            modifier = Modifier
+                .size(100.dp)
+                .padding(top = 30.dp)
+                .fillMaxWidth(),
+            painter = painterResource(R.drawable.baby),
+            contentDescription = "baby_image"
+        )
+        Text(
+            "Toddler\n  Tiles",
+            color = Color(0xFF5DDAD0),
+            style = MaterialTheme.typography.h1,
+            modifier = Modifier
+                .padding(top = 16.dp, bottom = 30.dp),
+        )
+        Text(
+            "What should we call you?",
+            color = Color(0xFF666666),
+            fontSize = 27.sp,
+            fontWeight = FontWeight.SemiBold
+        )
     }
 
     @Composable
@@ -141,7 +149,6 @@ class ProfileScreenFragment : Fragment() {
     }
 
     private fun navigateToLandingScreenActivity(name: String) {
-
         activity?.supportFragmentManager?.beginTransaction()
             ?.add(R.id.container, LandingScreenFragment.newInstance(name))
             ?.addToBackStack(null)
