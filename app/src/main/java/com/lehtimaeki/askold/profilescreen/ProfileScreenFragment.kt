@@ -110,6 +110,7 @@ class ProfileScreenFragment : Fragment() {
         OutlinedTextField(
             value = name,
             onValueChange = onNameChange,
+            enabled = true,
             textStyle = TextStyle.Default.copy(fontSize = 24.sp),
             placeholder = {
                 Text(
@@ -131,12 +132,13 @@ class ProfileScreenFragment : Fragment() {
 
     @Composable
     fun StartButton(name: String, modifier: Modifier = Modifier, saveData: () -> Unit) {
-        FloatingActionButton(
+        Button(
             shape = RoundedCornerShape(20.dp),
+            enabled =  name != "",
             modifier = modifier
                 .height(64.dp)
                 .width(336.dp),
-            backgroundColor = (Color(0xFF8674F5)),
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF8674F5)),
             onClick = {
                 saveData()
                 navigateToLandingScreenActivity(name)
