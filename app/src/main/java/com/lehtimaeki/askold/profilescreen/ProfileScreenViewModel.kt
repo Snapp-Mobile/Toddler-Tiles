@@ -9,16 +9,17 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileScreenViewModel @Inject constructor(private val sharedPref: UserPreferences) :
     ViewModel() {
-    var name = MutableStateFlow("")
-    private var _name = String()
 
-    fun setName(babyName: String) {
-        _name = babyName
-        name.value = _name
+    var userName = MutableStateFlow("")
+    private var _userName = String()
+
+    fun setUserName(userName: String) {
+        _userName = userName
+        this.userName.value = _userName
     }
 
-    fun getData() {
-        sharedPref.saveUserName(name.value)
+    fun getUserName() {
+        sharedPref.saveUserName(userName.value)
         sharedPref.getUserName()
     }
 }

@@ -42,11 +42,12 @@ class ProfileScreenFragment : Fragment() {
             setContent {
                 val viewModel: ProfileScreenViewModel = hiltViewModel()
                 AskoldTheme {
-                    val name by viewModel.name.collectAsState()
+                    val name by viewModel.userName.collectAsState()
                     ProfileScreen(
-                        name,
-                        onNameChange = { viewModel.setName(it) },
-                        saveData = { viewModel.getData() })
+                        name = name,
+                        onNameChange = { viewModel.setUserName(it) },
+                        saveData = { viewModel.getUserName() }
+                    )
                 }
             }
         }
@@ -71,7 +72,8 @@ class ProfileScreenFragment : Fragment() {
                 BabyNameText(name = name, onNameChange = onNameChange)
             }
             StartButton(
-                name, modifier = Modifier
+                name = name,
+                modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 32.dp), saveData = saveData
             )
@@ -89,14 +91,14 @@ class ProfileScreenFragment : Fragment() {
             contentDescription = "baby_image"
         )
         Text(
-            "Toddler\n  Tiles",
+            text = "Toddler\n  Tiles",
             color = Color(0xFF5DDAD0),
             style = MaterialTheme.typography.h1,
             modifier = Modifier
                 .padding(top = 16.dp, bottom = 30.dp),
         )
         Text(
-            "What should we call you?",
+            text = "What should we call you?",
             color = Color(0xFF666666),
             fontSize = 27.sp,
             fontWeight = FontWeight.SemiBold
@@ -138,7 +140,8 @@ class ProfileScreenFragment : Fragment() {
             onClick = {
                 saveData()
                 navigateToLandingScreenActivity(name)
-            }) {
+            }
+        ) {
             Text(
                 text = "Let's start",
                 color = Color.White,

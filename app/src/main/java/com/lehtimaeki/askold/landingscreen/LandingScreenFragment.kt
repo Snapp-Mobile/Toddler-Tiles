@@ -38,7 +38,7 @@ import com.lehtimaeki.askold.theme.AskoldTheme
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
-import com.lehtimaeki.askold.iapRepo.IapRepo
+import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep
 import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.R.*
 import com.lehtimaeki.askold.iconset.IconSetWrapper
@@ -53,7 +53,7 @@ class LandingScreenFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        IapRepo.startConnection()
+        InAppPurchasesRep.startConnection()
         return ComposeView(requireContext()).apply {
             setContent {
                 val viewModel: LandingScreenViewModel = hiltViewModel()
@@ -66,7 +66,7 @@ class LandingScreenFragment : Fragment() {
     }
 
     @Composable
-    fun HelloUserTitleText(
+    fun UserGreetingTitle(
         text: String, iconSetWrapper: IconSetWrapper
     ) {
         if (iconSetWrapper.customText) {
@@ -169,12 +169,12 @@ class LandingScreenFragment : Fragment() {
                 contentDescription = "baby image",
                 colorFilter = ColorFilter.tint(color = Color.White)
             )
-            ColumnIconsCategories(iconSetsWrapper)
+            IconsCategories(iconSetsWrapper)
         }
     }
 
     @Composable
-    fun ColumnIconsCategories( iconSetsWrapper: List<IconSetWrapper>){
+    fun IconsCategories( iconSetsWrapper: List<IconSetWrapper>){
         Column {
             Image(
                 modifier = Modifier
@@ -211,7 +211,7 @@ class LandingScreenFragment : Fragment() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                iconSetWrapper.label?.let { HelloUserTitleText(it, iconSetWrapper) }
+                iconSetWrapper.label?.let { UserGreetingTitle(it, iconSetWrapper) }
             }
         } else {
             val color =

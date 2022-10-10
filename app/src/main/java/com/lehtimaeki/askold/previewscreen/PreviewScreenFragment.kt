@@ -29,28 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lehtimaeki.askold.iapRepo.IapRepo.navigateToPayment
+import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep.navigateToPayment
 import com.lehtimaeki.askold.iconset.IconSetWrapper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PreviewScreenFragment : Fragment() {
-
-    companion object {
-        private const val ICON_SET_WRAPPER = "iconset"
-
-        fun newInstance(
-            iconSetWrapper: IconSetWrapper
-        ): PreviewScreenFragment {
-            val ret = PreviewScreenFragment()
-
-            ret.arguments = Bundle().apply {
-                putSerializable(ICON_SET_WRAPPER, iconSetWrapper)
-            }
-
-            return ret
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,18 +48,21 @@ class PreviewScreenFragment : Fragment() {
                     viewModel.loadIconSet(arguments?.getSerializable(ICON_SET_WRAPPER) as IconSetWrapper?)
                 }
                 val icons by viewModel.icons.collectAsState()
-                IconsList(icons)
+                PreviewScreen(icons)
             }
         }
     }
 
     @Composable
     fun ItemImage(
-        imageId: Int?, modifier: Modifier
+        imageId: Int?,
+        modifier: Modifier
     ) {
         imageId?.let {
             Image(
-                painterResource(it), contentDescription = "", modifier = modifier
+                painter = painterResource(it),
+                contentDescription = "",
+                modifier = modifier
             )
         }
     }
@@ -93,44 +80,14 @@ class PreviewScreenFragment : Fragment() {
     }
 
     @Composable
-    fun IconsList(
+    fun PreviewScreen(
         icons: List<IconWrapper>
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = { ItemNameText(arguments?.getSerializable(ICON_SET_WRAPPER) as IconSetWrapper?) },
-                    navigationIcon = {
-                        IconButton(onClick = { activity?.supportFragmentManager?.popBackStack() }) {
-                            Icon(Icons.Filled.KeyboardArrowLeft, "backIcon")
-                        }
-                    },
-                    backgroundColor = Color.White,
-                    actions = {
-                        FloatingActionButton(
-                            shape = RoundedCornerShape(20.dp),
-                            modifier = Modifier
-                                .height(38.dp)
-                                .width(126.dp)
-                                .padding(end = 17.dp),
-                            backgroundColor = (Color(0xFF8674F5)),
-                            onClick = {
-                                navigateToPayment(
-                                    activity,
-                                    arguments?.getSerializable(
-                                        ICON_SET_WRAPPER
-                                    ) as IconSetWrapper?
-                                )
-                            }) {
-                            Text(
-                                text = "BUY NOW",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
-                            )
-                        }
-                    })
-            }) {
+                TopAppBarPreviewScreen()
+            }
+        ) {
             Box(
                 modifier = Modifier.background(Color.White),
                 contentAlignment = Alignment.Center
@@ -143,12 +100,58 @@ class PreviewScreenFragment : Fragment() {
                     columns = GridCells.Adaptive(140.dp),
                     verticalArrangement = Arrangement.SpaceAround,
                     horizontalArrangement = Arrangement.spacedBy(32.dp),
-                    contentPadding = PaddingValues(start = 32.dp, end = 32.dp)
+                    contentPadding = PaddingValues(horizontal = 32.dp)
                 ) {
-                    items(icons) { icons -> Item(icons) }
+                    items(icons) { icons ->
+                        Item(icons)
+                    }
                 }
             }
         }
+    }
+
+    @Composable
+    fun TopAppBarPreviewScreen() {
+        TopAppBar(
+            title = { ItemNameText(arguments?.getSerializable(ICON_SET_WRAPPER) as IconSetWrapper?) },
+            navigationIcon = {
+                IconButton(onClick = {
+                    navigateBack()
+                }) {
+                    Icon(Icons.Filled.KeyboardArrowLeft, "backIcon")
+                }
+            },
+            backgroundColor = Color.White,
+            actions = {
+                FloatingActionButton(
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .height(38.dp)
+                        .width(126.dp)
+                        .padding(end = 17.dp),
+                    backgroundColor = (Color(0xFF8674F5)),
+                    onClick = {
+                        navigateToPayment(
+                            activity,
+                            arguments?.getSerializable(
+                                ICON_SET_WRAPPER
+                            ) as IconSetWrapper?
+                        )
+                    }
+                ) {
+                    Text(
+                        text = "BUY NOW",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        )
+    }
+
+    private fun navigateBack() {
+        activity?.supportFragmentManager?.popBackStack()
     }
 
     @Composable
@@ -164,9 +167,12 @@ class PreviewScreenFragment : Fragment() {
                 backgroundColor = Color(icons.colorId)
             ) {
                 Box {
-                    ItemImage(icons.iconId, modifier = Modifier.align(Alignment.Center))
+                    ItemImage(
+                        imageId = icons.iconId,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                     Text(
-                        "PREVIEW",
+                        text = "PREVIEW",
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
@@ -180,6 +186,22 @@ class PreviewScreenFragment : Fragment() {
                     )
                 }
             }
+        }
+    }
+
+    companion object {
+        private const val ICON_SET_WRAPPER = "iconset"
+
+        fun newInstance(
+            iconSetWrapper: IconSetWrapper
+        ): PreviewScreenFragment {
+            val fragment = PreviewScreenFragment()
+
+            fragment.arguments = Bundle().apply {
+                putSerializable(ICON_SET_WRAPPER, iconSetWrapper)
+            }
+
+            return fragment
         }
     }
 }

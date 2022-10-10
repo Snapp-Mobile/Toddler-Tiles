@@ -23,8 +23,8 @@ class PreviewScreenViewModel @Inject constructor() : ViewModel() {
                 paidIconSet.icons.forEach { icon ->
                     iconsList.add(
                         IconWrapper(
-                            icon,
-                            ColorPalettes.getNextColorFromPalette(paidIconSet.useLightPalette)
+                            iconId = icon,
+                            colorId = ColorPalettes.getNextColorFromPalette(paidIconSet.useLightPalette)
                         )
                     )
                 }

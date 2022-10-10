@@ -2,7 +2,7 @@ package com.lehtimaeki.askold.landingscreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lehtimaeki.askold.iapRepo.IapRepo
+import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep
 import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.iconset.IconSetWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,16 +24,19 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
                 customText = true
             )
         )
-        IconSetRepo.allIconSets.filter { it.isUnlocked }.forEach { iconSet ->
-            freeIconSetsList.add(
-                IconSetWrapper(
-                    id = iconSet.id,
-                    iconSet = iconSet,
-                    label = null,
-                    customText = true
+
+        IconSetRepo.allIconSets
+            .filter { it.isUnlocked }
+            .forEach { iconSet ->
+                freeIconSetsList.add(
+                    IconSetWrapper(
+                        id = iconSet.id,
+                        iconSet = iconSet,
+                        label = null,
+                        customText = true
+                    )
                 )
-            )
-        }
+            }
 
         // This is just to test until we will be able to create the paid items in Play Store
         freeIconSetsList.add(
@@ -44,7 +47,10 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
                 customText = false
             )
         )
-        IconSetRepo.paidIconSets.filter { !it.isUnlocked }.forEach { iconSet ->
+
+        IconSetRepo.paidIconSets
+            .filter { !it.isUnlocked }
+            .forEach { iconSet ->
             freeIconSetsList.add(
                 IconSetWrapper(
                     id = iconSet.id,
@@ -55,7 +61,7 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
             )
         }
 
-        iconSets = flowOf(IapRepo.paidIconSetsFlow).map {
+        iconSets = flowOf(InAppPurchasesRep.paidIconSetsFlow).map {
             freeIconSetsList + it.value
         }.stateIn(
             viewModelScope,

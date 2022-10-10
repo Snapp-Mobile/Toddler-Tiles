@@ -9,8 +9,8 @@ import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.iconset.IconSetWrapper
 import kotlinx.coroutines.flow.MutableStateFlow
 
-object IapRepo {
-    var paidIconSetsFlow = MutableStateFlow<List<IconSetWrapper>>(emptyList())
+object InAppPurchasesRep {
+    val paidIconSetsFlow = MutableStateFlow<List<IconSetWrapper>>(emptyList())
 
     private val purchaseUpdateListener =
         PurchasesUpdatedListener { billingResult, purchases ->
