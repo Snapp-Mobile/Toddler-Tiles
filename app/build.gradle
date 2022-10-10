@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -15,6 +17,8 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField 'String', 'PUBLIC_KEY', " \" publicKey \""
     }
 
     buildTypes {
@@ -74,6 +78,14 @@ dependencies {
     implementation 'androidx.compose.runtime:runtime-livedata:1.2.0'
     implementation 'androidx.compose.ui:ui-tooling-preview:1.2.0'
     debugImplementation 'androidx.compose.ui:ui-tooling:1.2.0'
-
     implementation 'com.google.android.material:compose-theme-adapter:1.1.14'
+
+    // IAP
+    def billing_version = "5.0.0"
+    implementation "com.android.billingclient:billing-ktx:$billing_version"
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt "com.google.dagger:hilt-compiler:2.42"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 }
