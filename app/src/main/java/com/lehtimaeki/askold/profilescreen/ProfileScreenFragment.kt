@@ -46,7 +46,7 @@ class ProfileScreenFragment : Fragment() {
                     ProfileScreen(
                         name = name,
                         onNameChange = { viewModel.setUserName(it) },
-                        saveData = { viewModel.getUserName() }
+                        saveData = { viewModel.saveUserName() }
                     )
                 }
             }

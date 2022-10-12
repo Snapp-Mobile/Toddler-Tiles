@@ -18,8 +18,7 @@ class ProfileScreenViewModel @Inject constructor(private val sharedPref: UserPre
         this.userName.value = _userName
     }
 
-    fun getUserName() {
+    fun saveUserName() {
         sharedPref.saveUserName(userName.value)
-        sharedPref.getUserName()
     }
 }
