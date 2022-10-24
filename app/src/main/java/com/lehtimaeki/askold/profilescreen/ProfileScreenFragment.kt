@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lehtimaeki.askold.R
+import com.lehtimaeki.askold.WindowInfo
 import com.lehtimaeki.askold.landingscreen.LandingScreenFragment
+import com.lehtimaeki.askold.rememberWindowInfo
 import com.lehtimaeki.askold.theme.AskoldTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,36 +57,86 @@ class ProfileScreenFragment : Fragment() {
 
     @Composable
     fun ProfileScreen(name: String, onNameChange: (String) -> Unit, saveData: () -> Unit) {
-        Box(modifier = Modifier.background(Color.White)) {
-            Image(
-                modifier = Modifier
-                    .padding(bottom = 143.dp)
-                    .fillMaxWidth(),
-                painter = painterResource(R.drawable.bg),
-                contentDescription = "background image",
-            )
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                ProfileScreenComponents()
-                BabyNameText(name = name, onNameChange = onNameChange)
+        val windowInfo = rememberWindowInfo()
+        if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
+            Box(modifier = Modifier.background(Color.White)) {
+                Image(
+                    modifier = Modifier
+                        .padding(bottom = 143.dp)
+                        .fillMaxSize(),
+                    painter = painterResource(R.drawable.bg),
+                    contentDescription = "background image"
+                )
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ProfileScreenComponents(imageSize = 100, titleSize = 40, textSize = 27)
+                    BabyNameText(
+                        name = name,
+                        widthSize = 336,
+                        heightSize = 64,
+                        textSize = 24,
+                        roundedSize = 20,
+                        onNameChange = onNameChange
+                    )
+                }
+                StartButton(
+                    name = name,
+                    roundedSize = 20,
+                    textSize = 27,
+                    widthSize = 336,
+                    heightSize = 64,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 32.dp), saveData = saveData
+                )
             }
-            StartButton(
-                name = name,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 32.dp), saveData = saveData
-            )
+        } else {
+            Box(modifier = Modifier.background(Color.White)) {
+                Image(
+                    modifier = Modifier
+                        .size(1500.dp)
+                        .padding(bottom = 143.dp)
+                        .fillMaxWidth(),
+                    painter = painterResource(R.drawable.bg),
+                    contentDescription = "background image",
+                )
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ProfileScreenComponents(imageSize = 180, titleSize = 72, textSize = 48)
+                    BabyNameText(
+                        name = name,
+                        widthSize = 600,
+                        heightSize = 100,
+                        textSize = 40,
+                        roundedSize = 40,
+                        onNameChange = onNameChange
+                    )
+                }
+                StartButton(
+                    name = name,
+                    roundedSize = 40,
+                    textSize = 48,
+                    widthSize = 600,
+                    heightSize = 100,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 32.dp), saveData = saveData
+                )
+            }
         }
     }
 
     @Composable
-    fun ProfileScreenComponents() {
+    fun ProfileScreenComponents(imageSize: Int, textSize: Int, titleSize: Int) {
         Image(
             modifier = Modifier
-                .size(100.dp)
+                .size(imageSize.dp)
                 .padding(top = 30.dp)
                 .fillMaxWidth(),
             painter = painterResource(R.drawable.baby),
@@ -93,6 +145,7 @@ class ProfileScreenFragment : Fragment() {
         Text(
             text = "Toddler\n  Tiles",
             color = Color(0xFF5DDAD0),
+            fontSize = titleSize.sp,
             style = MaterialTheme.typography.h1,
             modifier = Modifier
                 .padding(top = 16.dp, bottom = 30.dp),
@@ -100,22 +153,29 @@ class ProfileScreenFragment : Fragment() {
         Text(
             text = "What should we call you?",
             color = Color(0xFF666666),
-            fontSize = 27.sp,
+            fontSize = textSize.sp,
             fontWeight = FontWeight.SemiBold
         )
     }
 
     @Composable
-    fun BabyNameText(name: String, onNameChange: (String) -> Unit) {
+    fun BabyNameText(
+        name: String,
+        textSize: Int,
+        widthSize: Int,
+        heightSize: Int,
+        roundedSize: Int,
+        onNameChange: (String) -> Unit
+    ) {
         OutlinedTextField(
             value = name,
             onValueChange = onNameChange,
             enabled = true,
-            textStyle = TextStyle.Default.copy(fontSize = 24.sp),
+            textStyle = TextStyle.Default.copy(fontSize = textSize.sp),
             placeholder = {
                 Text(
                     text = "Enter your name",
-                    fontSize = 24.sp,
+                    fontSize = textSize.sp,
                     color = Color.LightGray,
                     modifier = Modifier.padding(start = 24.dp)
                 )
@@ -125,19 +185,31 @@ class ProfileScreenFragment : Fragment() {
                 unfocusedBorderColor = Color(0xFF5DDAD0),
                 backgroundColor = Color.White
             ),
-            modifier = Modifier.size(width = 336.dp, height = 64.dp),
-            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .size(width = widthSize.dp, height = heightSize.dp)
+                .padding(start = 12.dp, end = 12.dp),
+            shape = RoundedCornerShape(roundedSize.dp),
         )
     }
 
+
     @Composable
-    fun StartButton(name: String, modifier: Modifier = Modifier, saveData: () -> Unit) {
+    fun StartButton(
+        name: String,
+        roundedSize: Int,
+        textSize: Int,
+        widthSize: Int,
+        heightSize: Int,
+        modifier: Modifier = Modifier,
+        saveData: () -> Unit
+    ) {
         Button(
-            shape = RoundedCornerShape(20.dp),
-            enabled =  name != "",
+            shape = RoundedCornerShape(roundedSize.dp),
+            enabled = name != "",
             modifier = modifier
-                .height(64.dp)
-                .width(336.dp),
+                .height(heightSize.dp)
+                .width(widthSize.dp)
+                .padding(start = 12.dp, end = 12.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF8674F5)),
             onClick = {
                 saveData()
@@ -148,7 +220,7 @@ class ProfileScreenFragment : Fragment() {
                 text = "Let's start",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontSize = 27.sp,
+                fontSize = textSize.sp,
             )
         }
     }
