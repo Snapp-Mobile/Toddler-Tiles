@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".landingscreen.LandingScreenActivity"
+            android:screenOrientation="sensorPortrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

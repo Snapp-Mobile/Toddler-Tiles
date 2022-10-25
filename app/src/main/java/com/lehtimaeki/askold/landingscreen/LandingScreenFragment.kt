@@ -34,12 +34,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lehtimaeki.askold.*
 import com.lehtimaeki.askold.theme.AskoldTheme
-import com.lehtimaeki.askold.ColorPalettes
-import com.lehtimaeki.askold.FullscreenActivity
 import com.lehtimaeki.askold.FullscreenActivity.Companion.ICON_SET_EXTRA_ID
-import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep
 import com.lehtimaeki.askold.R
+import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep
 import com.lehtimaeki.askold.R.*
 import com.lehtimaeki.askold.iconset.IconSetWrapper
 import com.lehtimaeki.askold.previewscreen.PreviewScreenFragment
@@ -67,22 +66,25 @@ class LandingScreenFragment : Fragment() {
 
     @Composable
     fun UserGreetingTitle(
+        nameTextSize: Int,
+        textSize: Int,
         text: String, iconSetWrapper: IconSetWrapper
     ) {
         if (iconSetWrapper.customText) {
             Text(
                 text = text,
                 color = colorResource(id = color.purple_color),
+                fontSize = nameTextSize.sp,
                 style = MaterialTheme.typography.h1,
                 modifier = Modifier
                     .padding(bottom = dimensionResource(dimen.spacing_normal)),
             )
-            UserNameText(arguments?.getString(BABY_NAME).toString())
+            UserNameText(nameTextSize, arguments?.getString(BABY_NAME).toString())
         } else {
             Text(
                 text = text,
                 color = Color.Gray,
-                fontSize = 24.sp,
+                fontSize = textSize.sp,
                 modifier = Modifier
                     .padding(bottom = dimensionResource(dimen.spacing_normal)),
                 fontWeight = FontWeight.Bold
@@ -91,11 +93,11 @@ class LandingScreenFragment : Fragment() {
     }
 
     @Composable
-    fun UserNameText(name: String) {
+    fun UserNameText(textSize: Int, name: String) {
         Text(
             name,
             color = Color.Gray,
-            fontSize = 35.sp,
+            fontSize = textSize.sp,
             modifier = Modifier
                 .padding(bottom = dimensionResource(dimen.spacing_normal)),
         )
@@ -103,12 +105,13 @@ class LandingScreenFragment : Fragment() {
 
     @Composable
     fun ItemCategoryText(
+        categoryTextSize: Int,
         text: String
     ) {
         Text(
             text,
             color = Color.Gray,
-            fontSize = 24.sp,
+            fontSize = categoryTextSize.sp,
             modifier = Modifier.padding(start = 24.dp, bottom = 20.dp),
             fontWeight = FontWeight.SemiBold
         )
@@ -128,15 +131,20 @@ class LandingScreenFragment : Fragment() {
     }
 
     @Composable
-    fun ItemTypeText(text: String, modifier: Modifier = Modifier) {
+    fun ItemTypeText(
+        typeTextSize: Int,
+        paddingSize: Int,
+        text: String,
+        modifier: Modifier = Modifier
+    ) {
         Text(
             text,
             color = Color.White,
-            fontSize = 16.sp,
+            fontSize = typeTextSize.sp,
             fontWeight = FontWeight.Bold,
             modifier = modifier
                 .wrapContentSize()
-                .padding(top = 12.dp)
+                .padding(top = paddingSize.dp)
                 .clip(
                     RoundedCornerShape(
                         topStart = dimensionResource(dimen.spacing_small),
@@ -152,33 +160,90 @@ class LandingScreenFragment : Fragment() {
     fun IconsCategoriesList(
         iconSetsWrapper: List<IconSetWrapper>
     ) {
-        Box(modifier = Modifier.background(Color.White)) {
-            Image(
-                modifier = Modifier
-                    .padding(bottom = 143.dp)
-                    .fillMaxWidth(),
-                painter = painterResource(drawable.bg),
-                contentDescription = "background image of an icon set",
-            )
-            Image(
-                modifier = Modifier
-                    .size(150.dp)
-                    .align(Alignment.TopEnd)
-                    .offset(x = 34.dp),
-                painter = painterResource(drawable.baby),
-                contentDescription = "baby image",
-                colorFilter = ColorFilter.tint(color = Color.White)
-            )
-            IconsCategories(iconSetsWrapper)
+        val windowInfo = rememberWindowInfo()
+        if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
+            Box(modifier = Modifier.background(Color.White)) {
+                Image(
+                    modifier = Modifier
+                        .padding(bottom = 143.dp)
+                        .fillMaxWidth(),
+                    painter = painterResource(drawable.bg),
+                    contentDescription = "background image of an icon set",
+                )
+                Image(
+                    modifier = Modifier
+                        .size(150.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(x = 34.dp),
+                    painter = painterResource(drawable.baby),
+                    contentDescription = "baby image",
+                    colorFilter = ColorFilter.tint(color = Color.White)
+                )
+                IconsCategories(
+                    typeTextSize = 16,
+                    paddingSize = 12,
+                    roundedSize = 16,
+                    cardSize = 160,
+                    gridCellSize = 140,
+                    categoryTextSize = 24,
+                    nameTextSize = 35,
+                    textSize = 24,
+                    imageSize = 70,
+                    iconSetsWrapper = iconSetsWrapper
+                )
+            }
+        } else {
+            Box(modifier = Modifier.background(Color.White)) {
+                Image(
+                    modifier = Modifier
+                        .size(1500.dp)
+                        .padding(bottom = 143.dp)
+                        .fillMaxWidth(),
+                    painter = painterResource(drawable.bg),
+                    contentDescription = "background image of an icon set",
+                )
+                Image(
+                    modifier = Modifier
+                        .size(250.dp)
+                        .align(Alignment.TopEnd)
+                        .offset(x = 84.dp),
+                    painter = painterResource(drawable.baby),
+                    contentDescription = "baby image",
+                    colorFilter = ColorFilter.tint(color = Color.White)
+                )
+                IconsCategories(
+                    typeTextSize = 32,
+                    paddingSize = 24,
+                    roundedSize = 32,
+                    cardSize = 300,
+                    gridCellSize = 280,
+                    categoryTextSize = 40,
+                    nameTextSize = 66,
+                    textSize = 50,
+                    imageSize = 100,
+                    iconSetsWrapper = iconSetsWrapper
+                )
+            }
         }
     }
 
     @Composable
-    fun IconsCategories( iconSetsWrapper: List<IconSetWrapper>){
+    fun IconsCategories(
+        typeTextSize: Int,
+        paddingSize: Int,
+        roundedSize: Int,
+        cardSize: Int,
+        gridCellSize: Int,
+        categoryTextSize: Int,
+        nameTextSize: Int,
+        textSize: Int,
+        imageSize: Int,
+        iconSetsWrapper: List<IconSetWrapper>
+    ) {
         Column {
             Image(
                 modifier = Modifier
-                    .size(70.dp)
+                    .size(imageSize.dp)
                     .padding(start = dimensionResource(dimen.spacing_large))
                     .fillMaxWidth(),
                 painter = painterResource(drawable.baby),
@@ -188,7 +253,7 @@ class LandingScreenFragment : Fragment() {
                 modifier = Modifier
                     .wrapContentWidth()
                     .background(Color.Transparent),
-                columns = GridCells.Adaptive(140.dp),
+                columns = GridCells.Adaptive(gridCellSize.dp),
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalArrangement = Arrangement.spacedBy(32.dp),
                 contentPadding = PaddingValues(
@@ -199,19 +264,46 @@ class LandingScreenFragment : Fragment() {
                 items(iconSetsWrapper, span = { item ->
                     val spanCount = if (item.iconSet == null) 2 else 1
                     GridItemSpan(spanCount)
-                }) { iconSetWrapper -> IconCategory(iconSetWrapper) }
+                }) { iconSetWrapper ->
+                    IconCategory(
+                        typeTextSize = typeTextSize,
+                        paddingSize = paddingSize,
+                        roundedSize = roundedSize,
+                        cardSize = cardSize,
+                        categoryTextSize = categoryTextSize,
+                        nameTextSize = nameTextSize,
+                        textSize = textSize,
+                        iconSetWrapper
+                    )
+                }
             }
         }
     }
 
     @Composable
-    fun IconCategory(iconSetWrapper: IconSetWrapper) {
+    fun IconCategory(
+        typeTextSize: Int,
+        paddingSize: Int,
+        roundedSize: Int,
+        cardSize: Int,
+        categoryTextSize: Int,
+        nameTextSize: Int,
+        textSize: Int,
+        iconSetWrapper: IconSetWrapper
+    ) {
         if (iconSetWrapper.iconSet == null) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                iconSetWrapper.label?.let { UserGreetingTitle(it, iconSetWrapper) }
+                iconSetWrapper.label?.let {
+                    UserGreetingTitle(
+                        nameTextSize = nameTextSize,
+                        textSize = textSize,
+                        it,
+                        iconSetWrapper
+                    )
+                }
             }
         } else {
             val color =
@@ -220,8 +312,8 @@ class LandingScreenFragment : Fragment() {
                 Card(
                     modifier = Modifier
                         .padding(top = 8.dp, bottom = 4.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .size(160.dp)
+                        .clip(RoundedCornerShape(roundedSize.dp))
+                        .size(cardSize.dp)
                         .clickable(onClick = { navigateToFullScreenActivity(iconSetWrapper) }),
                     elevation = 8.dp,
                     backgroundColor = Color(color)
@@ -232,10 +324,15 @@ class LandingScreenFragment : Fragment() {
                             iconSetWrapper.iconSet.icons.firstOrNull(),
                             modifier = Modifier.align(Alignment.Center)
                         )
-                        ItemTypeText(text = text, modifier = Modifier.align(Alignment.TopEnd))
+                        ItemTypeText(
+                            typeTextSize = typeTextSize,
+                            paddingSize = paddingSize,
+                            text = text,
+                            modifier = Modifier.align(Alignment.TopEnd)
+                        )
                     }
                 }
-                ItemCategoryText(iconSetWrapper.iconSet.name)
+                ItemCategoryText(categoryTextSize = categoryTextSize, iconSetWrapper.iconSet.name)
             }
         }
     }
