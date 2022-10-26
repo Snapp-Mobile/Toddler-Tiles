@@ -12,8 +12,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep.navigateToPayment
 import com.lehtimaeki.askold.iconset.IconSetWrapper
 import dagger.hilt.android.AndroidEntryPoint
@@ -118,7 +117,11 @@ class PreviewScreenFragment : Fragment() {
                 IconButton(onClick = {
                     navigateBack()
                 }) {
-                    Icon(Icons.Filled.KeyboardArrowLeft, "backIcon")
+                    Icon(
+                        painter = painterResource(R.drawable.vector_13),
+                        contentDescription = "backIcon",
+                        tint = Color.Gray
+                    )
                 }
             },
             backgroundColor = Color.White,

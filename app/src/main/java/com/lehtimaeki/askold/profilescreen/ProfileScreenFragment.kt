@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -62,7 +63,7 @@ class ProfileScreenFragment : Fragment() {
             Box(modifier = Modifier.background(Color.White)) {
                 Image(
                     modifier = Modifier
-                        .padding(bottom = 143.dp)
+                        .padding(bottom = 130.dp)
                         .fillMaxSize(),
                     painter = painterResource(R.drawable.bg),
                     contentDescription = "background image"
@@ -154,7 +155,9 @@ class ProfileScreenFragment : Fragment() {
             text = "What should we call you?",
             color = Color(0xFF666666),
             fontSize = textSize.sp,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier
+                .padding(bottom = 15.dp),
         )
     }
 
@@ -181,17 +184,19 @@ class ProfileScreenFragment : Fragment() {
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFF5DDAD0),
-                unfocusedBorderColor = Color(0xFF5DDAD0),
                 backgroundColor = Color.White
             ),
             modifier = Modifier
                 .size(width = widthSize.dp, height = heightSize.dp)
-                .padding(start = 12.dp, end = 12.dp),
+                .padding(start = 12.dp, end = 12.dp)
+                .border(
+                    width = 3.dp,
+                    color = Color(0xFF5DDAD0),
+                    shape = RoundedCornerShape(roundedSize.dp)
+                ),
             shape = RoundedCornerShape(roundedSize.dp),
         )
     }
-
 
     @Composable
     fun StartButton(

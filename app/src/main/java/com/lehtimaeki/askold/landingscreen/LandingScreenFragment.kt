@@ -66,6 +66,7 @@ class LandingScreenFragment : Fragment() {
 
     @Composable
     fun UserGreetingTitle(
+        helloTextSize: Int,
         nameTextSize: Int,
         textSize: Int,
         text: String, iconSetWrapper: IconSetWrapper
@@ -74,7 +75,7 @@ class LandingScreenFragment : Fragment() {
             Text(
                 text = text,
                 color = colorResource(id = color.purple_color),
-                fontSize = nameTextSize.sp,
+                fontSize = helloTextSize.sp,
                 style = MaterialTheme.typography.h1,
                 modifier = Modifier
                     .padding(bottom = dimensionResource(dimen.spacing_normal)),
@@ -165,7 +166,7 @@ class LandingScreenFragment : Fragment() {
             Box(modifier = Modifier.background(Color.White)) {
                 Image(
                     modifier = Modifier
-                        .padding(bottom = 143.dp)
+                        .padding(bottom = 130.dp)
                         .fillMaxWidth(),
                     painter = painterResource(drawable.bg),
                     contentDescription = "background image of an icon set",
@@ -180,6 +181,7 @@ class LandingScreenFragment : Fragment() {
                     colorFilter = ColorFilter.tint(color = Color.White)
                 )
                 IconsCategories(
+                    helloTextSize = 40,
                     typeTextSize = 16,
                     paddingSize = 12,
                     roundedSize = 16,
@@ -212,6 +214,7 @@ class LandingScreenFragment : Fragment() {
                     colorFilter = ColorFilter.tint(color = Color.White)
                 )
                 IconsCategories(
+                    helloTextSize = 75,
                     typeTextSize = 32,
                     paddingSize = 24,
                     roundedSize = 32,
@@ -229,6 +232,7 @@ class LandingScreenFragment : Fragment() {
 
     @Composable
     fun IconsCategories(
+        helloTextSize: Int,
         typeTextSize: Int,
         paddingSize: Int,
         roundedSize: Int,
@@ -266,6 +270,7 @@ class LandingScreenFragment : Fragment() {
                     GridItemSpan(spanCount)
                 }) { iconSetWrapper ->
                     IconCategory(
+                        helloTextSize = helloTextSize,
                         typeTextSize = typeTextSize,
                         paddingSize = paddingSize,
                         roundedSize = roundedSize,
@@ -282,6 +287,7 @@ class LandingScreenFragment : Fragment() {
 
     @Composable
     fun IconCategory(
+        helloTextSize: Int,
         typeTextSize: Int,
         paddingSize: Int,
         roundedSize: Int,
@@ -298,6 +304,7 @@ class LandingScreenFragment : Fragment() {
             ) {
                 iconSetWrapper.label?.let {
                     UserGreetingTitle(
+                        helloTextSize = helloTextSize,
                         nameTextSize = nameTextSize,
                         textSize = textSize,
                         it,

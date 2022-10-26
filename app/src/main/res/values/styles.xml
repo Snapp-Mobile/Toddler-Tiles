@@ -1,6 +1,7 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:colorBackground">#FFFFFF</item>
     </style>
 
 </resources>
