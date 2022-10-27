@@ -152,7 +152,11 @@ class LandingScreenFragment : Fragment() {
                         bottomStart = dimensionResource(dimen.spacing_small)
                     )
                 )
-                .background(colorResource(id = color.purple_color))
+                .background(
+                    colorResource(
+                        id = if (text == "PAID") color.purple_color else color.default_tile_color
+                    )
+                )
                 .padding(start = 12.dp, end = 4.dp)
         )
     }
