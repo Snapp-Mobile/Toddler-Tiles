@@ -48,9 +48,18 @@ object IconSetRepo {
         paidIconSets.add(
             IconSet(
                 id = 3,
-                name = "Animals",
+                name = "African animals",
                 isUnlocked = false,
-                GameTileResources.ANIMAL_IMAGE_ICONS,
+                GameTileResources.AFRICAN_ANIMAL_ICONS,
+                tintForContrast = false
+            )
+        )
+        paidIconSets.add(
+            IconSet(
+                id = 4,
+                name = "Woodlands",
+                isUnlocked = false,
+                GameTileResources.WOODLANDS_ICONS,
                 tintForContrast = false
             )
         )
