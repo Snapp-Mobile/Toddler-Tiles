@@ -162,71 +162,39 @@ class LandingScreenFragment : Fragment() {
         iconSetsWrapper: List<IconSetWrapper>
     ) {
         val windowInfo = rememberWindowInfo()
-        if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
-            Box(modifier = Modifier.background(Color.White)) {
-                Image(
-                    modifier = Modifier
-                        .padding(bottom = 130.dp)
-                        .fillMaxWidth(),
-                    painter = painterResource(drawable.bg),
-                    contentDescription = "background image of an icon set",
-                )
-                Image(
-                    modifier = Modifier
-                        .size(150.dp)
-                        .align(Alignment.TopEnd)
-                        .offset(x = 34.dp),
-                    painter = painterResource(drawable.baby),
-                    contentDescription = "baby image",
-                    colorFilter = ColorFilter.tint(color = Color.White)
-                )
-                IconsCategories(
-                    helloTextSize = 40,
-                    typeTextSize = 16,
-                    paddingSize = 12,
-                    roundedSize = 16,
-                    cardSize = 160,
-                    gridCellSize = 140,
-                    categoryTextSize = 24,
-                    nameTextSize = 35,
-                    textSize = 24,
-                    imageSize = 70,
-                    iconSetsWrapper = iconSetsWrapper
-                )
-            }
-        } else {
-            Box(modifier = Modifier.background(Color.White)) {
-                Image(
-                    modifier = Modifier
-                        .size(1500.dp)
-                        .padding(bottom = 143.dp)
-                        .fillMaxWidth(),
-                    painter = painterResource(drawable.bg),
-                    contentDescription = "background image of an icon set",
-                )
-                Image(
-                    modifier = Modifier
-                        .size(250.dp)
-                        .align(Alignment.TopEnd)
-                        .offset(x = 84.dp),
-                    painter = painterResource(drawable.baby),
-                    contentDescription = "baby image",
-                    colorFilter = ColorFilter.tint(color = Color.White)
-                )
-                IconsCategories(
-                    helloTextSize = 75,
-                    typeTextSize = 32,
-                    paddingSize = 24,
-                    roundedSize = 32,
-                    cardSize = 300,
-                    gridCellSize = 280,
-                    categoryTextSize = 40,
-                    nameTextSize = 66,
-                    textSize = 50,
-                    imageSize = 100,
-                    iconSetsWrapper = iconSetsWrapper
-                )
-            }
+        val windowType =
+            if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) Size.MOBILE else Size.TABLET
+        Box(modifier = Modifier.background(Color.White)) {
+            Image(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(bottom = windowType.imagePadding.dp)
+                    .fillMaxWidth(),
+                painter = painterResource(drawable.bg),
+                contentDescription = "background image of an icon set",
+            )
+            Image(
+                modifier = Modifier
+                    .size(windowType.babyImageSize.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = windowType.offsetSize.dp),
+                painter = painterResource(drawable.baby),
+                contentDescription = "baby image",
+                colorFilter = ColorFilter.tint(color = Color.White)
+            )
+            IconsCategories(
+                helloTextSize = windowType.helloTextSize,
+                typeTextSize = windowType.typeTextSize,
+                paddingSize = windowType.paddingSize,
+                roundedSize = windowType.roundedSize,
+                cardSize = windowType.cardSize,
+                gridCellSize = windowType.gridCellSize,
+                categoryTextSize = windowType.categoryTextSize,
+                nameTextSize = windowType.nameTextSize,
+                textSize = windowType.textSize,
+                imageSize = windowType.imageSize,
+                iconSetsWrapper = iconSetsWrapper
+            )
         }
     }
 
@@ -374,4 +342,51 @@ class LandingScreenFragment : Fragment() {
             return fragment
         }
     }
+}
+
+enum class Size(
+    val imagePadding: Int,
+    val babyImageSize: Int,
+    val offsetSize: Int,
+    val helloTextSize: Int,
+    val typeTextSize: Int,
+    val paddingSize: Int,
+    val roundedSize: Int,
+    val cardSize: Int,
+    val gridCellSize: Int,
+    val categoryTextSize: Int,
+    val nameTextSize: Int,
+    val textSize: Int,
+    val imageSize: Int,
+) {
+    MOBILE(
+        imagePadding = 130,
+        babyImageSize = 150,
+        offsetSize = 34,
+        helloTextSize = 40,
+        typeTextSize = 16,
+        paddingSize = 12,
+        roundedSize = 16,
+        cardSize = 160,
+        gridCellSize = 140,
+        categoryTextSize = 24,
+        nameTextSize = 35,
+        textSize = 24,
+        imageSize = 70,
+    ),
+    TABLET(
+        imagePadding = 145,
+        babyImageSize = 250,
+        offsetSize = 84,
+        helloTextSize = 75,
+        typeTextSize = 32,
+        paddingSize = 24,
+        roundedSize = 32,
+        cardSize = 300,
+        gridCellSize = 280,
+        categoryTextSize = 40,
+        nameTextSize = 66,
+        textSize = 50,
+        imageSize = 100,
+    )
 }

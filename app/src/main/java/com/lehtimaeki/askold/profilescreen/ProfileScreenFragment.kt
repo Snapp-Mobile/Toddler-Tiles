@@ -59,77 +59,46 @@ class ProfileScreenFragment : Fragment() {
     @Composable
     fun ProfileScreen(name: String, onNameChange: (String) -> Unit, saveData: () -> Unit) {
         val windowInfo = rememberWindowInfo()
-        if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
-            Box(modifier = Modifier.background(Color.White)) {
-                Image(
-                    modifier = Modifier
-                        .padding(bottom = 130.dp)
-                        .fillMaxSize(),
-                    painter = painterResource(R.drawable.bg),
-                    contentDescription = "background image"
+        val windowType =
+            if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) Size.MOBILE else Size.TABLET
+        Box(modifier = Modifier.background(Color.White)) {
+            Image(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(bottom = windowType.imagePadding.dp)
+                    .fillMaxWidth(),
+                painter = painterResource(R.drawable.bg),
+                contentDescription = "background image"
+            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ProfileScreenComponents(
+                    imageSize = windowType.imageSize,
+                    titleSize = windowType.titleSize,
+                    textSize = windowType.textSize
                 )
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    ProfileScreenComponents(imageSize = 100, titleSize = 40, textSize = 27)
-                    BabyNameText(
-                        name = name,
-                        widthSize = 336,
-                        heightSize = 64,
-                        textSize = 24,
-                        roundedSize = 20,
-                        onNameChange = onNameChange
-                    )
-                }
-                StartButton(
+                BabyNameText(
                     name = name,
-                    roundedSize = 20,
-                    textSize = 27,
-                    widthSize = 336,
-                    heightSize = 64,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 32.dp), saveData = saveData
+                    widthSize = windowType.widthSize,
+                    heightSize = windowType.heightSize,
+                    babyTextSize = windowType.babyTextSize,
+                    roundedSize = windowType.roundedSize,
+                    onNameChange = onNameChange
                 )
             }
-        } else {
-            Box(modifier = Modifier.background(Color.White)) {
-                Image(
-                    modifier = Modifier
-                        .size(1500.dp)
-                        .padding(bottom = 143.dp)
-                        .fillMaxWidth(),
-                    painter = painterResource(R.drawable.bg),
-                    contentDescription = "background image",
-                )
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    ProfileScreenComponents(imageSize = 180, titleSize = 72, textSize = 48)
-                    BabyNameText(
-                        name = name,
-                        widthSize = 600,
-                        heightSize = 100,
-                        textSize = 40,
-                        roundedSize = 40,
-                        onNameChange = onNameChange
-                    )
-                }
-                StartButton(
-                    name = name,
-                    roundedSize = 40,
-                    textSize = 48,
-                    widthSize = 600,
-                    heightSize = 100,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 32.dp), saveData = saveData
-                )
-            }
+            StartButton(
+                name = name,
+                roundedSize = windowType.roundedSize,
+                textSize = windowType.textSize,
+                widthSize = windowType.widthSize,
+                heightSize = windowType.heightSize,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 32.dp), saveData = saveData
+            )
         }
     }
 
@@ -164,7 +133,7 @@ class ProfileScreenFragment : Fragment() {
     @Composable
     fun BabyNameText(
         name: String,
-        textSize: Int,
+        babyTextSize: Int,
         widthSize: Int,
         heightSize: Int,
         roundedSize: Int,
@@ -174,11 +143,11 @@ class ProfileScreenFragment : Fragment() {
             value = name,
             onValueChange = onNameChange,
             enabled = true,
-            textStyle = TextStyle.Default.copy(fontSize = textSize.sp),
+            textStyle = TextStyle.Default.copy(fontSize = babyTextSize.sp),
             placeholder = {
                 Text(
                     text = "Enter your name",
-                    fontSize = textSize.sp,
+                    fontSize = babyTextSize.sp,
                     color = Color.LightGray,
                     modifier = Modifier.padding(start = 24.dp)
                 )
@@ -236,4 +205,37 @@ class ProfileScreenFragment : Fragment() {
             ?.addToBackStack(null)
             ?.commit()
     }
+}
+
+enum class Size(
+    val imagePadding: Int,
+    val imageSize: Int,
+    val titleSize: Int,
+    val textSize: Int,
+    val widthSize: Int,
+    val heightSize: Int,
+    val babyTextSize: Int,
+    val roundedSize: Int
+) {
+
+    MOBILE(
+        imagePadding = 130,
+        imageSize = 100,
+        titleSize = 49,
+        textSize = 27,
+        widthSize = 336,
+        heightSize = 64,
+        babyTextSize = 24,
+        roundedSize = 20,
+    ),
+    TABLET(
+        imagePadding = 143,
+        imageSize = 180,
+        titleSize = 72,
+        textSize = 48,
+        widthSize = 600,
+        heightSize = 100,
+        babyTextSize = 40,
+        roundedSize = 40,
+    )
 }
