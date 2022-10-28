@@ -45,9 +45,33 @@ object ColorPalettes {
         "#ECE7FE",
     )
 
+    private val LIGHT_PALETTE_COMPOSE = listOf(
+        "#FFF388",
+        "#D5A0FE",
+        "#85F29D",
+//        "#FF88D7",
+        "#88E2FF"
+    )
+
     var currentColorIndexInPalette = 0
 
     private val rnd = Random()
+
+    @ColorInt
+    fun getNextColorFromPaletteCompose(useLightPalette: Boolean?): Int {
+        val palette = if (useLightPalette == true) {
+            LIGHT_PALETTE_COMPOSE
+        } else {
+            LIGHT_PALETTE_COMPOSE
+        }
+
+        synchronized(this) {
+            if (currentColorIndexInPalette >= palette.size) {
+                currentColorIndexInPalette = 0
+            }
+            return Color.parseColor(palette[currentColorIndexInPalette++])
+        }
+    }
 
     @ColorInt
     fun getNextColorFromPalette(useLightPalette: Boolean?): Int {

@@ -148,6 +148,10 @@ object GameTileResources {
         R.drawable.animals_woodpecker,
     )
 
+    val SHAPES_ICONS = listOf<Int>(
+        R.drawable.ic_baseline_circle_24
+    )
+
     val ANIMAL_IMAGES_ICONS = listOf<Int>(
         R.drawable.animals_acorn,
         R.drawable.animals_ant,

@@ -84,11 +84,11 @@ class LandingScreenFragment : Fragment() {
         } else {
             Text(
                 text = text,
-                color = Color.Gray,
+                color = Color(0xFF666666),
                 fontSize = textSize.sp,
                 modifier = Modifier
                     .padding(bottom = dimensionResource(dimen.spacing_normal)),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Normal
             )
         }
     }
@@ -97,7 +97,7 @@ class LandingScreenFragment : Fragment() {
     fun UserNameText(textSize: Int, name: String) {
         Text(
             name,
-            color = Color.Gray,
+            color = Color(0xFF666666),
             fontSize = textSize.sp,
             modifier = Modifier
                 .padding(bottom = dimensionResource(dimen.spacing_normal)),
@@ -111,10 +111,10 @@ class LandingScreenFragment : Fragment() {
     ) {
         Text(
             text,
-            color = Color.Gray,
+            color = Color(0xFF666666),
             fontSize = categoryTextSize.sp,
-            modifier = Modifier.padding(start = 24.dp, bottom = 20.dp),
-            fontWeight = FontWeight.SemiBold
+            modifier = Modifier.padding(bottom = 20.dp),
+            style = MaterialTheme.typography.body1
         )
     }
 
@@ -157,7 +157,7 @@ class LandingScreenFragment : Fragment() {
                         id = if (text == "PAID") color.purple_color else color.default_tile_color
                     )
                 )
-                .padding(start = 12.dp, end = 4.dp)
+                .padding(top = 2.5.dp, bottom = 2.5.dp, start = 14.dp, end = 10.dp)
         )
     }
 
@@ -225,33 +225,35 @@ class LandingScreenFragment : Fragment() {
                 painter = painterResource(drawable.baby),
                 contentDescription = "baby image",
             )
-            LazyVerticalGrid(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .background(Color.Transparent),
-                columns = GridCells.Adaptive(gridCellSize.dp),
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalArrangement = Arrangement.spacedBy(32.dp),
-                contentPadding = PaddingValues(
-                    start = dimensionResource(dimen.spacing_large),
-                    end = dimensionResource(dimen.spacing_large)
-                )
-            ) {
-                items(iconSetsWrapper, span = { item ->
-                    val spanCount = if (item.iconSet == null) 2 else 1
-                    GridItemSpan(spanCount)
-                }) { iconSetWrapper ->
-                    IconCategory(
-                        helloTextSize = helloTextSize,
-                        typeTextSize = typeTextSize,
-                        paddingSize = paddingSize,
-                        roundedSize = roundedSize,
-                        cardSize = cardSize,
-                        categoryTextSize = categoryTextSize,
-                        nameTextSize = nameTextSize,
-                        textSize = textSize,
-                        iconSetWrapper
+            Box(contentAlignment = Alignment.Center) {
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .align(Alignment.Center)
+                        .background(Color.Transparent),
+                    columns = GridCells.Adaptive(gridCellSize.dp),
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp
                     )
+                ) {
+                    items(iconSetsWrapper, span = { item ->
+                        val spanCount = if (item.iconSet == null) 2 else 1
+                        GridItemSpan(spanCount)
+                    }) { iconSetWrapper ->
+                        IconCategory(
+                            helloTextSize = helloTextSize,
+                            typeTextSize = typeTextSize,
+                            paddingSize = paddingSize,
+                            roundedSize = roundedSize,
+                            cardSize = cardSize,
+                            categoryTextSize = categoryTextSize,
+                            nameTextSize = nameTextSize,
+                            textSize = textSize,
+                            iconSetWrapper
+                        )
+                    }
                 }
             }
         }
@@ -285,17 +287,15 @@ class LandingScreenFragment : Fragment() {
                 }
             }
         } else {
-            val color =
-                ColorPalettes.getNextColorFromPalette(iconSetWrapper.iconSet.useLightPalette)
             Column {
                 Card(
                     modifier = Modifier
                         .padding(top = 8.dp, bottom = 4.dp)
                         .clip(RoundedCornerShape(roundedSize.dp))
-                        .size(cardSize.dp)
+                        .fillMaxSize()
                         .clickable(onClick = { navigateToFullScreenActivity(iconSetWrapper) }),
                     elevation = 8.dp,
-                    backgroundColor = Color(color)
+                    backgroundColor = Color(iconSetWrapper.colorId)
                 ) {
                     val text = if (iconSetWrapper.iconSet.isUnlocked) "FREE" else "PAID"
                     Box {
@@ -368,12 +368,12 @@ enum class Size(
         babyImageSize = 150,
         offsetSize = 34,
         helloTextSize = 40,
-        typeTextSize = 16,
-        paddingSize = 12,
-        roundedSize = 16,
+        typeTextSize = 14,
+        paddingSize = 16,
+        roundedSize = 17,
         cardSize = 160,
         gridCellSize = 140,
-        categoryTextSize = 24,
+        categoryTextSize = 22,
         nameTextSize = 35,
         textSize = 24,
         imageSize = 70,

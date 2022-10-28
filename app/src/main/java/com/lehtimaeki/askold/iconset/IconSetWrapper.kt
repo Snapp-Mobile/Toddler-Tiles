@@ -8,5 +8,6 @@ data class IconSetWrapper(
     val iconSet: IconSet?,
     val label: String?,
     val customText: Boolean,
-    val paidProductDetails: ProductDetails? = null
+    val paidProductDetails: ProductDetails? = null,
+    val colorId: Int = 0
 ) : Serializable

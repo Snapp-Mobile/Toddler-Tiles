@@ -39,27 +39,36 @@ object IconSetRepo {
         allIconSets.add(
             IconSet(
                 id = 2,
-                name = "Alphabet",
+                name = "Shapes",
                 isUnlocked = true,
-                GameTileResources.LETTERS,
+                GameTileResources.SHAPES_ICONS,
                 tintForContrast = true
             )
         )
+//        allIconSets.add(
+//            IconSet(
+//                id = 2,
+//                name = "Alphabet",
+//                isUnlocked = true,
+//                GameTileResources.LETTERS,
+//                tintForContrast = true
+//            )
+//        )
         paidIconSets.add(
             IconSet(
                 id = 3,
-                name = "African animals",
+                name = "Woodlands",
                 isUnlocked = false,
-                GameTileResources.AFRICAN_ANIMAL_ICONS,
+                GameTileResources.WOODLANDS_ICONS,
                 tintForContrast = false
             )
         )
         paidIconSets.add(
             IconSet(
                 id = 4,
-                name = "Woodlands",
+                name = "African animals",
                 isUnlocked = false,
-                GameTileResources.WOODLANDS_ICONS,
+                GameTileResources.AFRICAN_ANIMAL_ICONS,
                 tintForContrast = false
             )
         )

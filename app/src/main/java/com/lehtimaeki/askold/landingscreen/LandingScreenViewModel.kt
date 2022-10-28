@@ -2,6 +2,7 @@ package com.lehtimaeki.askold.landingscreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep
 import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.iconset.IconSetWrapper
@@ -33,7 +34,8 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
                         id = iconSet.id,
                         iconSet = iconSet,
                         label = null,
-                        customText = true
+                        customText = true,
+                        colorId = ColorPalettes.getNextColorFromPaletteCompose(iconSet.useLightPalette)
                     )
                 )
             }
@@ -51,15 +53,16 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
         IconSetRepo.paidIconSets
             .filter { !it.isUnlocked }
             .forEach { iconSet ->
-            freeIconSetsList.add(
-                IconSetWrapper(
-                    id = iconSet.id,
-                    iconSet = iconSet,
-                    label = null,
-                    customText = false
+                freeIconSetsList.add(
+                    IconSetWrapper(
+                        id = iconSet.id,
+                        iconSet = iconSet,
+                        label = null,
+                        customText = false,
+                        colorId = ColorPalettes.getNextColorFromPaletteCompose(iconSet.useLightPalette)
+                    )
                 )
-            )
-        }
+            }
 
         iconSets = flowOf(InAppPurchasesRep.paidIconSetsFlow).map {
             freeIconSetsList + it.value

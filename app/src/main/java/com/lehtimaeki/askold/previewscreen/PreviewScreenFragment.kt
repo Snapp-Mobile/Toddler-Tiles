@@ -72,7 +72,7 @@ class PreviewScreenFragment : Fragment() {
     ) {
         Text(
             text = iconSetWrapper?.iconSet?.name.toString(),
-            color = Color.Gray,
+            color = Color(0xFF666666),
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
@@ -98,8 +98,8 @@ class PreviewScreenFragment : Fragment() {
                         .background(Color.White),
                     columns = GridCells.Adaptive(140.dp),
                     verticalArrangement = Arrangement.SpaceAround,
-                    horizontalArrangement = Arrangement.spacedBy(32.dp),
-                    contentPadding = PaddingValues(horizontal = 32.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(icons) { icons ->
                         Item(icons)
@@ -120,7 +120,7 @@ class PreviewScreenFragment : Fragment() {
                     Icon(
                         painter = painterResource(R.drawable.vector_13),
                         contentDescription = "backIcon",
-                        tint = Color.Gray
+                        tint = Color(0xFF666666)
                     )
                 }
             },
