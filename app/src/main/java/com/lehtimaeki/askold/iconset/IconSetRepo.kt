@@ -33,7 +33,8 @@ object IconSetRepo {
                 isUnlocked = true,
                 GameTileResources.NUMBERS,
                 tintForContrast = false,
-                useLightPalette = true
+                useLightPalette = true,
+                excludeFirstAsset = true
             )
         )
         allIconSets.add(
@@ -42,7 +43,8 @@ object IconSetRepo {
                 name = "Shapes",
                 isUnlocked = true,
                 GameTileResources.SHAPES_ICONS,
-                tintForContrast = true
+                tintForContrast = false,
+                excludeFirstAsset = true
             )
         )
 //        allIconSets.add(
@@ -92,7 +94,10 @@ object IconSetRepo {
             ?: throw NullPointerException("Did not find an icon set for id $iconSetId")
 
         return Triple(
-            iconSet.icons.get(random.nextInt(iconSet.icons.size)),
+            if (iconSet.excludeFirstAsset) iconSet.icons.get(random.nextInt(iconSet.icons.size - 1) + 1)
+            else iconSet.icons.get(
+                random.nextInt(iconSet.icons.size)
+            ),
             iconSet.tintForContrast,
             iconSet.useLightPalette
         )

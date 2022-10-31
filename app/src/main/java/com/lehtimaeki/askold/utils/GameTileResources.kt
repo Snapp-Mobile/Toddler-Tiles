@@ -5,6 +5,7 @@ import com.lehtimaeki.askold.R
 object GameTileResources {
 
     val NUMBERS = listOf<Int>(
+        R.drawable.property_1_landing__property_2_numbers,
         R.drawable.number_0,
         R.drawable.number_1,
         R.drawable.number_2,
@@ -149,7 +150,22 @@ object GameTileResources {
     )
 
     val SHAPES_ICONS = listOf<Int>(
-        R.drawable.ic_baseline_circle_24
+        R.drawable.il,
+        R.drawable.circle,
+        R.drawable.cross,
+        R.drawable.diamond,
+        R.drawable.ellipse,
+        R.drawable.heart,
+        R.drawable.heptagon,
+        R.drawable.hexagon,
+        R.drawable.octogon,
+        R.drawable.parallelogram,
+        R.drawable.pentagon,
+        R.drawable.rectangle,
+        R.drawable.square,
+        R.drawable.star,
+        R.drawable.trapezoid,
+        R.drawable.triangle
     )
 
     val ANIMAL_IMAGES_ICONS = listOf<Int>(

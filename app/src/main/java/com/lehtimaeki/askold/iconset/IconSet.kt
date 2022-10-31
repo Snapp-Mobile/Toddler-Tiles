@@ -8,5 +8,6 @@ data class IconSet(
     var isUnlocked: Boolean,
     val icons: List<Int>,
     val tintForContrast: Boolean = false,
-    val useLightPalette: Boolean = false
+    val useLightPalette: Boolean = false,
+    val excludeFirstAsset: Boolean = false
 ) : Serializable
