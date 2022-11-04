@@ -64,8 +64,8 @@ class ProfileScreenFragment : Fragment() {
         Box(modifier = Modifier.background(Color.White)) {
             Image(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(bottom = windowType.imagePadding.dp)
+                    .wrapContentHeight()
+//                    .padding(bottom = windowType.imagePadding.dp)
                     .fillMaxWidth(),
                 painter = painterResource(R.drawable.bg),
                 contentDescription = "background image"

@@ -12,8 +12,8 @@ android {
         applicationId "io.snappmobile.toddlertiles"
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 10205
-        versionName "1.2.5"
+        versionCode 10216
+        versionName "1.2.8"
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

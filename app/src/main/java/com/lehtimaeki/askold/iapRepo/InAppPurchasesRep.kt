@@ -1,13 +1,19 @@
 package com.lehtimaeki.askold.iapRepo
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import com.android.billingclient.api.*
+import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.MyApplication
 import com.lehtimaeki.askold.iconset.IconSet
 import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.iconset.IconSetWrapper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+
 
 object InAppPurchasesRep {
     val paidIconSetsFlow = MutableStateFlow<List<IconSetWrapper>>(emptyList())
@@ -81,7 +87,11 @@ object InAppPurchasesRep {
                 .setProductList(
                     listOf(
                         QueryProductDetailsParams.Product.newBuilder()
-                            .setProductId(ID_PAID_ANIMAL)
+                            .setProductId(ID_PAID_WOODLANDS)
+                            .setProductType(BillingClient.ProductType.INAPP)
+                            .build(),
+                        QueryProductDetailsParams.Product.newBuilder()
+                            .setProductId(ID_PAID_AFRICAN_ANIMALS)
                             .setProductType(BillingClient.ProductType.INAPP)
                             .build()
                     )
@@ -94,18 +104,17 @@ object InAppPurchasesRep {
                 && productDetailsList.isNotEmpty()
             ) {
                 val paidIconSetsList = ArrayList<IconSetWrapper>()
+                paidIconSetsList.add(
+                    IconSetWrapper(
+                        Int.MAX_VALUE,
+                        null,
+                        "Buy more fun sets",
+                        false
+                    )
+                )
 
                 for (product: ProductDetails in productDetailsList) {
                     Log.v("TAG_INAPP", "product : $product")
-
-                    paidIconSetsList.add(
-                        IconSetWrapper(
-                            Int.MAX_VALUE,
-                            null,
-                            "Buy more fun sets",
-                            false
-                        )
-                    )
                     for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
                         if (paidIconSet.id.toString() == product.productId) {
                             paidIconSetsList.add(
@@ -114,12 +123,27 @@ object InAppPurchasesRep {
                                     paidIconSet,
                                     null,
                                     false,
-                                    product
+                                    product,
+                                    ColorPalettes.getNextColorFromPaletteCompose(paidIconSet.useLightPalette)
                                 )
                             )
                         }
                     }
-                    addPaidIconSets(paidIconSetsList)
+                    // check if purchased or not
+                    val params = QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.INAPP)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val purchasesResult = billingClient?.queryPurchasesAsync(params.build())
+                        purchasesResult?.purchasesList?.forEach { purchase ->
+                            purchase.products.forEach { purchasedProductId ->
+                                val matchedIconSet =
+                                    paidIconSetsList.find { it.id == purchasedProductId.toInt() }
+                                matchedIconSet?.iconSet?.isUnlocked = true
+
+                            }
+                        }
+                        addPaidIconSets(paidIconSetsList)
+                    }
                 }
             }
         }
@@ -148,9 +172,20 @@ object InAppPurchasesRep {
 
     private fun unlockPaidIconSet(paidIconSetId: Int) {
         val iconList = paidIconSetsFlow.value
-        iconList[paidIconSetId].iconSet?.isUnlocked = true
-        paidIconSetsFlow.value = iconList
+
+        val updatedList: List<IconSetWrapper> = iconList.toMutableList().apply {
+            val savedIconSetWrapper = this.find { it.id == paidIconSetId }
+            val indexOfIconSetWrapper = this.indexOf(savedIconSetWrapper)
+            if (savedIconSetWrapper != null) {
+                this.remove(savedIconSetWrapper)
+                val unlockedIconSet = savedIconSetWrapper.iconSet?.copy(isUnlocked = true)
+                this.add(indexOfIconSetWrapper, savedIconSetWrapper.copy(iconSet = unlockedIconSet))
+            }
+        }
+
+        paidIconSetsFlow.value = updatedList
     }
 
-    private const val ID_PAID_ANIMAL = "paid_animals"
+    private const val ID_PAID_WOODLANDS = "3"
+    private const val ID_PAID_AFRICAN_ANIMALS = "4"
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -56,7 +57,7 @@ class LandingScreenFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val viewModel: LandingScreenViewModel = hiltViewModel()
-                val iconSets by viewModel.iconSets.collectAsState()
+                val iconSets by viewModel.iconSets.collectAsState(listOf())
                 AskoldTheme {
                     IconsCategoriesList(iconSets)
                 }
@@ -171,8 +172,9 @@ class LandingScreenFragment : Fragment() {
         Box(modifier = Modifier.background(Color.White)) {
             Image(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(bottom = windowType.imagePadding.dp)
+                    .wrapContentHeight()
+                    //.fillMaxHeight()
+//                    .padding(bottom = windowType.imagePadding.dp)
                     .fillMaxWidth(),
                 painter = painterResource(drawable.bg),
                 contentDescription = "background image of an icon set",
@@ -196,6 +198,7 @@ class LandingScreenFragment : Fragment() {
                 nameTextSize = windowType.nameTextSize,
                 textSize = windowType.textSize,
                 imageSize = windowType.imageSize,
+                babyOffsetSize = windowType.babyOffsetSize,
                 iconSetsWrapper = iconSetsWrapper
             )
         }
@@ -212,17 +215,10 @@ class LandingScreenFragment : Fragment() {
         nameTextSize: Int,
         textSize: Int,
         imageSize: Int,
+        babyOffsetSize: Int,
         iconSetsWrapper: List<IconSetWrapper>
     ) {
         Column {
-            Image(
-                modifier = Modifier
-                    .size(imageSize.dp)
-                    .padding(start = dimensionResource(dimen.spacing_large))
-                    .fillMaxWidth(),
-                painter = painterResource(drawable.baby),
-                contentDescription = "baby image",
-            )
             Box(contentAlignment = Alignment.Center) {
                 LazyVerticalGrid(
                     modifier = Modifier
@@ -236,6 +232,17 @@ class LandingScreenFragment : Fragment() {
                         horizontal = 16.dp
                     )
                 ) {
+                    item {
+                        Image(
+                            modifier = Modifier
+                                .padding(top = 12.dp, bottom = 16.dp)
+                                .size(imageSize.dp)
+                                .offset(x = (babyOffsetSize).dp)
+                                .fillMaxWidth(),
+                            painter = painterResource(drawable.baby),
+                            contentDescription = "baby image",
+                        )
+                    }
                     items(iconSetsWrapper, span = { item ->
                         val spanCount = if (item.iconSet == null) 2 else 1
                         GridItemSpan(spanCount)
@@ -357,9 +364,10 @@ enum class Size(
     val nameTextSize: Int,
     val textSize: Int,
     val imageSize: Int,
+    val babyOffsetSize: Int,
 ) {
     MOBILE(
-        imagePadding = 130,
+        imagePadding = 200,
         babyImageSize = 150,
         offsetSize = 34,
         helloTextSize = 40,
@@ -370,7 +378,9 @@ enum class Size(
         categoryTextSize = 22,
         nameTextSize = 35,
         textSize = 24,
-        imageSize = 70,
+        imageSize = 40,
+        babyOffsetSize = -70
+//        imageSize = 70,
     ),
     TABLET(
         imagePadding = 145,
@@ -384,6 +394,8 @@ enum class Size(
         categoryTextSize = 40,
         nameTextSize = 66,
         textSize = 50,
-        imageSize = 100,
+        imageSize = 80,
+        babyOffsetSize = -144
+//        imageSize = 100,
     )
 }

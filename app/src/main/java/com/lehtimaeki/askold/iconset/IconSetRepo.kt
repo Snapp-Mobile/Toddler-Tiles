@@ -7,7 +7,7 @@ import kotlin.random.Random
 
 object IconSetRepo {
 
-    val allIconSets = mutableListOf<IconSet>()
+    val freeIconSets = mutableListOf<IconSet>()
     val paidIconSets = mutableListOf<IconSet>()
     private val allIconSetsMap = mutableMapOf<Int, IconSet>()
     private val random = Random.Default
@@ -15,7 +15,7 @@ object IconSetRepo {
     // Pairs of icon drawable and if it should be tinted
     private val allUnlockedIcons by lazy {
         val ret = mutableListOf<Pair<Int, Boolean>>()
-        allIconSets.filter { it.isUnlocked }.forEach { iconSet ->
+        freeIconSets.filter { it.isUnlocked }.forEach { iconSet ->
             iconSet.icons.forEach { icon ->
                 ret.add(Pair(icon, iconSet.tintForContrast))
             }
@@ -26,7 +26,7 @@ object IconSetRepo {
 
     init {
 
-        allIconSets.add(
+        freeIconSets.add(
             IconSet(
                 id = 1,
                 name = "Numbers",
@@ -37,7 +37,7 @@ object IconSetRepo {
                 excludeFirstAsset = true
             )
         )
-        allIconSets.add(
+        freeIconSets.add(
             IconSet(
                 id = 2,
                 name = "Shapes",
@@ -74,6 +74,8 @@ object IconSetRepo {
                 tintForContrast = false
             )
         )
+
+        val allIconSets = freeIconSets + paidIconSets
 
         allIconSets.forEach {
             allIconSetsMap[it.id] = it

@@ -1,7 +1,6 @@
 package com.lehtimaeki.askold.landingscreen
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep
 import com.lehtimaeki.askold.iconset.IconSetRepo
@@ -13,63 +12,40 @@ import javax.inject.Inject
 @HiltViewModel
 class LandingScreenViewModel @Inject constructor() : ViewModel() {
 
-    val iconSets: StateFlow<List<IconSetWrapper>>
-
-    init {
-        val freeIconSetsList = ArrayList<IconSetWrapper>()
-        freeIconSetsList.add(
-            IconSetWrapper(
-                id = 0,
-                iconSet = null,
-                label = "Hello, ",
-                customText = true
-            )
-        )
-
-        IconSetRepo.allIconSets
-            .filter { it.isUnlocked }
-            .forEach { iconSet ->
-                freeIconSetsList.add(
-                    IconSetWrapper(
-                        id = iconSet.id,
-                        iconSet = iconSet,
-                        label = null,
-                        customText = true,
-                        colorId = ColorPalettes.getNextColorFromPaletteCompose(iconSet.useLightPalette)
-                    )
+    val iconSets: Flow<List<IconSetWrapper>> =
+        InAppPurchasesRep.paidIconSetsFlow.map { paidIconSets ->
+            val freeIconSetsList = ArrayList<IconSetWrapper>()
+            // TODO fix item in list
+            freeIconSetsList.add(
+                IconSetWrapper(
+                    id = 0,
+                    iconSet = null,
+                    label = "Hello, ",
+                    customText = true
                 )
+            )
+
+            IconSetRepo.freeIconSets
+                .filter { it.isUnlocked }
+                .forEach { iconSet ->
+                    freeIconSetsList.add(
+                        IconSetWrapper(
+                            id = iconSet.id,
+                            iconSet = iconSet,
+                            label = null,
+                            customText = true,
+                            colorId = ColorPalettes.getNextColorFromPaletteCompose(iconSet.useLightPalette)
+                        )
+                    )
+                }
+            val purchasedPaidAssets = paidIconSets.filter { it.iconSet?.isUnlocked == true }
+            val toBePurchasedPaidAssets =
+                paidIconSets.filter { it.iconSet?.isUnlocked == false || it.iconSet == null }
+
+            if (toBePurchasedPaidAssets.size == 1) {
+                return@map freeIconSetsList + purchasedPaidAssets
             }
 
-        // This is just to test until we will be able to create the paid items in Play Store
-        freeIconSetsList.add(
-            IconSetWrapper(
-                id = Int.MAX_VALUE,
-                iconSet = null,
-                label = "Buy more fun sets",
-                customText = false
-            )
-        )
-
-        IconSetRepo.paidIconSets
-            .filter { !it.isUnlocked }
-            .forEach { iconSet ->
-                freeIconSetsList.add(
-                    IconSetWrapper(
-                        id = iconSet.id,
-                        iconSet = iconSet,
-                        label = null,
-                        customText = false,
-                        colorId = ColorPalettes.getNextColorFromPaletteCompose(iconSet.useLightPalette)
-                    )
-                )
-            }
-
-        iconSets = flowOf(InAppPurchasesRep.paidIconSetsFlow).map {
-            freeIconSetsList + it.value
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.Eagerly,
-            freeIconSetsList
-        )
-    }
+            return@map freeIconSetsList + purchasedPaidAssets + toBePurchasedPaidAssets
+        }
 }

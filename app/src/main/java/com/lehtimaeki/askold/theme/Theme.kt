@@ -42,6 +42,7 @@ fun AskoldTheme(
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(color = Color.White)
+    systemUiController.isStatusBarVisible
 
     MaterialTheme(
         colors = colors,
