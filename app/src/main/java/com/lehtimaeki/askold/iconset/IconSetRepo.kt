@@ -1,5 +1,7 @@
 package com.lehtimaeki.askold.iconset
 
+import com.lehtimaeki.askold.MyApplication
+import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.utils.GameTileResources
 import java.lang.NullPointerException
 import kotlin.random.Random
@@ -29,7 +31,7 @@ object IconSetRepo {
         freeIconSets.add(
             IconSet(
                 id = 1,
-                name = "Numbers",
+                name = MyApplication.getAppContext()?.getString(R.string.numbers)?:"",
                 isUnlocked = true,
                 GameTileResources.NUMBERS,
                 tintForContrast = false,
@@ -40,7 +42,7 @@ object IconSetRepo {
         freeIconSets.add(
             IconSet(
                 id = 2,
-                name = "Shapes",
+                name = MyApplication.getAppContext()?.getString(R.string.shapes)?:"",
                 isUnlocked = true,
                 GameTileResources.SHAPES_ICONS,
                 tintForContrast = false,
@@ -59,7 +61,7 @@ object IconSetRepo {
         paidIconSets.add(
             IconSet(
                 id = 3,
-                name = "Woodlands",
+                name = MyApplication.getAppContext()?.getString(R.string.woodlands)?:"",
                 isUnlocked = false,
                 GameTileResources.WOODLANDS_ICONS,
                 tintForContrast = false
@@ -68,7 +70,7 @@ object IconSetRepo {
         paidIconSets.add(
             IconSet(
                 id = 4,
-                name = "African animals",
+                name = MyApplication.getAppContext()?.getString(R.string.african_animals)?:"",
                 isUnlocked = false,
                 GameTileResources.AFRICAN_ANIMAL_ICONS,
                 tintForContrast = false

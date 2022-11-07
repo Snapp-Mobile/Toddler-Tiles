@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -143,7 +144,7 @@ class PreviewScreenFragment : Fragment() {
                     }
                 ) {
                     Text(
-                        text = "BUY NOW",
+                        text = stringResource(R.string.buy),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
@@ -175,7 +176,7 @@ class PreviewScreenFragment : Fragment() {
                         modifier = Modifier.align(Alignment.Center)
                     )
                     Text(
-                        text = "PREVIEW",
+                        text = stringResource(R.string.preview),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,

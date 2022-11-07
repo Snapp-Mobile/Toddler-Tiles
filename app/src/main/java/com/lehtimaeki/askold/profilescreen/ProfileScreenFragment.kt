@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -113,7 +114,7 @@ class ProfileScreenFragment : Fragment() {
             contentDescription = "baby_image"
         )
         Text(
-            text = "Toddler\n  Tiles",
+            text = stringResource(R.string.toddler_tiles),
             color = Color(0xFF5DDAD0),
             fontSize = titleSize.sp,
             style = MaterialTheme.typography.h1,
@@ -121,7 +122,7 @@ class ProfileScreenFragment : Fragment() {
                 .padding(top = 16.dp, bottom = 30.dp),
         )
         Text(
-            text = "What should we call you?",
+            text = stringResource(R.string.name_input_label),
             color = Color(0xFF666666),
             fontSize = textSize.sp,
             fontWeight = FontWeight.SemiBold,
@@ -146,7 +147,7 @@ class ProfileScreenFragment : Fragment() {
             textStyle = TextStyle.Default.copy(fontSize = babyTextSize.sp),
             placeholder = {
                 Text(
-                    text = "Enter your name",
+                    text = stringResource(R.string.enter_your_name),
                     fontSize = babyTextSize.sp,
                     color = Color.LightGray,
                     modifier = Modifier.padding(start = 24.dp)
@@ -191,7 +192,7 @@ class ProfileScreenFragment : Fragment() {
             }
         ) {
             Text(
-                text = "Let's start",
+                text = stringResource(R.string.start),
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = textSize.sp,

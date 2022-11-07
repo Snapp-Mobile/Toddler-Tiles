@@ -2,6 +2,8 @@ package com.lehtimaeki.askold.landingscreen
 
 import androidx.lifecycle.ViewModel
 import com.lehtimaeki.askold.ColorPalettes
+import com.lehtimaeki.askold.MyApplication
+import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.iapRepo.InAppPurchasesRep
 import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.iconset.IconSetWrapper
@@ -20,7 +22,7 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
                 IconSetWrapper(
                     id = 0,
                     iconSet = null,
-                    label = "Hello, ",
+                    label = MyApplication.getAppContext()?.getString(R.string.hello),
                     customText = true
                 )
             )

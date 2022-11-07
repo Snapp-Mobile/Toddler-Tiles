@@ -1,3 +1,16 @@
 <resources>
 
+    <string name="hello">\Hello,\u0020\</string>
+    <string name="numbers">Numbers</string>
+    <string name="shapes">Shapes</string>
+    <string name="woodlands">Woodlands</string>
+    <string name="african_animals">African animals</string>
+    <string name="free">FREE</string>
+    <string name="paid">PAID</string>
+    <string name="preview">PREVIEW</string>
+    <string name="buy">BUY NOW</string>
+    <string name="name_input_label">What should we call you?</string>
+    <string name="toddler_tiles" translatable="false">Toddler\n \u0020\Tiles</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="start">Let\'s start</string>
 </resources>
