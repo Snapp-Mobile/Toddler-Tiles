@@ -1,16 +1,17 @@
 package com.lehtimaeki.askold.iapRepo
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import com.android.billingclient.api.*
 import com.lehtimaeki.askold.ColorPalettes
 import com.lehtimaeki.askold.MyApplication
+import com.lehtimaeki.askold.R
 import com.lehtimaeki.askold.iconset.IconSet
 import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.iconset.IconSetWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -55,11 +56,15 @@ object InAppPurchasesRep {
                     // The BillingClient is ready. You can query purchases here.
                     queryAvailableProducts()
                 }
+                val result = billingResult.responseCode
+                Log.d("TAG_INAPP", "couldn't connect - code: $result")
+
             }
 
             override fun onBillingServiceDisconnected() {
                 // Try to restart the connection on the next request to
                 // Google Play by calling the startConnection() method.
+                Log.d("TAG_INAPP", "on billing service disconnected")
             }
         })
     }
@@ -108,7 +113,7 @@ object InAppPurchasesRep {
                     IconSetWrapper(
                         Int.MAX_VALUE,
                         null,
-                        "Buy more fun sets",
+                        MyApplication.getAppContext()?.getString(R.string.buy_more),
                         false
                     )
                 )
@@ -139,6 +144,7 @@ object InAppPurchasesRep {
                                 val matchedIconSet =
                                     paidIconSetsList.find { it.id == purchasedProductId.toInt() }
                                 matchedIconSet?.iconSet?.isUnlocked = true
+                                matchedIconSet?.iconSet?.itemTypeStringResourceId = R.string.bought
 
                             }
                         }
@@ -178,7 +184,10 @@ object InAppPurchasesRep {
             val indexOfIconSetWrapper = this.indexOf(savedIconSetWrapper)
             if (savedIconSetWrapper != null) {
                 this.remove(savedIconSetWrapper)
-                val unlockedIconSet = savedIconSetWrapper.iconSet?.copy(isUnlocked = true)
+                val unlockedIconSet = savedIconSetWrapper.iconSet?.copy(
+                    isUnlocked = true,
+                    itemTypeStringResourceId = R.string.bought
+                )
                 this.add(indexOfIconSetWrapper, savedIconSetWrapper.copy(iconSet = unlockedIconSet))
             }
         }

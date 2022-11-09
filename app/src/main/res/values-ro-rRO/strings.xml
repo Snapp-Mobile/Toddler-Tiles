@@ -3,13 +3,15 @@
     <string name="start">Să începem</string>
     <string name="enter_your_name">Introdu numele</string>
     <string name="name_input_label">Cum te cheamă?</string>
-    <string name="buy">Cumpără acum</string>
-    <string name="preview">Previzualizare</string>
-    <string name="free">Gratuit</string>
-    <string name="paid">Cu plată</string>
+    <string name="buy">CUMPĂRĂ ACUM</string>
+    <string name="preview">PREVIZUALIZARE</string>
+    <string name="free">GRATUIT</string>
+    <string name="paid">CU PLATĂ</string>
+    <string name="bought">PLĂTIT</string>
     <string name="african_animals">Animale africane</string>
     <string name="woodlands">Animale de pădure</string>
     <string name="shapes">Forme</string>
     <string name="numbers">Numere</string>
     <string name="hello">\Buna,\u0020\</string>
+    <string name="buy_more">Cumpără mai multe seturi amuzante</string>
 </resources>

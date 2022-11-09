@@ -64,7 +64,8 @@ object IconSetRepo {
                 name = MyApplication.getAppContext()?.getString(R.string.woodlands)?:"",
                 isUnlocked = false,
                 GameTileResources.WOODLANDS_ICONS,
-                tintForContrast = false
+                tintForContrast = false,
+                itemTypeStringResourceId = R.string.paid
             )
         )
         paidIconSets.add(
@@ -73,7 +74,8 @@ object IconSetRepo {
                 name = MyApplication.getAppContext()?.getString(R.string.african_animals)?:"",
                 isUnlocked = false,
                 GameTileResources.AFRICAN_ANIMAL_ICONS,
-                tintForContrast = false
+                tintForContrast = false,
+                itemTypeStringResourceId = R.string.paid
             )
         )
 

@@ -29,7 +29,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -155,7 +154,7 @@ class LandingScreenFragment : Fragment() {
                 )
                 .background(
                     colorResource(
-                        id = if (text == string.paid.toString()) color.purple_color else color.default_tile_color
+                        id = if (text == getString(string.paid)) color.purple_color else color.default_tile_color
                     )
                 )
                 .padding(top = 2.5.dp, bottom = 2.5.dp, start = 14.dp, end = 10.dp)
@@ -300,7 +299,7 @@ class LandingScreenFragment : Fragment() {
                     elevation = 8.dp,
                     backgroundColor = Color(iconSetWrapper.colorId)
                 ) {
-                    val text = if (iconSetWrapper.iconSet.isUnlocked) stringResource(string.free) else stringResource(string.free)
+                    val text = getString(iconSetWrapper.iconSet.itemTypeStringResourceId)
                     Box {
                         ItemImage(
                             iconSetWrapper.iconSet.icons.firstOrNull(),
