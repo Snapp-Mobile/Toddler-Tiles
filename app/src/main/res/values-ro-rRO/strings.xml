@@ -14,4 +14,5 @@
     <string name="numbers">Numere</string>
     <string name="hello">\Buna,\u0020\</string>
     <string name="buy_more">Cumpără mai multe seturi amuzante</string>
+    <string name="errorToast">Ceva nu a mers bine cu plata ta. Te rog să reîncerci.</string>
 </resources>

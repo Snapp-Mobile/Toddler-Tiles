@@ -1,6 +1,7 @@
 package com.lehtimaeki.askold.iapRepo
 
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.android.billingclient.api.*
 import com.lehtimaeki.askold.ColorPalettes
@@ -11,7 +12,6 @@ import com.lehtimaeki.askold.iconset.IconSetRepo
 import com.lehtimaeki.askold.iconset.IconSetWrapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -35,12 +35,22 @@ object InAppPurchasesRep {
                 }
                 billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED -> {
                     // Handle an error caused by a user cancelling the purchase flow.
+                    showErrorToast()
                 }
                 else -> {
                     // Handle any other error codes.
+                    showErrorToast()
                 }
             }
         }
+
+    private fun showErrorToast() {
+        Toast.makeText(
+            MyApplication.getAppContext(),
+            MyApplication.getAppContext()?.getString(R.string.errorToast),
+            Toast.LENGTH_LONG
+        ).show()
+    }
 
     private var billingClient = MyApplication.getAppContext()?.let {
         BillingClient.newBuilder(it)
@@ -55,15 +65,16 @@ object InAppPurchasesRep {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
                     queryAvailableProducts()
+                } else {
+                    val result = billingResult.responseCode
+                    Log.d("TAG_INAPP", "couldn't connect - code: $result")
                 }
-                val result = billingResult.responseCode
-                Log.d("TAG_INAPP", "couldn't connect - code: $result")
-
             }
 
             override fun onBillingServiceDisconnected() {
                 // Try to restart the connection on the next request to
                 // Google Play by calling the startConnection() method.
+                startConnection()
                 Log.d("TAG_INAPP", "on billing service disconnected")
             }
         })

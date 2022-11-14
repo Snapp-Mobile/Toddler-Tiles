@@ -15,4 +15,5 @@
     <string name="enter_your_name">Enter your name</string>
     <string name="start">Let\'s start</string>
     <string name="buy_more">Buy more fun sets</string>
+    <string name="errorToast">Something went wrong with your payment. Please try again.</string>
 </resources>
