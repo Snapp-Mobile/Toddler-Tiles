@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,9 +49,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class LandingScreenFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         InAppPurchasesRep.startConnection()
         return ComposeView(requireContext()).apply {
@@ -66,41 +65,37 @@ class LandingScreenFragment : Fragment() {
 
     @Composable
     fun UserGreetingTitle(
-        helloTextSize: Int,
-        nameTextSize: Int,
-        textSize: Int,
-        text: String, iconSetWrapper: IconSetWrapper
+        windowType: ScreenSizeConfiguration,
+        text: String,
+        iconSetWrapper: IconSetWrapper
     ) {
         if (iconSetWrapper.customText) {
             Text(
                 text = text,
                 color = colorResource(id = color.purple_color),
-                fontSize = helloTextSize.sp,
+                fontSize = windowType.helloTextSize.sp,
                 style = MaterialTheme.typography.h1,
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(dimen.spacing_normal)),
+                modifier = Modifier.padding(bottom = dimensionResource(dimen.spacing_normal)),
             )
-            UserNameText(nameTextSize, arguments?.getString(BABY_NAME).toString())
+            UserNameText(windowType, arguments?.getString(BABY_NAME).toString())
         } else {
             Text(
                 text = text,
-                color = Color(0xFF666666),
-                fontSize = textSize.sp,
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(dimen.spacing_normal)),
+                color = colorResource(id = color.grey_color),
+                fontSize = windowType.textSize.sp,
+                modifier = Modifier.padding(bottom = dimensionResource(dimen.spacing_normal)),
                 fontWeight = FontWeight.Normal
             )
         }
     }
 
     @Composable
-    fun UserNameText(textSize: Int, name: String) {
+    fun UserNameText(windowType: ScreenSizeConfiguration, name: String) {
         Text(
             name,
-            color = Color(0xFF666666),
-            fontSize = textSize.sp,
-            modifier = Modifier
-                .padding(bottom = dimensionResource(dimen.spacing_normal)),
+            color = colorResource(id = color.grey_color),
+            fontSize = windowType.nameTextSize.sp,
+            modifier = Modifier.padding(bottom = dimensionResource(dimen.spacing_normal)),
         )
     }
 
@@ -111,7 +106,7 @@ class LandingScreenFragment : Fragment() {
     ) {
         Text(
             text,
-            color = Color(0xFF666666),
+            color = colorResource(id = color.grey_color),
             fontSize = categoryTextSize.sp,
             modifier = Modifier.padding(bottom = 20.dp),
             style = MaterialTheme.typography.body1
@@ -120,12 +115,13 @@ class LandingScreenFragment : Fragment() {
 
     @Composable
     fun ItemImage(
-        imageId: Int?, modifier: Modifier
+        imageId: Int?,
+        modifier: Modifier,
     ) {
         imageId?.let {
             Image(
                 painter = painterResource(it),
-                contentDescription = "",
+                contentDescription = "image of the item",
                 modifier = modifier
             )
         }
@@ -139,7 +135,7 @@ class LandingScreenFragment : Fragment() {
         modifier: Modifier = Modifier
     ) {
         Text(
-            text,
+            text = text,
             color = Color.White,
             fontSize = typeTextSize.sp,
             fontWeight = FontWeight.Bold,
@@ -167,13 +163,11 @@ class LandingScreenFragment : Fragment() {
     ) {
         val windowInfo = rememberWindowInfo()
         val windowType =
-            if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) Size.MOBILE else Size.TABLET
+            if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) ScreenSizeConfiguration.MOBILE else ScreenSizeConfiguration.TABLET
         Box(modifier = Modifier.background(Color.White)) {
             Image(
                 modifier = Modifier
                     .wrapContentHeight()
-                    //.fillMaxHeight()
-//                    .padding(bottom = windowType.imagePadding.dp)
                     .fillMaxWidth(),
                 painter = painterResource(drawable.bg),
                 contentDescription = "background image of an icon set",
@@ -184,93 +178,52 @@ class LandingScreenFragment : Fragment() {
                     .align(Alignment.TopEnd)
                     .offset(x = windowType.offsetSize.dp),
                 painter = painterResource(drawable.baby),
-                contentDescription = "baby image",
+                contentDescription = stringResource(string.baby_content_description),
                 colorFilter = ColorFilter.tint(color = Color.White)
             )
-            IconsCategories(
-                helloTextSize = windowType.helloTextSize,
-                typeTextSize = windowType.typeTextSize,
-                paddingSize = windowType.paddingSize,
-                roundedSize = windowType.roundedSize,
-                gridCellSize = windowType.gridCellSize,
-                categoryTextSize = windowType.categoryTextSize,
-                nameTextSize = windowType.nameTextSize,
-                textSize = windowType.textSize,
-                imageSize = windowType.imageSize,
-                babyOffsetSize = windowType.babyOffsetSize,
-                iconSetsWrapper = iconSetsWrapper
-            )
+            IconsCategories(windowType, iconSetsWrapper)
         }
     }
 
     @Composable
     fun IconsCategories(
-        helloTextSize: Int,
-        typeTextSize: Int,
-        paddingSize: Int,
-        roundedSize: Int,
-        gridCellSize: Int,
-        categoryTextSize: Int,
-        nameTextSize: Int,
-        textSize: Int,
-        imageSize: Int,
-        babyOffsetSize: Int,
+        windowType: ScreenSizeConfiguration,
         iconSetsWrapper: List<IconSetWrapper>
     ) {
-        Column {
-            Box(contentAlignment = Alignment.Center) {
-                LazyVerticalGrid(
+        LazyVerticalGrid(
+            modifier = Modifier
+                .wrapContentWidth()
+                .background(Color.Transparent),
+            columns = GridCells.Adaptive(windowType.gridCellSize.dp),
+            verticalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(
+                horizontal = 16.dp
+            )
+        ) {
+            item {
+                Image(
                     modifier = Modifier
-                        .wrapContentWidth()
-                        .align(Alignment.Center)
-                        .background(Color.Transparent),
-                    columns = GridCells.Adaptive(gridCellSize.dp),
-                    verticalArrangement = Arrangement.SpaceAround,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(
-                        horizontal = 16.dp
-                    )
-                ) {
-                    item {
-                        Image(
-                            modifier = Modifier
-                                .padding(top = 12.dp, bottom = 16.dp)
-                                .size(imageSize.dp)
-                                .offset(x = (babyOffsetSize).dp)
-                                .fillMaxWidth(),
-                            painter = painterResource(drawable.baby),
-                            contentDescription = "baby image",
-                        )
-                    }
-                    items(iconSetsWrapper, span = { item ->
-                        val spanCount = if (item.iconSet == null) 2 else 1
-                        GridItemSpan(spanCount)
-                    }) { iconSetWrapper ->
-                        IconCategory(
-                            helloTextSize = helloTextSize,
-                            typeTextSize = typeTextSize,
-                            paddingSize = paddingSize,
-                            roundedSize = roundedSize,
-                            categoryTextSize = categoryTextSize,
-                            nameTextSize = nameTextSize,
-                            textSize = textSize,
-                            iconSetWrapper
-                        )
-                    }
-                }
+                        .padding(top = 12.dp, bottom = 16.dp)
+                        .size(windowType.imageSize.dp)
+                        .offset(x = (windowType.babyOffsetSize).dp)
+                        .fillMaxWidth(),
+                    painter = painterResource(drawable.baby),
+                    contentDescription = stringResource(string.baby_content_description)
+                )
+            }
+            items(iconSetsWrapper, span = { item ->
+                val spanCount = if (item.iconSet == null) 2 else 1
+                GridItemSpan(spanCount)
+            }) { iconSetWrapper ->
+                IconCategory(windowType, iconSetWrapper)
             }
         }
     }
 
     @Composable
     fun IconCategory(
-        helloTextSize: Int,
-        typeTextSize: Int,
-        paddingSize: Int,
-        roundedSize: Int,
-        categoryTextSize: Int,
-        nameTextSize: Int,
-        textSize: Int,
+        windowType: ScreenSizeConfiguration,
         iconSetWrapper: IconSetWrapper
     ) {
         if (iconSetWrapper.iconSet == null) {
@@ -280,9 +233,7 @@ class LandingScreenFragment : Fragment() {
             ) {
                 iconSetWrapper.label?.let {
                     UserGreetingTitle(
-                        helloTextSize = helloTextSize,
-                        nameTextSize = nameTextSize,
-                        textSize = textSize,
+                        windowType,
                         it,
                         iconSetWrapper
                     )
@@ -293,7 +244,7 @@ class LandingScreenFragment : Fragment() {
                 Card(
                     modifier = Modifier
                         .padding(top = 8.dp, bottom = 4.dp)
-                        .clip(RoundedCornerShape(roundedSize.dp))
+                        .clip(RoundedCornerShape(windowType.roundedSize.dp))
                         .fillMaxSize()
                         .clickable(onClick = { navigateToFullScreenActivity(iconSetWrapper) }),
                     elevation = 8.dp,
@@ -302,38 +253,38 @@ class LandingScreenFragment : Fragment() {
                     val text = getString(iconSetWrapper.iconSet.itemTypeStringResourceId)
                     Box {
                         ItemImage(
-                            iconSetWrapper.iconSet.icons.firstOrNull(),
+                            imageId = iconSetWrapper.iconSet.icons.firstOrNull(),
                             modifier = Modifier.align(Alignment.Center)
                         )
                         ItemTypeText(
-                            typeTextSize = typeTextSize,
-                            paddingSize = paddingSize,
+                            typeTextSize = windowType.typeTextSize,
+                            paddingSize = windowType.paddingSize,
                             text = text,
                             modifier = Modifier.align(Alignment.TopEnd)
                         )
                     }
                 }
-                ItemCategoryText(categoryTextSize = categoryTextSize, iconSetWrapper.iconSet.name)
+                ItemCategoryText(
+                    categoryTextSize = windowType.categoryTextSize,
+                    text = iconSetWrapper.iconSet.name
+                )
             }
         }
     }
 
     private fun navigateToFullScreenActivity(iconSetWrapper: IconSetWrapper) {
         if (iconSetWrapper.iconSet?.isUnlocked == true) {
-            activity?.startActivity(
-                Intent(
-                    context,
-                    FullscreenActivity::class.java
-                ).apply {
-                    putExtras(Bundle().apply {
-                        putInt(ICON_SET_EXTRA_ID, iconSetWrapper.iconSet.id)
-                    })
+            activity?.startActivity(Intent(
+                context, FullscreenActivity::class.java
+            ).apply {
+                putExtras(Bundle().apply {
+                    putInt(ICON_SET_EXTRA_ID, iconSetWrapper.iconSet.id)
                 })
+            })
         } else {
             activity?.supportFragmentManager?.beginTransaction()
                 ?.add(R.id.container, PreviewScreenFragment.newInstance(iconSetWrapper))
-                ?.addToBackStack(null)
-                ?.commit()
+                ?.addToBackStack(null)?.commit()
         }
     }
 
@@ -350,8 +301,7 @@ class LandingScreenFragment : Fragment() {
     }
 }
 
-enum class Size(
-    val imagePadding: Int,
+enum class ScreenSizeConfiguration(
     val babyImageSize: Int,
     val offsetSize: Int,
     val helloTextSize: Int,
@@ -366,7 +316,6 @@ enum class Size(
     val babyOffsetSize: Int,
 ) {
     MOBILE(
-        imagePadding = 200,
         babyImageSize = 150,
         offsetSize = 34,
         helloTextSize = 40,
@@ -379,10 +328,8 @@ enum class Size(
         textSize = 24,
         imageSize = 40,
         babyOffsetSize = -70
-//        imageSize = 70,
     ),
     TABLET(
-        imagePadding = 145,
         babyImageSize = 250,
         offsetSize = 84,
         helloTextSize = 75,
@@ -395,6 +342,5 @@ enum class Size(
         textSize = 50,
         imageSize = 80,
         babyOffsetSize = -144
-//        imageSize = 100,
     )
 }

@@ -2,4 +2,5 @@
 <resources>
     <color name="default_tile_color">#5DDAD0</color>
     <color name="purple_color">#FF8674F5</color>
+    <color name="grey_color">#FF666666</color>
 </resources>

@@ -19,30 +19,29 @@ import kotlinx.coroutines.launch
 object InAppPurchasesRep {
     val paidIconSetsFlow = MutableStateFlow<List<IconSetWrapper>>(emptyList())
 
-    private val purchaseUpdateListener =
-        PurchasesUpdatedListener { billingResult, purchases ->
-            Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
+    private val purchaseUpdateListener = PurchasesUpdatedListener { billingResult, purchases ->
+        Log.v("TAG_INAPP", "billingResult responseCode : ${billingResult.responseCode}")
 
-            when {
-                billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null -> {
-                    for (purchase in purchases) {
-                        for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
-                            if (purchase.products[0] == paidIconSet.id.toString()) {
-                                handleNonConsumablePurchase(purchase, paidIconSet.id)
-                            }
+        when {
+            billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null -> {
+                for (purchase in purchases) {
+                    for (paidIconSet: IconSet in IconSetRepo.paidIconSets) {
+                        if (purchase.products.isNotEmpty() && purchase.products[0] == paidIconSet.id.toString()) {
+                            handleNonConsumablePurchase(purchase, paidIconSet.id)
                         }
                     }
                 }
-                billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED -> {
-                    // Handle an error caused by a user cancelling the purchase flow.
-                    showErrorToast()
-                }
-                else -> {
-                    // Handle any other error codes.
-                    showErrorToast()
-                }
+            }
+            billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED -> {
+                // Handle an error caused by a user cancelling the purchase flow.
+                showErrorToast()
+            }
+            else -> {
+                // Handle any other error codes.
+                showErrorToast()
             }
         }
+    }
 
     private fun showErrorToast() {
         Toast.makeText(
@@ -53,9 +52,7 @@ object InAppPurchasesRep {
     }
 
     private var billingClient = MyApplication.getAppContext()?.let {
-        BillingClient.newBuilder(it)
-            .setListener(purchaseUpdateListener)
-            .enablePendingPurchases()
+        BillingClient.newBuilder(it).setListener(purchaseUpdateListener).enablePendingPurchases()
             .build()
     }
 
@@ -84,12 +81,16 @@ object InAppPurchasesRep {
         unlockPaidIconSet(iconSetId)
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                    .setPurchaseToken(purchase.purchaseToken).build()
+                val acknowledgePurchaseParams =
+                    AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken)
+                        .build()
                 billingClient?.acknowledgePurchase(acknowledgePurchaseParams) { billingResult ->
                     val billingResponseCode = billingResult.responseCode
                     val billingDebugMessage = billingResult.debugMessage
 
+                    if (billingResponseCode != 0) {
+                        showErrorToast()
+                    }
                     Log.v("TAG_INAPP", "response code: $billingResponseCode")
                     Log.v("TAG_INAPP", "debugMessage : $billingDebugMessage")
                 }
@@ -98,34 +99,25 @@ object InAppPurchasesRep {
     }
 
     private fun queryAvailableProducts() {
-        val queryProductDetailsParams =
-            QueryProductDetailsParams.newBuilder()
-                .setProductList(
-                    listOf(
-                        QueryProductDetailsParams.Product.newBuilder()
-                            .setProductId(ID_PAID_WOODLANDS)
-                            .setProductType(BillingClient.ProductType.INAPP)
-                            .build(),
-                        QueryProductDetailsParams.Product.newBuilder()
-                            .setProductId(ID_PAID_AFRICAN_ANIMALS)
-                            .setProductType(BillingClient.ProductType.INAPP)
-                            .build()
-                    )
-                )
-                .build()
+        val queryProductDetailsParams = QueryProductDetailsParams.newBuilder().setProductList(
+            listOf(
+                QueryProductDetailsParams.Product.newBuilder().setProductId(ID_PAID_WOODLANDS)
+                    .setProductType(BillingClient.ProductType.INAPP).build(),
+                QueryProductDetailsParams.Product.newBuilder()
+                    .setProductId(ID_PAID_AFRICAN_ANIMALS)
+                    .setProductType(BillingClient.ProductType.INAPP).build()
+            )
+        ).build()
 
-        billingClient?.queryProductDetailsAsync(queryProductDetailsParams) { billingResult,
-                                                                             productDetailsList ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK
-                && productDetailsList.isNotEmpty()
-            ) {
+        billingClient?.queryProductDetailsAsync(queryProductDetailsParams) { billingResult, productDetailsList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && productDetailsList.isNotEmpty()) {
                 val paidIconSetsList = ArrayList<IconSetWrapper>()
                 paidIconSetsList.add(
                     IconSetWrapper(
-                        Int.MAX_VALUE,
-                        null,
-                        MyApplication.getAppContext()?.getString(R.string.buy_more),
-                        false
+                        id = Int.MAX_VALUE,
+                        iconSet = null,
+                        label = MyApplication.getAppContext()?.getString(R.string.buy_more),
+                        customText = false
                     )
                 )
 
@@ -156,7 +148,6 @@ object InAppPurchasesRep {
                                     paidIconSetsList.find { it.id == purchasedProductId.toInt() }
                                 matchedIconSet?.iconSet?.isUnlocked = true
                                 matchedIconSet?.iconSet?.itemTypeStringResourceId = R.string.bought
-
                             }
                         }
                         addPaidIconSets(paidIconSetsList)
@@ -170,15 +161,14 @@ object InAppPurchasesRep {
         val product = iconSetWrapper?.paidProductDetails
         product?.let {
             val productDetailsParamsList = listOf(
-                BillingFlowParams.ProductDetailsParams.newBuilder()
-                    .setProductDetails(product)
+                BillingFlowParams.ProductDetailsParams.newBuilder().setProductDetails(product)
                     .build()
             )
-            val billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(productDetailsParamsList)
-                .build()
+            val billingFlowParams =
+                BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
+                    .build()
             if (activity != null) {
-                billingClient?.launchBillingFlow(activity, billingFlowParams)?.responseCode
+                billingClient?.launchBillingFlow(activity, billingFlowParams)
             }
         }
     }
@@ -196,8 +186,7 @@ object InAppPurchasesRep {
             if (savedIconSetWrapper != null) {
                 this.remove(savedIconSetWrapper)
                 val unlockedIconSet = savedIconSetWrapper.iconSet?.copy(
-                    isUnlocked = true,
-                    itemTypeStringResourceId = R.string.bought
+                    isUnlocked = true, itemTypeStringResourceId = R.string.bought
                 )
                 this.add(indexOfIconSetWrapper, savedIconSetWrapper.copy(iconSet = unlockedIconSet))
             }

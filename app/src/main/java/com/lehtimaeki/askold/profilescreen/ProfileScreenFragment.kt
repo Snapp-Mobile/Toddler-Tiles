@@ -202,7 +202,7 @@ class ProfileScreenFragment : Fragment() {
 
     private fun navigateToLandingScreenActivity(name: String) {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.add(R.id.container, LandingScreenFragment.newInstance(name))
+            ?.replace(R.id.container, LandingScreenFragment.newInstance(name))
             ?.addToBackStack(null)
             ?.commit()
     }

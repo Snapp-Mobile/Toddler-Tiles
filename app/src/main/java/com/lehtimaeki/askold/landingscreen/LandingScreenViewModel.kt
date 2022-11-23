@@ -17,7 +17,7 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
     val iconSets: Flow<List<IconSetWrapper>> =
         InAppPurchasesRep.paidIconSetsFlow.map { paidIconSets ->
             val freeIconSetsList = ArrayList<IconSetWrapper>()
-            // TODO fix item in list
+
             freeIconSetsList.add(
                 IconSetWrapper(
                     id = 0,
@@ -40,10 +40,17 @@ class LandingScreenViewModel @Inject constructor() : ViewModel() {
                         )
                     )
                 }
+
+            // Store all the bought icon sets
             val purchasedPaidAssets = paidIconSets.filter { it.iconSet?.isUnlocked == true }
+
+            // Store all the paid icon sets which weren't bought
             val toBePurchasedPaidAssets =
                 paidIconSets.filter { it.iconSet?.isUnlocked == false || it.iconSet == null }
 
+            // If size of the unpaid icon sets is 1, it means that all paid icon sets were bought
+            // and the element found in the list is the label
+            // We need to add all the bought items to the free ones
             if (toBePurchasedPaidAssets.size == 1) {
                 return@map freeIconSetsList + purchasedPaidAssets
             }
